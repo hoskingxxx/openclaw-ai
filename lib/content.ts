@@ -266,6 +266,10 @@ export const faqs = [
         q: "OpenClaw 自己有大模型吗？",
         a: "没有。它是一个「调度器」，需要你自己接：OpenAI、Claude 或本地模型。\n\n👉 它不卖模型，只负责让模型「动起来」。",
       },
+      {
+        q: "支持 DeepSeek 吗？",
+        a: "✅ 完美支持！DeepSeek R1 是 OpenClaw 本地部署的最佳搭档。\n\n**为什么推荐 DeepSeek + OpenClaw**：\n- DeepSeek R1 本地运行，零 API 成本\n- 推理能力强，适合复杂任务拆解\n- 隐私完全可控，数据不外传\n- 适合在 Mac Mini 或本地服务器上 7×24 运行\n\n**配置示例**：\n```bash\n# 安装 Ollama\nollama run deepseek-r1\n\n# 配置 OpenClaw 使用本地模型\nagent.model = \"ollama/deepseek-r1```\n\n👉 这是「最便宜的私有 AI 员工」方案。",
+      },
     ],
   },
   {
@@ -289,8 +293,8 @@ export const faqs = [
     category: "安全与风险",
     questions: [
       {
-        q: "OpenClaw 安全吗？",
-        a: "技术上中立，责任在使用者。\n\n风险来自：文件权限、系统命令、API Key 管理\n\n👉 本质上，它和一个「有系统权限的员工」一样安全。",
+        q: "OpenClaw 安全吗？如何防止 Prompt Injection？",
+        a: "安全最佳实践：\n\n**推荐隔离方案**：\n- 使用 Docker 容器运行，限制文件系统访问\n- 使用独立设备如 Mac Mini 专机专用\n- 设置只读权限，明确可写目录\n- 禁止危险命令（rm、format 等）\n\n**防止 Prompt Injection**：\n- 不要在提示词中暴露系统命令\n- 使用约束条件限制执行范围\n- 定期审查执行日志\n\n👉 本质上，把它当作一个「有系统权限的远程员工」来对待。",
       },
       {
         q: "它会「自己乱来」吗？",

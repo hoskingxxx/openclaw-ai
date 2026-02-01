@@ -36,8 +36,11 @@ export default function FAQPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
             常见问题
           </h1>
-          <p className="text-xl text-text-secondary">
+          <p className="text-xl text-text-secondary mb-2">
             关于 OpenClaw 的常见疑问解答
+          </p>
+          <p className="text-sm text-text-tertiary">
+            原名 Clawdbot / Moltbot —— 你可能在其他地方看到过这些名称
           </p>
         </section>
 

@@ -27,8 +27,11 @@ export default function HomePage() {
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
               不是更强的 ChatGPT，是全新物种
             </h2>
-            <p className="text-text-secondary text-lg">
+            <p className="text-text-secondary text-lg mb-2">
               OpenClaw 是执行型 AI，不是聊天型 AI
+            </p>
+            <p className="text-sm text-text-tertiary">
+              原名 Clawdbot / Moltbot —— 专注于稳定执行的开源 AI Agent 框架
             </p>
           </div>
 
@@ -87,6 +90,11 @@ export default function HomePage() {
               icon="🤖"
               title="Agent 架构"
               description="支持单 Agent 和多 Agent 协作模式，一个分析一个执行一个校验"
+            />
+            <FeatureCard
+              icon="🛣️"
+              title="车道队列系统"
+              description="独有的 Lane-based Queue 架构，任务有序执行，比 AutoGPT 更稳定，不会死循环"
             />
             <FeatureCard
               icon="🌐"
