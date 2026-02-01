@@ -126,7 +126,7 @@ export default async function BlogPostPage({
 
           {/* 文章正文 */}
           <div
-            className="glass-card p-8 prose prose-invert prose-lg max-w-none"
+            className="glass-card p-8 prose prose-invert prose-lg max-w-none prose-headings:text-text-primary prose-p:text-text-secondary prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-text-primary prose-code:text-blue-300 prose-code:bg-background-tertiary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-700 prose-blockquote:border-brand-primary prose-blockquote:bg-brand-muted/20 prose-blockquote:text-text-secondary prose-img:rounded-lg prose-hr:border-white/10 break-words"
             dangerouslySetInnerHTML={{ __html: postContent.content }}
           />
 
