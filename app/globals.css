@@ -26,8 +26,8 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-blur: blur(20px);
 
-  /* 字体 */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* 字体 - 系统字体栈 */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   /* 圆角 */
   --radius-sm: 8px;

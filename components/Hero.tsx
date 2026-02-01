@@ -30,11 +30,11 @@ export function Hero() {
 
         {/* CTA 按钮组 - 全部指向站内内容 */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button variant="primary" size="lg" href="/quick-start">
-            快速开始 (5分钟)
+          <Button variant="primary" size="lg" href="/command-builder">
+            ⚡ Launch Command Generator
           </Button>
-          <Button variant="secondary" size="lg" href="/use-cases">
-            查看 6 大玩法
+          <Button variant="secondary" size="lg" href="/blog/how-to-use-deepseek-with-openclaw">
+            📖 Read Setup Guide
           </Button>
         </div>
 
