@@ -113,3 +113,55 @@ export function WebSiteStructuredData() {
     />
   );
 }
+
+// Article 结构化数据（博客文章）
+interface ArticleStructuredDataProps {
+  title: string;
+  description: string;
+  datePublished: string;
+  author: string;
+  url: string;
+  imageUrl?: string;
+}
+
+export function ArticleStructuredData({
+  title,
+  description,
+  datePublished,
+  author,
+  url,
+  imageUrl,
+}: ArticleStructuredDataProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description: description,
+    image: imageUrl || `${siteConfig.url}/og-image.png`,
+    datePublished: datePublished,
+    dateModified: datePublished,
+    author: {
+      "@type": "Person",
+      name: author,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "OpenClaw 中文社区",
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteConfig.url}/og-image.png`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
