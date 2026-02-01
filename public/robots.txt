@@ -1,0 +1,13 @@
+# OpenClaw 中文资源站 - robots.txt
+
+User-agent: *
+Allow: /
+
+# 禁止爬取 API 路由
+Disallow: /api/
+
+# 禁止爬取 Next.js 内部路由
+Disallow: /_next/
+
+# Sitemap 位置
+Sitemap: https://openclaw-ai.org/sitemap.xml

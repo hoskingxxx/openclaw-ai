@@ -1,0 +1,219 @@
+import { Hero } from "@/components/Hero";
+import { FeatureCard } from "@/components/FeatureCard";
+import { CodeBlock } from "@/components/ui/CodeBlock";
+import { Footer } from "@/components/Footer";
+import { Navigation } from "@/components/Navigation";
+import { NextStepCard } from "@/components/NextSteps";
+import Link from "next/link";
+import {
+  useCases,
+  comparisonTable,
+  universalCommandTemplate,
+  supportedChannels,
+  installSteps,
+} from "@/lib/content";
+
+export default function HomePage() {
+  return (
+    <>
+      <Navigation />
+      <main>
+        {/* Hero 区域 */}
+        <Hero />
+
+        {/* 对比表格区域 */}
+        <section className="max-w-7xl mx-auto px-6 py-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+              不是更强的 ChatGPT，是全新物种
+            </h2>
+            <p className="text-text-secondary text-lg">
+              OpenClaw 是执行型 AI，不是聊天型 AI
+            </p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full glass-card">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left p-4 text-text-primary">场景</th>
+                  <th className="text-left p-4 text-text-secondary">ChatGPT</th>
+                  <th className="text-left p-4 text-brand-primary">OpenClaw</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonTable.rows.map((row, index) => (
+                  <tr key={index} className="border-b border-white/5 last:border-0">
+                    <td className="p-4 text-text-primary">{row.feature}</td>
+                    <td className="p-4 text-text-secondary">{row.chatgpt}</td>
+                    <td className="p-4 text-text-primary font-medium">{row.openclaw}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* 核心特点区域 */}
+        <section className="max-w-7xl mx-auto px-6 py-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+              为什么选择 OpenClaw？
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <FeatureCard
+              icon="⚡"
+              title="执行型 AI"
+              description="你给目标 → 它自己拆步骤 → 调工具 → 执行 → 汇报结果"
+            />
+            <FeatureCard
+              icon="🔒"
+              title="本地可控"
+              description="部署在你自己的机器或服务器上，代码/文件不需要上传到第三方"
+            />
+            <FeatureCard
+              icon="🎯"
+              title="目标驱动"
+              description="给「工作要求」不是「聊天问题」，它是执行者不是出主意的人"
+            />
+            <FeatureCard
+              icon="🧠"
+              title="有记忆"
+              description="持续跟踪项目、记住中间状态、失败后重试、按规则回滚"
+            />
+            <FeatureCard
+              icon="🤖"
+              title="Agent 架构"
+              description="支持单 Agent 和多 Agent 协作模式，一个分析一个执行一个校验"
+            />
+            <FeatureCard
+              icon="🌐"
+              title="多平台支持"
+              description="WhatsApp、Telegram、Slack、Discord、Signal、iMessage 等 13+ 平台"
+            />
+          </div>
+        </section>
+
+        {/* 6 大玩法区域 */}
+        <section className="max-w-7xl mx-auto px-6 py-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+              6 大实用玩法
+            </h2>
+            <p className="text-text-secondary text-lg">
+              从独立开发者到创业者，从运维到内容创作，总有一款适合你
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {useCases.map((useCase) => (
+              <div
+                key={useCase.id}
+                className="glass-card p-6 hover:bg-white/12 transition-all duration-300"
+              >
+                <div className="text-4xl mb-4">{useCase.icon}</div>
+                {useCase.popular && (
+                  <span className="inline-block px-2 py-1 text-xs font-medium bg-brand-primary/20 text-brand-primary rounded mb-3">
+                    🔥 最火
+                  </span>
+                )}
+                {useCase.advanced && (
+                  <span className="inline-block px-2 py-1 text-xs font-medium bg-background-elevated text-text-tertiary rounded mb-3">
+                    进阶
+                  </span>
+                )}
+                <h3 className="text-xl font-semibold text-text-primary mb-2">{useCase.title}</h3>
+                <p className="text-sm text-text-secondary mb-4">{useCase.description}</p>
+                <div className="text-xs text-text-tertiary mb-3">
+                  适合：{useCase.audience.join("、")}
+                </div>
+                <CodeBlock title="示例指令" code={useCase.exampleCommand} />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 快速开始区域 */}
+        <section className="max-w-4xl mx-auto px-6 py-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+              快速开始
+            </h2>
+            <p className="text-text-secondary text-lg">
+              只需 3 步，5 分钟即可部署你的 AI 员工
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            {installSteps.map((step, index) => (
+              <div key={index} className="glass-card p-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-8 h-8 rounded-full bg-brand-primary flex items-center justify-center text-white font-bold">
+                    {index + 1}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-text-primary">{step.title}</h3>
+                    <p className="text-sm text-text-secondary">{step.description}</p>
+                  </div>
+                </div>
+                <CodeBlock code={Object.values(step.commands).join("\n")} />
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/quick-start"
+              className="inline-block text-brand-primary hover:text-brand-hover transition-colors"
+            >
+              查看完整安装指南 →
+            </Link>
+          </div>
+        </section>
+
+        {/* 万能指令模板区域 */}
+        <section className="max-w-4xl mx-auto px-6 py-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+              万能指令模板
+            </h2>
+            <p className="text-text-secondary text-lg">
+              让 OpenClaw 成功率暴涨的秘诀
+            </p>
+          </div>
+
+          <div className="glass-card p-8">
+            <CodeBlock code={universalCommandTemplate} />
+            <p className="text-sm text-text-tertiary mt-4">
+              💡 这会让 OpenClaw 成功率暴涨。复制后直接发送给 OpenClaw 即可执行。
+            </p>
+          </div>
+
+          <div className="mt-8 text-center">
+            <Link
+              href="/command-builder"
+              className="inline-block px-6 py-3 bg-brand-primary hover:bg-brand-hover text-white font-medium rounded-lg transition-colors"
+            >
+              使用指令生成器 →
+            </Link>
+          </div>
+        </section>
+
+        {/* 下一步推荐 */}
+        <section className="max-w-4xl mx-auto px-6">
+          <NextStepCard
+            icon="🚀"
+            title="开始你的 OpenClaw 之旅"
+            description="查看快速开始指南，5 分钟即可完成部署并开始使用。"
+            href="/quick-start"
+            linkText="查看快速开始指南"
+          />
+        </section>
+      </main>
+
+      <Footer />
+    </>
+  );
+}
