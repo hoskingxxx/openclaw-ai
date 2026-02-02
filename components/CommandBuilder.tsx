@@ -31,10 +31,10 @@ Output: ${output || "TBD"}
     if (template) {
       const lines = template.template.split("\n");
       lines.forEach((line) => {
-        if (line.startsWith("Goal:") || line.startsWith("目标：")) setGoal(line.replace(/^Goal:|目标：/, ""));
-        if (line.startsWith("Scope:") || line.startsWith("范围：")) setScope(line.replace(/^Scope:|范围：/, ""));
-        if (line.startsWith("Constraints:") || line.startsWith("约束：")) setConstraints(line.replace(/^Constraints:|约束：/, ""));
-        if (line.startsWith("Output:") || line.startsWith("输出：")) setOutput(line.replace(/^Output:|输出：/, ""));
+        if (line.startsWith("Goal:")) setGoal(line.replace(/^Goal:/, ""));
+        if (line.startsWith("Scope:")) setScope(line.replace(/^Scope:/, ""));
+        if (line.startsWith("Constraints:")) setConstraints(line.replace(/^Constraints:/, ""));
+        if (line.startsWith("Output:")) setOutput(line.replace(/^Output:/, ""));
       });
     }
   };

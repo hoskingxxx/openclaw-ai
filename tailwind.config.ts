@@ -9,20 +9,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        // 背景色 - 深空灰（非纯黑）
+        // Background colors - dark gray
         background: {
           primary: "#1a1a1a",
           secondary: "#242424",
           tertiary: "#2e2e2e",
           elevated: "#383838",
         },
-        // 品牌色 - OpenClaw 红
+        // Brand color - OpenClaw red
         brand: {
           primary: "#FF4500",
           hover: "#FF5722",
           muted: "rgba(255, 69, 0, 0.15)",
         },
-        // 文本色
+        // Text colors
         text: {
           primary: "#ffffff",
           secondary: "rgba(255, 255, 255, 0.7)",

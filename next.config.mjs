@@ -2,15 +2,15 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // 禁用 Turbopack（生产环境）
+  // Disable Turbopack in production
   experimental: {
     turbo: undefined,
   },
 
-  // 压缩优化
+  // Enable compression
   compress: true,
 
-  // 图片优化
+  // Image optimization
   images: {
     formats: ['image/avif', 'image/webp'],
   },
