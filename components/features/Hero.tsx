@@ -11,57 +11,55 @@ export function Hero() {
 
       {/* Main Content */}
       <div className="hero-content relative z-10 max-w-4xl mx-auto text-center">
+        {/* Badge: Unofficial Community Docs */}
+        <div className="flex justify-center mb-6">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-text-tertiary font-mono">
+            <span className="mr-2">🦞</span> Unofficial Community Docs
+          </span>
+        </div>
+
         {/* Main Title */}
-        <h1 className="text-4xl md:text-6xl font-bold text-text-primary mb-6 leading-tight">
-          DeepSeek R1: The Survival Guide
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6 leading-tight">
+          The OpenClaw<br />Survival Guide
         </h1>
 
-        {/* Subtitle */}
-        <p className="text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
-          Everything here comes from things that actually broke.
+        {/* Subtitle / Lead Text */}
+        <p className="text-lg md:text-xl lg:text-2xl text-text-secondary mb-10 max-w-3xl mx-auto leading-relaxed">
+          Battle-tested guides for running DeepSeek R1 locally.<br />
+          <span className="text-text-tertiary">Real crash logs. Real fixes. No hype.</span><br />
+          <span className="text-text-tertiary">Written by developers who broke their hardware so you don't have to.</span>
         </p>
 
         {/* CTA Button Group */}
-        <div className="flex flex-col sm:flex-row gap-6 sm:gap-4 justify-center items-center w-full sm:w-auto">
-          <Button variant="primary" size="lg" href="/guides/how-to-use-deepseek-with-openclaw">
-            Fix DeepSeek R1 on 8GB GPUs
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 justify-center items-center w-full sm:w-auto mb-12">
+          <Button variant="primary" size="lg" href="/docs" className="text-base px-8 py-4">
+            Start Setup (Survivor Mode) →
           </Button>
-          <Button variant="secondary" size="lg" href="/oom">
-            See why it crashed
+          <Button variant="secondary" size="lg" href="/troubleshooting" className="text-base px-8 py-4">
+            Read the OOM Logs
           </Button>
         </div>
 
-        {/* Installation Code Block */}
-        <div className="mt-12 max-w-2xl mx-auto">
-          {/* Context Tag */}
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <span className="text-xs font-mono text-text-tertiary bg-background-tertiary px-2 py-1 rounded">
-              System: RTX 3070 Ti (8GB) | Model: DeepSeek R1 Distill
-            </span>
-          </div>
-
-          <div className="bg-terminal-bg rounded-lg overflow-hidden border border-red-500/30 shadow-xl">
+        {/* Crash Log Preview */}
+        <div className="mt-8 max-w-2xl mx-auto">
+          <div className="bg-terminal-bg rounded-lg overflow-hidden border border-red-500/30 shadow-xl opacity-60 hover:opacity-100 transition-opacity">
             <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
               <div className="w-3 h-3 rounded-full bg-red-500" />
               <div className="w-3 h-3 rounded-full bg-yellow-500" />
               <div className="w-3 h-3 rounded-full bg-green-500" />
-              <span className="ml-2 text-xs text-gray-400 font-mono">terminal</span>
+              <span className="ml-2 text-xs text-gray-400 font-mono">crash.log</span>
             </div>
             <pre className="p-4 overflow-x-auto">
               <code className="text-sm text-red-300 font-mono leading-relaxed">
-{`user@dev-machine:~/openclaw$ openclaw start --model deepseek-r1:67b
-[2026-02-01 23:42:15] INFO: Initializing Gateway...
-[2026-02-01 23:42:16] INFO: Loading Model [deepseek-r1:67b] via Ollama...
-[2026-02-01 23:42:19] WARN: VRAM usage spike detected (15.8GB / 16.0GB)
-Traceback (most recent call last):
-  File "core/engine.py", line 402, in load_model
-    torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.40 GiB (GPU 0; 8.00 GiB total capacity; 6.42 GiB already allocated; 102.00 MiB free)
-[System Halted] Agent crashed.`}
+{`[2026-02-01 14:24:43] ERROR: CUDA out of memory. Tried to allocate 128.00 MiB
+  (GPU 0; 23.99 GiB total capacity; 23.10 GiB already allocated; 0 bytes free)
+  PyTorch attempted to reserve residual memory but failed due to fragmentation.
+[System Halted] Agent crashed during reasoning chain.`}
               </code>
             </pre>
           </div>
           <p className="text-xs text-text-tertiary mt-3 font-mono">
-            Log captured from a standard RTX 3070 setup running R1. <Link href="/oom" className="text-brand-primary hover:text-brand-hover underline">See why it crashed →</Link>
+            RTX 3090 attempting 32B model. <Link href="/troubleshooting" className="text-brand-primary hover:text-brand-hover underline">See why it crashed →</Link>
           </p>
         </div>
       </div>

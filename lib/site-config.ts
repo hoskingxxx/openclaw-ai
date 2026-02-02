@@ -5,9 +5,9 @@
 // Site Identity
 // ============================================================================
 export const siteConfig = {
-  name: "OpenClaw Hub",
-  title: "OpenClaw Hub",
-  description: "Community documentation for OpenClaw AI agent framework. Local setup guides with DeepSeek R1 and Ollama.",
+  name: "OpenClaw Hub 🦞",
+  title: "OpenClaw Hub - The Survival Guide",
+  description: "Battle-tested guides for running DeepSeek R1 locally. Real crash logs. Real fixes. No hype.",
   url: "https://openclaw-ai.org",
   ogImage: "/og-image.png",
   logo: {
