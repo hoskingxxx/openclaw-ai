@@ -26,7 +26,12 @@ export function Hero() {
 
         {/* Subtitle */}
         <p className="text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
-          DeepSeek R1 runs locally. But probably not on your laptop. This site documents what actually broke so you don't burn your weekend.
+          <span className="block mb-2 text-brand-primary font-mono text-sm">
+            ⚠️ NOT A BENCHMARK SITE. NOT A PRODUCT PAGE.
+          </span>
+          These are just my personal notes from broken setups.
+          If you are looking for "10x Productivity", please leave.
+          If you are looking for why your R1 crashed with <code>&quot;CUDA OOM&quot;</code>, you are in the right place.
         </p>
 
         {/* CTA Button Group */}
