@@ -169,7 +169,7 @@ export default function ResourcesPage() {
               <div className="mb-4">
                 <p className="text-sm font-medium text-white mb-2">✗ Not suitable for:</p>
                 <ul className="text-sm text-text-secondary ml-4">
-                  <li>• Users with <16GB VRAM</li>
+                  <li>• Users with under 16GB VRAM</li>
                   <li>• Mac users (no CUDA support)</li>
                 </ul>
               </div>

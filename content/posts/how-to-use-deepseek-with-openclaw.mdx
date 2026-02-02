@@ -61,7 +61,7 @@ Put them together without planning and things break fast.
 
 > **⚠️ Warning:** If your setup looks like this:
 > * MacBook (Air/Pro base models)
-> * Laptop GPU with <16GB VRAM
+> * Laptop GPU with under 16GB VRAM
 > * "I'll just try and see" approach
 >
 > **You are about to hit:** Out-of-memory errors, Silent failures, and Inference so slow it's unusable. **This is not your fault. This is physics.**
@@ -108,7 +108,7 @@ Instead of fighting with Python venvs, just use Ollama to run a 4-bit quantized 
 # 1. Download & Run the 7B or 8B Distill version (Fits in 8GB VRAM)
 ollama run deepseek-r1:8b
 
-# OR if you are really RAM-starved (Fits in <4GB VRAM, but very "dumb")
+# OR if you are really RAM-starved (Fits in under 4GB VRAM, but very "dumb")
 ollama run deepseek-r1:1.5b
 ```
 
