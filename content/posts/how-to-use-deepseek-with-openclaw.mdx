@@ -100,28 +100,46 @@ If you absolutely refuse to spend money or use the cloud, you **can** run DeepSe
 
 **The catch?** You have to use the "Distilled" or heavily quantized versions. You are trading intelligence for existence.
 
-### Step 1: Use Ollama (The Easiest Way)
+### Step 0: Install Prerequisites (Don't skip this)
 
-Instead of fighting with Python venvs, just use Ollama to run a 4-bit quantized version.
+Before you configure anything, you need the runtime.
 
 ```bash
-# 1. Download & Run the 7B or 8B Distill version (Fits in 8GB VRAM)
+# MacOS
+brew install ollama node
+
+# Linux (Ubuntu/Debian)
+curl -fsSL https://ollama.com/install.sh | sh
+sudo apt install nodejs npm
+
+# Install OpenClaw CLI
+npm install -g openclaw
+```
+
+### Step 1: Get the Model
+
+Pull the quantized model. This downloads about 4.7GB.
+
+```bash
 ollama run deepseek-r1:8b
-
-# OR if you are really RAM-starved (Fits in under 4GB VRAM, but very "dumb")
-ollama run deepseek-r1:1.5b
+# Once it starts chatting, type '/bye' to exit. We just needed the download.
 ```
 
-### Step 2: Configure OpenClaw
+### Step 2: Configure & Run
 
-Point OpenClaw to your local Ollama instance.
+Create a `.env` file in your project folder and paste this.
 
 ```bash
-# .env configuration for Local Ollama
-LLM_PROVIDER="ollama"
+# 1. Create config
+echo 'LLM_PROVIDER="ollama"
 LLM_BASE_URL="http://localhost:11434/v1"
-LLM_MODEL="deepseek-r1:8b" # Match the model you pulled
+LLM_MODEL="deepseek-r1:8b"' > .env
+
+# 2. Start the Agent
+openclaw start
 ```
+
+> **🎉 Success Check:** You should see `[INFO] Connected to Ollama` in your terminal. If you see `Connection Refused`, make sure the Ollama app is running in the background!
 
 ⚠️ **The Trade-off:** The 7B/8B models are fast, but they lose the "Galaxy Brain" reasoning capabilities of the full 671B parameter model. They might fail at complex OpenClaw task breakdowns.
 
