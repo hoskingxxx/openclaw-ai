@@ -25,7 +25,7 @@ function PromoBanner() {
         <div className="flex items-center justify-center gap-2 md:gap-3">
           <span className="text-xl md:text-2xl animate-pulse"></span>
           <span className="text-white font-bold text-sm md:text-lg lg:text-xl drop-shadow-lg">
-            Hot Guide: Run OpenClaw with DeepSeek R1 at Zero Cost
+            Guide: Run OpenClaw with DeepSeek R1 (Zero API Cost)
           </span>
           <span className="hidden sm:inline-flex items-center gap-1 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs md:text-sm font-medium group-hover:bg-white/30 transition-colors">
             Check Now
@@ -81,13 +81,13 @@ LLM_MODEL="deepseek-reasoner" # Uses R1 Chain of Thought`}
         <section className="max-w-7xl mx-auto px-6 py-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
-              Not Just a Better ChatGPT, a New Species
+              Execution AI vs Chat AI
             </h2>
             <p className="text-text-secondary text-lg mb-2">
-              OpenClaw is an Execution AI, not a Chat AI
+              OpenClaw executes tasks, ChatGPT answers questions
             </p>
             <p className="text-sm text-text-tertiary">
-              Formerly Clawdbot / Moltbot —— An open-source AI Agent framework focused on stable execution
+              Open-source AI Agent framework focused on stable task execution
             </p>
           </div>
 
@@ -206,7 +206,7 @@ LLM_MODEL="deepseek-reasoner" # Uses R1 Chain of Thought`}
               Quick Start
             </h2>
             <p className="text-text-secondary text-lg">
-              Deploy your AI Employee in 3 steps, 5 minutes
+              Install and configure OpenClaw in 3 steps
             </p>
           </div>
 

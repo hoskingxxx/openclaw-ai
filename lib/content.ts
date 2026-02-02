@@ -6,7 +6,7 @@
 // ============================================================================
 export const siteConfig = {
   title: "OpenClaw Resource Site",
-  description: "Not just a chatbot, but your AI Employee. You set goals, it breaks them down, executes, and reports back.",
+  description: "Community documentation for OpenClaw AI agent framework. Local setup guides with DeepSeek R1 and Ollama.",
   url: "https://openclaw-ai.org",
   ogImage: "/og-image.png",
 }

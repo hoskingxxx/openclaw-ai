@@ -17,25 +17,46 @@ export function Hero() {
         </div>
 
         {/* Main Title */}
-        <h1 className="text-5xl md:text-7xl font-bold text-text-primary mb-6 leading-tight">
-          Run OpenClaw Locally
+        <h1 className="text-4xl md:text-6xl font-bold text-text-primary mb-6 leading-tight">
+          OpenClaw Local Setup
           <br />
-          <span className="text-brand-primary">with DeepSeek R1</span>
+          <span className="text-brand-primary">& DeepSeek R1 Guide</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="text-xl md:text-2xl text-text-secondary mb-12 max-w-2xl mx-auto">
-          The open-source agent framework. Automate tasks with $0 API cost using local LLMs.
+        <p className="text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
+          Community documentation for running OpenClaw agents locally. Zero API cost with DeepSeek/Ollama.
         </p>
 
         {/* CTA Button Group */}
         <div className="flex flex-col sm:flex-row gap-6 sm:gap-4 justify-center items-center w-full sm:w-auto">
-          <Button variant="primary" size="lg" href="/command-generator">
+          <Button variant="primary" size="lg" href="/command-builder">
             ⚡ Open Command Generator
           </Button>
           <Button variant="secondary" size="lg" href="/blog/how-to-use-deepseek-with-openclaw">
             📖 Read DeepSeek Guide
           </Button>
+        </div>
+
+        {/* Installation Code Block */}
+        <div className="mt-12 max-w-2xl mx-auto">
+          <div className="bg-[#0d1117] rounded-lg overflow-hidden border border-white/10 shadow-xl">
+            <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/10">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+              <span className="ml-2 text-xs text-gray-400 font-mono">Terminal</span>
+            </div>
+            <pre className="p-4 overflow-x-auto">
+              <code className="text-sm text-gray-100 font-mono leading-relaxed">
+{`# Install OpenClaw CLI
+npm install -g openclaw@latest
+
+# Initialize your agent
+openclaw onboard`}
+              </code>
+            </pre>
+          </div>
         </div>
 
         {/* Core Features Preview - Hidden for now */}
