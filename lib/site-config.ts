@@ -19,12 +19,13 @@ export const siteConfig = {
 } as const;
 
 // ============================================================================
-// Navigation Links
+// Navigation Links (Header)
 // ============================================================================
 export const navLinks = [
-  { title: "Home", href: "/" },
-  { title: "Docs", href: "/quick-start" },
+  { title: "Start", href: "/quick-start" },
   { title: "Guides", href: "/guides" },
+  { title: "Troubleshooting", href: "/oom" },
+  { title: "Resources", href: "/resources" },
 ] as const;
 
 // ============================================================================
@@ -32,10 +33,9 @@ export const navLinks = [
 // ============================================================================
 export const footerLinks = {
   documentation: [
-    { title: "Quick Start Guide", href: "/quick-start" },
-    { title: "Guides & Tutorials", href: "/guides" },
-    { title: "FAQ", href: "/faq" },
-    { title: "VPS & Hardware", href: "/resources" },
+    { title: "Quick Start", href: "/quick-start" },
+    { title: "Guides", href: "/guides" },
+    { title: "Troubleshooting", href: "/oom" },
   ],
   official: [
     {
