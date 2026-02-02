@@ -28,6 +28,11 @@ export default {
           secondary: "rgba(255, 255, 255, 0.7)",
           tertiary: "rgba(255, 255, 255, 0.5)",
         },
+        // Terminal colors - GitHub dark theme
+        terminal: {
+          bg: "#0d1117",
+          header: "#161b22",
+        },
       },
       fontFamily: {
         sans: [

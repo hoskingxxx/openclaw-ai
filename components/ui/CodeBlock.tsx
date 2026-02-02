@@ -22,7 +22,7 @@ export function CodeBlock({ title, code, language = "bash", onCopy }: CodeBlockP
   return (
     <div className="glass-card overflow-hidden">
       {title && (
-        <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 sticky top-0 bg-[#0d1117] z-10">
+        <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 sticky top-0 bg-terminal-bg z-10">
           <span className="text-sm text-text-secondary">{title}</span>
           <button
             onClick={handleCopy}

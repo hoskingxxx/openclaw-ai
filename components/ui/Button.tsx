@@ -24,7 +24,7 @@ export function Button({
     lg: "px-8 py-4 text-lg",
   };
   const variantStyles = {
-    primary: "bg-[#FF4500] hover:bg-[#FF5722] text-white shadow-md hover:shadow-lg",
+    primary: "bg-brand-primary hover:bg-brand-hover text-white shadow-md hover:shadow-lg",
     secondary: "bg-background-tertiary hover:bg-background-elevated text-text-primary border border-white/10",
     ghost: "text-text-secondary hover:text-text-primary hover:bg-white/5",
   };

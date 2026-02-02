@@ -42,8 +42,8 @@ export default function HomePage() {
           </div>
 
           <div className="glass-card p-6 mb-6">
-            <div className="bg-[#0d1117] rounded-lg overflow-hidden border border-brand-primary/30">
-              <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/10">
+            <div className="bg-terminal-bg rounded-lg overflow-hidden border border-brand-primary/30">
+              <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
                 <div className="w-3 h-3 rounded-full bg-green-500" />

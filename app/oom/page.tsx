@@ -55,8 +55,8 @@ export default function OOMPage() {
             </h2>
 
             {/* Real Crash Log */}
-            <div className="bg-[#0d1117] rounded-lg overflow-hidden border border-red-500/30 mb-6">
-              <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/10">
+            <div className="bg-terminal-bg rounded-lg overflow-hidden border border-red-500/30 mb-6">
+              <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
                 <div className="w-3 h-3 rounded-full bg-green-500" />
@@ -89,7 +89,7 @@ Traceback (most recent call last):
             {/* Shortest Fix */}
             <div className="glass-card p-6">
               <h3 className="text-lg font-semibold text-text-primary mb-4">Fix (Shortest Path)</h3>
-              <div className="bg-[#0d1117] rounded p-4 mb-4">
+              <div className="bg-terminal-bg rounded p-4 mb-4">
                 <pre className="text-sm text-green-400">
                   <code>ollama run deepseek-r1:8b</code>
                 </pre>
@@ -112,8 +112,8 @@ Traceback (most recent call last):
               Crash 2: MacBook Air M2 (16GB) + R1 8B - Usable but Slow
             </h2>
 
-            <div className="bg-[#0d1117] rounded-lg overflow-hidden border border-yellow-500/30 mb-6">
-              <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/10">
+            <div className="bg-terminal-bg rounded-lg overflow-hidden border border-yellow-500/30 mb-6">
+              <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
                 <div className="w-3 h-3 rounded-full bg-green-500" />
@@ -146,7 +146,7 @@ user@macbook ~$ # Response takes 40+ seconds to complete
               <p className="text-sm text-text-secondary mb-4">
                 For local Mac use, accept slow performance or rent cloud GPU:
               </p>
-              <div className="bg-[#0d1117] rounded p-4 mb-4">
+              <div className="bg-terminal-bg rounded p-4 mb-4">
                 <pre className="text-sm text-green-400">
                   <code># Rent A100 on Vultr for ~$0.80/hr
 # Or use DeepSeek API (cloud-based)</code>
@@ -167,8 +167,8 @@ user@macbook ~$ # Response takes 40+ seconds to complete
               Crash 3: System Hangs (Kernel Swap)
             </h2>
 
-            <div className="bg-[#0d1117] rounded-lg overflow-hidden border border-red-500/30 mb-6">
-              <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/10">
+            <div className="bg-terminal-bg rounded-lg overflow-hidden border border-red-500/30 mb-6">
+              <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
                 <div className="w-3 h-3 rounded-full bg-green-500" />
@@ -203,7 +203,7 @@ PID    COMMAND        %CPU  %MEM
               <p className="text-sm text-text-secondary mb-4">
                 Don't run large models on RAM-only systems. Use GPU or API:
               </p>
-              <div className="bg-[#0d1117] rounded p-4 mb-4">
+              <div className="bg-terminal-bg rounded p-4 mb-4">
                 <pre className="text-sm text-green-400">
                   <code># Use DeepSeek API instead
 LLM_BASE_URL="https://api.deepseek.com/v1"</code>

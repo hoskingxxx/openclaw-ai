@@ -53,8 +53,8 @@ export function Hero() {
             </span>
           </div>
 
-          <div className="bg-[#0d1117] rounded-lg overflow-hidden border border-red-500/30 shadow-xl">
-            <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/10">
+          <div className="bg-terminal-bg rounded-lg overflow-hidden border border-red-500/30 shadow-xl">
+            <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
               <div className="w-3 h-3 rounded-full bg-red-500" />
               <div className="w-3 h-3 rounded-full bg-yellow-500" />
               <div className="w-3 h-3 rounded-full bg-green-500" />

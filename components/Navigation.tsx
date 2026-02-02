@@ -58,7 +58,7 @@ export function Navigation() {
 
           {/* Mobile Navigation Menu */}
           {mobileMenuOpen && (
-            <div className="lg:hidden mt-4 pb-4 border-t border-white/10 pt-4 bg-[#1a1a1a] rounded-lg">
+            <div className="lg:hidden mt-4 pb-4 border-t border-white/10 pt-4 bg-background-primary rounded-lg">
               <div className="flex flex-col gap-1">
                 {navigation.map((item) => (
                   <Link
