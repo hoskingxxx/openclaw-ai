@@ -74,11 +74,25 @@ p, span, div, a, li, td, th, label, button {
 }
 
 /* Code blocks need special handling */
-code, pre, .code {
+pre {
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: pre;
+  border-radius: 0.5rem;
+}
+
+/* Inline code should wrap */
+code, .code {
   word-wrap: break-word;
   overflow-wrap: break-word;
-  word-break: break-all;
+  word-break: break-word;
   max-width: 100%;
+}
+
+/* Code blocks with pre should keep formatting */
+pre code {
+  word-break: normal;
+  white-space: pre;
 }
 
 /* 3. Mobile Padding - Minimum spacing */
