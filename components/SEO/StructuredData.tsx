@@ -43,7 +43,7 @@ export function SoftwareStructuredData() {
     author: {
       "@type": "Organization",
       name: "OpenClaw Community",
-      url: "https://github.com/openclaw",
+      url: "https://github.com/openclaw/openclaw",
     },
     license: "https://opensource.org/licenses/MIT",
     aggregateRating: {

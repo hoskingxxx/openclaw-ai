@@ -47,7 +47,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="https://github.com/endo-soft/OpenClaw"
+                  href="https://github.com/openclaw/openclaw"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-text-secondary hover:text-text-primary transition-colors flex items-center gap-2"
