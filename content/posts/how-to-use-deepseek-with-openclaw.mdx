@@ -90,12 +90,39 @@ This is where most guides lie by omission.
 
 ### DeepSeek R1 Is Not Lightweight
 
-| Model Variant | Approx VRAM Required | Reality |
-| :--- | :--- | :--- |
-| **R1 (Full Precision)** | 40GB+ | Will not run on consumer GPUs. |
-| **R1 (FP16)** | ~32GB | Crashes or OOM on almost everything. |
-| **R1 (8-bit)** | ~24GB | Barely usable on RTX 3090/4090, slow. |
-| **R1 (4-bit quantized)** | ~16GB | Runs, but reasoning is degraded. |
+<div className="overflow-x-auto my-6 rounded-lg border border-white/10">
+  <table className="w-full text-sm">
+    <thead>
+      <tr className="bg-white/5 border-b border-white/10">
+        <th className="px-4 py-3 text-left font-semibold text-white">Model Variant</th>
+        <th className="px-4 py-3 text-left font-semibold text-white">Approx VRAM Required</th>
+        <th className="px-4 py-3 text-left font-semibold text-white">Reality</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr className="border-b border-white/5">
+        <td className="px-4 py-3 text-white/90">R1 (Full Precision)</td>
+        <td className="px-4 py-3 text-white/90">40GB+</td>
+        <td className="px-4 py-3 text-white/90">Will not run on consumer GPUs.</td>
+      </tr>
+      <tr className="border-b border-white/5">
+        <td className="px-4 py-3 text-white/90">R1 (FP16)</td>
+        <td className="px-4 py-3 text-white/90">~32GB</td>
+        <td className="px-4 py-3 text-white/90">Crashes or OOM on almost everything.</td>
+      </tr>
+      <tr className="border-b border-white/5">
+        <td className="px-4 py-3 text-white/90">R1 (8-bit)</td>
+        <td className="px-4 py-3 text-white/90">~24GB</td>
+        <td className="px-4 py-3 text-white/90">Barely usable on RTX 3090/4090, slow.</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-white/90">R1 (4-bit quantized)</td>
+        <td className="px-4 py-3 text-white/90">~16GB</td>
+        <td className="px-4 py-3 text-white/90">Runs, but reasoning is degraded.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 ### The Brutal Truth
 

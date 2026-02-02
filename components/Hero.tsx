@@ -18,14 +18,14 @@ export function Hero() {
 
         {/* Main Title */}
         <h1 className="text-4xl md:text-6xl font-bold text-text-primary mb-6 leading-tight">
-          OpenClaw Local Setup
+          The Unofficial Guide to
           <br />
-          <span className="text-brand-primary">& DeepSeek R1 Guide</span>
+          <span className="text-brand-primary">OpenClaw + DeepSeek R1</span>
         </h1>
 
         {/* Subtitle */}
         <p className="text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
-          Community documentation for running OpenClaw agents locally. Zero API cost with DeepSeek/Ollama.
+          Battle-tested configs, hardware reality checks, and local deployment secrets. Stop breaking your setup.
         </p>
 
         {/* CTA Button Group */}
@@ -52,7 +52,7 @@ export function Hero() {
 {`# Install OpenClaw CLI
 npm install -g openclaw@latest
 
-# Initialize your agent
+# Initialize your agent (requires API key OR GPU)
 openclaw onboard`}
               </code>
             </pre>

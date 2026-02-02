@@ -349,15 +349,7 @@ Scope: data/ directory
 Operations: Clean null values, merge files
 Output: Processed summary.csv`,
   },
-  {
-    id: "seo-content",
-    title: "📝 SEO Content Generation",
-    icon: "seo-content",
-    template: `Goal: Batch generate SEO content
-Scope: Read keywords.txt
-Operations: Generate page draft for each keyword
-Output: markdown files`,
-  },
+  // SEO template removed - Reddit users hate SEO spam
   {
     id: "log-analysis",
     title: "🔍 Log Analysis",

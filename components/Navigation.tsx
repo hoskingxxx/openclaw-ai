@@ -30,7 +30,7 @@ export function Navigation() {
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-primary to-brand-hover flex items-center justify-center shadow-lg shadow-brand-primary/20">
                 <span className="text-white font-bold text-lg">🦞</span>
               </div>
-              <span className="text-lg font-semibold text-text-primary hidden sm:block">OpenClaw</span>
+              <span className="text-lg font-semibold text-text-primary hidden sm:block">OpenClaw Hub</span>
             </Link>
 
             {/* Desktop Navigation */}
