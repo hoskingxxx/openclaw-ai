@@ -92,15 +92,15 @@ export const faqs = [
     questions: [
       {
         q: "What is OpenClaw?",
-        a: "Not an App. OpenClaw is an open-source AI Agent framework / execution AI assistant that runs on your computer or server to execute real tasks, not chat.",
+        a: "Not an App. OpenClaw is an open-source AI Agent framework / execution AI assistant that runs on your computer or server to execute real tasks, not chat.\n\n**Real Talk:** It's basically a junior engineer with sudo privileges.",
       },
       {
         q: "What's the essential difference from ChatGPT / Claude?",
-        a: "In short: ChatGPT 'thinks', OpenClaw 'does'.\n\nChatGPT: Answers questions, gives advice\nOpenClaw: Reads files, runs commands, modifies code, executes workflows",
+        a: "In short: ChatGPT 'thinks', OpenClaw 'does'.\n\nChatGPT: Answers questions, gives advice\nOpenClaw: Reads files, runs commands, modifies code, executes workflows\n\n**Real Talk:** ChatGPT is a consultant. OpenClaw is an intern who actually does the work.",
       },
       {
         q: "Does OpenClaw have its own LLM?",
-        a: "No. It's a 'scheduler' that needs you to connect: OpenAI, Claude or local models.\n\n👉 It doesn't sell models, just makes models 'work'.",
+        a: "No. It's a 'scheduler' that needs you to connect: OpenAI, Claude or local models.\n\n👉 It doesn't sell models, just makes models 'work'.\n\n**Real Talk:** You're the DJ. OpenClaw is just the mixer.",
       },
       {
         q: "Does it support DeepSeek?",
@@ -113,15 +113,15 @@ export const faqs = [
     questions: [
       {
         q: "Do I need to know programming?",
-        a: "Basic use: No coding needed, but need basic logic\nAdvanced use: Knowing some command line/project structure helps\n\n👉 It's not 'zero barrier', but 'low barrier, high ceiling'.",
+        a: "Basic use: No coding needed, but need basic logic\nAdvanced use: Knowing some command line/project structure helps\n\n👉 It's not 'zero barrier', but 'low barrier, high ceiling'.\n\n**Real Talk:** If you don't know what `chmod +x` means, you're going to have a bad time.",
       },
       {
         q: "Can it run on Windows / Mac / Linux?",
-        a: "✅ Mac: Most friendly\n✅ Linux / Server: First choice for production\n⚠️ Windows: Usually via WSL2 (strongly recommended)",
+        a: "✅ Mac: Most friendly\n✅ Linux / Server: First choice for production\n⚠️ Windows: Usually via WSL2 (strongly recommended)\n\n**Real Talk:** Mac users suffer slowly (3.2 tokens/sec). Windows users suffer dramatically (WSL2 drama). Linux users just suffer.",
       },
       {
         q: "Can OpenClaw run continuously?",
-        a: "Yes. It can: run long-term, retry on failure, save intermediate state, stop by rules.\n\nThis is why it's called an autonomous agent.",
+        a: "Yes. It can: run long-term, retry on failure, save intermediate state, stop by rules.\n\nThis is why it's called an autonomous agent.\n\n**Real Talk:** That's also why it's called a 'security risk'. It doesn't know when to quit.",
       },
     ],
   },
@@ -134,7 +134,7 @@ export const faqs = [
       },
       {
         q: "Will it 'go rogue'?",
-        a: "If you give too many permissions, yes.\n\nOpenClaw's capabilities ≈ permissions you give\n\nCorrect approach: read-only by default, specify writable directories, block dangerous commands",
+        a: "If you give too many permissions, yes.\n\nOpenClaw's capabilities ≈ permissions you give\n\nCorrect approach: read-only by default, specify writable directories, block dangerous commands\n\n**Real Talk:** 'Going rogue' is just a fancy way of saying 'it did exactly what you told it to do, not what you meant'.",
       },
       {
         q: "Suitable for production?",

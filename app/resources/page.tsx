@@ -33,6 +33,9 @@ export default function ResourcesPage() {
           <p className="text-xl text-text-secondary mb-2">
             Choose your path — every wrong choice here costs you hours.
           </p>
+          <p className="text-sm text-text-tertiary font-mono mt-4">
+            This site exists because the official docs didn't warn us about the hardware reality.
+          </p>
         </section>
 
         {/* Decision Tree */}

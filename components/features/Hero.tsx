@@ -23,6 +23,13 @@ export function Hero() {
           The OpenClaw<br />Survival Guide
         </h1>
 
+        {/* Viral Slogan */}
+        <div className="mb-8 p-4 bg-brand-primary/10 border border-brand-primary/30 rounded-lg max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl font-mono text-brand-primary font-bold">
+            "If your model crashes silently, it's not a bug. It's physics."
+          </p>
+        </div>
+
         {/* Subtitle / Lead Text */}
         <p className="text-lg md:text-xl lg:text-2xl text-text-secondary mb-10 max-w-3xl mx-auto leading-relaxed">
           Battle-tested guides for running DeepSeek R1 locally.<br />

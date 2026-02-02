@@ -21,6 +21,13 @@ export default function DocsPage() {
       <main className="min-h-screen bg-background-primary">
         <div className="max-w-4xl mx-auto px-6 py-16">
 
+          {/* Survivor Warning Banner */}
+          <div className="mb-8 p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+            <p className="text-sm text-orange-200 font-mono text-center">
+              <strong>⚠️ Survivor Warning:</strong> This is the part everyone shows you. What they don't show you is what breaks after this.
+            </p>
+          </div>
+
           {/* Hero */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4 font-mono">
