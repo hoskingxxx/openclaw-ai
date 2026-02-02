@@ -5,11 +5,11 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Recommended Resources - VPS, API and Tools for OpenClaw",
-  description: "Curated recommendations for hardware, VPS, API services and tools to run OpenClaw. Honest reviews from actual users.",
+  title: "Resources - VPS, Hardware & API for OpenClaw",
+  description: "Hardware and hosting options for running OpenClaw with DeepSeek R1. Decision tree to help you choose.",
   openGraph: {
-    title: "Recommended Resources - VPS, API and Tools for OpenClaw",
-    description: "Curated recommendations for hardware, VPS, API services and tools to run OpenClaw.",
+    title: "Resources - VPS, Hardware & API for OpenClaw",
+    description: "Hardware and hosting options for running OpenClaw.",
     url: "https://openclaw-ai.org/resources",
   },
 };
@@ -25,320 +25,260 @@ export default function ResourcesPage() {
         </div>
 
         {/* Page Title */}
-        <section className="max-w-7xl mx-auto px-6 py-8">
+        <section className="max-w-4xl mx-auto px-6 py-8">
           <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-            Recommended Resources
+            Deployment Resources
           </h1>
           <p className="text-xl text-text-secondary mb-2">
-            Curated tools and services for running OpenClaw
+            Choose your path based on hardware and budget
           </p>
           <p className="text-sm text-text-tertiary">
-            Some links contain affiliate commissions, which help support this site 🙏
+            Some links contain affiliate commissions. All options listed have been tested.
           </p>
         </section>
 
-        {/* VPS Recommendations */}
-        <section className="max-w-7xl mx-auto px-6 py-12">
-          <div className="flex items-center gap-3 mb-8">
-            <span className="text-3xl">☁️</span>
-            <h2 className="text-2xl font-bold text-text-primary">VPS Server Recommendations</h2>
-            <span className="px-2 py-1 text-xs bg-brand-primary/20 text-brand-primary rounded">
-              Best for 24/7 Operation
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* VPS Card 1 */}
-            <div className="glass-card p-6 hover:border-brand-primary/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-text-primary mb-1">
-                    Vultr High Frequency
-                  </h3>
-                  <p className="text-sm text-text-tertiary">World's fastest cloud servers</p>
-                </div>
-                <span className="px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">
-                  Recommended
-                </span>
+        {/* Decision Tree */}
+        <section className="max-w-4xl mx-auto px-6 py-12">
+          <div className="glass-card p-8">
+            <h2 className="text-2xl font-bold text-text-primary mb-6">🌳 Decision Tree</h2>
+            <div className="space-y-4 text-text-secondary">
+              <p><strong className="text-white">Question 1:</strong> Do you have a GPU with 16GB+ VRAM?</p>
+              <div className="ml-4 space-y-2">
+                <p>→ <strong className="text-green-400">Yes:</strong> Run locally with Ollama (see Hardware section below)</p>
+                <p>→ <strong className="text-red-400">No:</strong> Go to Question 2</p>
               </div>
 
-              <ul className="space-y-2 text-sm text-text-secondary mb-6">
-                <li>✅ From $5/mo, hourly billing</li>
-                <li>✅ 3.7GHz CPU, excellent performance</li>
-                <li>✅ 25+ data centers worldwide</li>
-                <li>✅ 1Gbps network, unmetered bandwidth</li>
-              </ul>
+              <p className="mt-4"><strong className="text-white">Question 2:</strong> Can you spend $0.50/hour for cloud GPU?</p>
+              <div className="ml-4 space-y-2">
+                <p>→ <strong className="text-green-400">Yes:</strong> Rent a GPU (see VPS section below)</p>
+                <p>→ <strong className="text-red-400">No:</strong> Use quantized models or API services</p>
+              </div>
 
-              <div className="flex items-center justify-between">
+              <p className="mt-4"><strong className="text-white">Question 3:</strong> Do you need 24/7 operation?</p>
+              <div className="ml-4 space-y-2">
+                <p>→ <strong className="text-green-400">Yes:</strong> VPS or dedicated hardware</p>
+                <p>→ <strong className="text-red-400">No:</strong> Local machine may work</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* VPS Options */}
+        <section className="max-w-4xl mx-auto px-6 py-12">
+          <h2 className="text-2xl font-bold text-text-primary mb-6">☁️ Cloud GPU (VPS)</h2>
+          <p className="text-text-secondary mb-6">
+            For users who need on-demand GPU power without hardware investment.
+          </p>
+
+          <div className="space-y-4">
+            {/* Vultr */}
+            <div className="glass-card p-6">
+              <div className="flex justify-between items-start mb-4">
                 <div>
-                  <span className="text-2xl font-bold text-text-primary">$5</span>
-                  <span className="text-sm text-text-secondary">/mo starting</span>
+                  <h3 className="text-xl font-semibold text-text-primary">Vultr High Frequency GPU</h3>
                 </div>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-sm font-medium text-white mb-2">✓ Suitable for:</p>
+                <ul className="text-sm text-text-secondary ml-4">
+                  <li>• Testing and development</li>
+                  <li>• Short-term intensive tasks</li>
+                  <li>• Users who don't want to buy hardware</li>
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-sm font-medium text-white mb-2">✗ Not suitable for:</p>
+                <ul className="text-sm text-text-secondary ml-4">
+                  <li>• Long-term 24/7 operation (cost adds up)</li>
+                  <li>• Users with tight budgets</li>
+                </ul>
+              </div>
+
+              <div className="flex items-center justify-between mt-4">
+                <span className="text-text-secondary">From ~$0.50-0.80/hr (A100/A6000)</span>
                 <a
                   href="https://www.vultr.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white text-sm font-medium rounded-lg transition-colors"
+                  className="px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white text-sm font-medium rounded transition-colors"
                 >
-                  View Deal
-                </a>
-              </div>
-
-              <p className="text-xs text-text-tertiary mt-3">
-                🔥 New users get $100 credit
-              </p>
-            </div>
-
-            {/* VPS Card 2 */}
-            <div className="glass-card p-6 hover:border-brand-primary/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-text-primary mb-1">
-                    DigitalOcean
-                  </h3>
-                  <p className="text-sm text-text-tertiary">Developer favorite</p>
-                </div>
-              </div>
-
-              <ul className="space-y-2 text-sm text-text-secondary mb-6">
-                <li>✅ From $4/mo, simple & transparent</li>
-                <li>✅ One-click OpenClaw deployment</li>
-                <li>✅ Rich community tutorials</li>
-                <li>✅ Stable & reliable, years in operation</li>
-              </ul>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-2xl font-bold text-text-primary">$4</span>
-                  <span className="text-sm text-text-secondary">/mo starting</span>
-                </div>
-                <a
-                  href="https://www.digitalocean.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-background-tertiary hover:bg-background-elevated text-text-primary text-sm font-medium rounded-lg border border-white/10 transition-colors"
-                >
-                  View Details
-                </a>
-              </div>
-            </div>
-
-            {/* VPS Card 3 */}
-            <div className="glass-card p-6 hover:border-brand-primary/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-text-primary mb-1">
-                    Contabo
-                  </h3>
-                  <p className="text-sm text-text-tertiary">Best for large memory</p>
-                </div>
-                <span className="px-2 py-1 text-xs bg-purple-500/20 text-purple-400 rounded">
-                  High Spec
-                </span>
-              </div>
-
-              <ul className="space-y-2 text-sm text-text-secondary mb-6">
-                <li>✅ From €6.99/mo, huge memory</li>
-                <li>✅ 8GB RAM minimum</li>
-                <li>✅ Ideal for running local LLMs</li>
-                <li>✅ German datacenter, strong privacy</li>
-              </ul>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-2xl font-bold text-text-primary">€6.99</span>
-                  <span className="text-sm text-text-secondary">/mo starting</span>
-                </div>
-                <a
-                  href="https://contabo.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-background-tertiary hover:bg-background-elevated text-text-primary text-sm font-medium rounded-lg border border-white/10 transition-colors"
-                >
-                  View Details
+                  Visit Vultr
                 </a>
               </div>
             </div>
           </div>
         </section>
 
-        {/* API Recommendations */}
-        <section className="max-w-7xl mx-auto px-6 py-12">
-          <div className="flex items-center gap-3 mb-8">
-            <span className="text-3xl">🔑</span>
-            <h2 className="text-2xl font-bold text-text-primary">API Service Recommendations</h2>
-            <span className="px-2 py-1 text-xs bg-brand-primary/20 text-brand-primary rounded">
-              Model Access
-            </span>
-          </div>
+        {/* Hardware Options */}
+        <section className="max-w-4xl mx-auto px-6 py-12">
+          <h2 className="text-2xl font-bold text-text-primary mb-6">💻 Local Hardware</h2>
+          <p className="text-text-secondary mb-6">
+            For users who prefer one-time hardware cost and privacy.
+          </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* API Card 1 */}
-            <div className="glass-card p-6 hover:border-brand-primary/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-text-primary mb-1">
-                    DeepSeek Official
-                  </h3>
-                  <p className="text-sm text-text-tertiary">Cost-effective option</p>
-                </div>
-                <span className="px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">
-                  Recommended
-                </span>
+          <div className="space-y-4">
+            {/* Mac Mini */}
+            <div className="glass-card p-6">
+              <h3 className="text-xl font-semibold text-text-primary mb-4">Mac Mini (M4/M4 Pro)</h3>
+
+              <div className="mb-4">
+                <p className="text-sm font-medium text-white mb-2">✓ Suitable for:</p>
+                <ul className="text-sm text-text-secondary ml-4">
+                  <li>• 24/7 operation (low power, silent)</li>
+                  <li>• Running quantized models (7B-14B)</li>
+                  <li>• Users who want always-on availability</li>
+                </ul>
               </div>
 
-              <ul className="space-y-2 text-sm text-text-secondary mb-6">
-                <li>✅ New users get 5 million tokens</li>
-                <li>✅ R1 reasoning matches GPT-4</li>
-                <li>✅ 1/10th the price of Claude</li>
-                <li>✅ Supports function calling</li>
-              </ul>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-2xl font-bold text-text-primary">Free</span>
-                  <span className="text-sm text-text-secondary">generous credits</span>
-                </div>
-                <a
-                  href="https://www.deepseek.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white text-sm font-medium rounded-lg transition-colors"
-                >
-                  Sign Up Now
-                </a>
-              </div>
-            </div>
-
-            {/* API Card 2 */}
-            <div className="glass-card p-6 hover:border-brand-primary/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-text-primary mb-1">
-                    Anthropic Claude
-                  </h3>
-                  <p className="text-sm text-text-tertiary">Strongest reasoning</p>
-                </div>
+              <div className="mb-4">
+                <p className="text-sm font-medium text-white mb-2">✗ Not suitable for:</p>
+                <ul className="text-sm text-text-secondary ml-4">
+                  <li>• Running full 67B models (requires more VRAM)</li>
+                  <li>• Users who need maximum speed</li>
+                </ul>
               </div>
 
-              <ul className="space-y-2 text-sm text-text-secondary mb-6">
-                <li>✅ Opus 4.5 is currently strongest</li>
-                <li>✅ 200K token context window</li>
-                <li>✅ Strong prompt injection resistance</li>
-                <li>✅ Ideal for complex tasks</li>
-              </ul>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-2xl font-bold text-text-primary">$15</span>
-                  <span className="text-sm text-text-secondary">/million tokens</span>
-                </div>
-                <a
-                  href="https://www.anthropic.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-background-tertiary hover:bg-background-elevated text-text-primary text-sm font-medium rounded-lg border border-white/10 transition-colors"
-                >
-                  Official Site
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Hardware Recommendations */}
-        <section className="max-w-7xl mx-auto px-6 py-12">
-          <div className="flex items-center gap-3 mb-8">
-            <span className="text-3xl">💻</span>
-            <h2 className="text-2xl font-bold text-text-primary">Hardware Recommendations</h2>
-            <span className="px-2 py-1 text-xs bg-brand-primary/20 text-brand-primary rounded">
-              Local Operation
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Hardware Card 1 */}
-            <div className="glass-card p-6 hover:border-brand-primary/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-text-primary mb-1">
-                    Mac Mini M4
-                  </h3>
-                  <p className="text-sm text-text-tertiary">Best choice for local AI</p>
-                </div>
-                <span className="px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">
-                  Recommended
-                </span>
-              </div>
-
-              <ul className="space-y-2 text-sm text-text-secondary mb-6">
-                <li>✅ 16GB unified memory minimum</li>
-                <li>✅ Silent operation, 24/7 always-on</li>
-                <li>✅ Low power consumption, minimal electricity cost</li>
-                <li>✅ Good compatibility with Ollama + DeepSeek</li>
-              </ul>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-2xl font-bold text-text-primary">$449</span>
-                  <span className="text-sm text-text-secondary">starting</span>
-                </div>
+              <div className="flex items-center justify-between mt-4">
+                <span className="text-text-secondary">From $449 (16GB RAM minimum)</span>
                 <a
                   href="https://www.apple.com/mac-mini/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white text-sm font-medium rounded-lg transition-colors"
+                  className="px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white text-sm font-medium rounded transition-colors"
                 >
-                  View Deal
+                  Apple Store
                 </a>
               </div>
             </div>
 
-            {/* Hardware Card 2 */}
-            <div className="glass-card p-6 hover:border-brand-primary/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-text-primary mb-1">
-                    NVIDIA 4060 Ti 16GB
-                  </h3>
-                  <p className="text-sm text-text-tertiary">Top choice for Windows</p>
-                </div>
+            {/* NVIDIA GPU */}
+            <div className="glass-card p-6">
+              <h3 className="text-xl font-semibold text-text-primary mb-4">NVIDIA GPU (4060 Ti 16GB+)</h3>
+
+              <div className="mb-4">
+                <p className="text-sm font-medium text-white mb-2">✓ Suitable for:</p>
+                <ul className="text-sm text-text-secondary ml-4">
+                  <li>• Windows/Linux users</li>
+                  <li>• Running larger models (up to 30B+)</li>
+                  <li>• Users who need CUDA acceleration</li>
+                </ul>
               </div>
 
-              <ul className="space-y-2 text-sm text-text-secondary mb-6">
-                <li>✅ 16GB VRAM, runs large models</li>
-                <li>✅ CUDA acceleration support</li>
-                <li>✅ Great value for money</li>
-                <li>✅ Can run Llama 3 70B</li>
-              </ul>
+              <div className="mb-4">
+                <p className="text-sm font-medium text-white mb-2">✗ Not suitable for:</p>
+                <ul className="text-sm text-text-secondary ml-4">
+                  <li>• Users with <16GB VRAM</li>
+                  <li>• Mac users (no CUDA support)</li>
+                </ul>
+              </div>
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-2xl font-bold text-text-primary">$320</span>
-                  <span className="text-sm text-text-secondary">starting</span>
-                </div>
+              <div className="flex items-center justify-between mt-4">
+                <span className="text-text-secondary">From ~$320 (16GB VRAM minimum)</span>
                 <a
                   href="https://www.nvidia.com/en-us/geforce/graphics-cards/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-background-tertiary hover:bg-background-elevated text-text-primary text-sm font-medium rounded-lg border border-white/10 transition-colors"
+                  className="px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white text-sm font-medium rounded transition-colors"
                 >
-                  View Details
+                  NVIDIA
                 </a>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Disclaimer */}
-        <section className="max-w-7xl mx-auto px-6 py-12">
-          <div className="glass-card p-6 bg-background-tertiary/30">
-            <h3 className="text-lg font-semibold text-text-primary mb-3">📝 Disclaimer</h3>
-            <p className="text-sm text-text-secondary leading-relaxed">
-              Some links on this page contain affiliate commissions. If you purchase through these links, we may earn a small commission,
-              which does not increase your cost. All recommendations are based on our actual usage experience,
-              and we only recommend products and services that provide genuine value.
+        {/* API Services */}
+        <section className="max-w-4xl mx-auto px-6 py-12">
+          <h2 className="text-2xl font-bold text-text-primary mb-6">🔑 API Services</h2>
+          <p className="text-text-secondary mb-6">
+            For users who prefer managed model access over local deployment.
+          </p>
+
+          <div className="space-y-4">
+            {/* DeepSeek */}
+            <div className="glass-card p-6">
+              <h3 className="text-xl font-semibold text-text-primary mb-4">DeepSeek API</h3>
+
+              <div className="mb-4">
+                <p className="text-sm font-medium text-white mb-2">✓ Suitable for:</p>
+                <ul className="text-sm text-text-secondary ml-4">
+                  <li>• Users wanting R1 reasoning without hardware</li>
+                  <li>• Development and testing</li>
+                  <li>• Cost-conscious users (vs Claude/GPT-4)</li>
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-sm font-medium text-white mb-2">✗ Not suitable for:</p>
+                <ul className="text-sm text-text-secondary ml-4">
+                  <li>• Users who require complete data privacy</li>
+                  <li>• High-volume production (API costs add up)</li>
+                </ul>
+              </div>
+
+              <div className="flex items-center justify-between mt-4">
+                <span className="text-text-secondary">Pay-per-use pricing</span>
+                <a
+                  href="https://www.deepseek.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white text-sm font-medium rounded transition-colors"
+                >
+                  DeepSeek
+                </a>
+              </div>
+            </div>
+
+            {/* Anthropic */}
+            <div className="glass-card p-6">
+              <h3 className="text-xl font-semibold text-text-primary mb-4">Anthropic Claude</h3>
+
+              <div className="mb-4">
+                <p className="text-sm font-medium text-white mb-2">✓ Suitable for:</p>
+                <ul className="text-sm text-text-secondary ml-4">
+                  <li>• Complex reasoning tasks</li>
+                  <li>• Production workloads requiring reliability</li>
+                  <li>• Users who need strong prompt-injection resistance</li>
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-sm font-medium text-white mb-2">✗ Not suitable for:</p>
+                <ul className="text-sm text-text-secondary ml-4">
+                  <li>• Budget-constrained users</li>
+                  <li>• Simple tasks where cheaper models suffice</li>
+                </ul>
+              </div>
+
+              <div className="flex items-center justify-between mt-4">
+                <span className="text-text-secondary">Higher per-token cost</span>
+                <a
+                  href="https://www.anthropic.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white text-sm font-medium rounded transition-colors"
+                >
+                  Anthropic
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* OOM Error Link */}
+        <section className="max-w-4xl mx-auto px-6 py-12">
+          <div className="glass-card p-6 text-center">
+            <p className="text-text-secondary mb-4">
+              Getting CUDA out of memory errors?
             </p>
+            <Link
+              href="/oom"
+              className="inline-block px-6 py-3 bg-brand-primary hover:bg-brand-hover text-white font-medium rounded transition-colors"
+            >
+              View OOM Error Solutions →
+            </Link>
           </div>
         </section>
       </main>

@@ -34,7 +34,7 @@ export function Hero() {
           <Button variant="primary" size="lg" href="/blog/how-to-use-deepseek-with-openclaw">
             Read the DeepSeek R1 Guide
           </Button>
-          <Button variant="secondary" size="lg" href="#hardware-reality">
+          <Button variant="secondary" size="lg" href="/oom">
             View the OOM Error Log
           </Button>
         </div>
@@ -69,7 +69,7 @@ Traceback (most recent call last):
             </pre>
           </div>
           <p className="text-xs text-text-tertiary mt-3 font-mono">
-            Log captured from a standard RTX 3070 setup running R1. <Link href="/blog/how-to-use-deepseek-with-openclaw" className="text-brand-primary hover:text-brand-hover underline">Read the fix →</Link>
+            Log captured from a standard RTX 3070 setup running R1. <Link href="/oom" className="text-brand-primary hover:text-brand-hover underline">View OOM solutions →</Link>
           </p>
         </div>
 

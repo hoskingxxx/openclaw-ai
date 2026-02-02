@@ -68,9 +68,11 @@ We use the OpenAI-compatible mode because it is the most stable method right now
 # .env configuration
 LLM_PROVIDER="openai"
 LLM_BASE_URL="https://api.deepseek.com/v1"
-LLM_API_KEY="sk-your-key-here"
+LLM_API_KEY="ds-your-api-key-here"
 LLM_MODEL="deepseek-reasoner" # Uses R1 (Chain of Thought)
 ```
+
+> **🔒 SECURITY WARNING:** Never commit `.env` files to git. Keep API keys in your local `.env` file only. Add `.env` to `.gitignore`.
 
 ---
 
