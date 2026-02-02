@@ -3,7 +3,6 @@ import { Hero } from "@/components/features/Hero";
 import { Footer } from "@/components/features/Footer";
 import { Navigation } from "@/components/features/Navigation";
 import { Button } from "@/components/ui/Button";
-import { installSteps } from "@/lib/content";
 
 function PromoBanner() {
   return (
@@ -67,28 +66,22 @@ ollama run deepseek-r1:8b`}
               href="/guides/how-to-use-deepseek-with-openclaw"
               className="text-sm text-brand-primary hover:text-brand-hover underline font-mono"
             >
-              Read the full Hardware Reality Check →
+              Hardware Reality Check →
             </Link>
           </div>
         </section>
 
-        {/* Use Cases Section - REMOVED (marketing fluff) */}
-
-        {/* Quick Start Section - REMOVED (marketing fluff) */}
-
-        {/* Universal Command Template Section - REMOVED (marketing fluff) */}
-
-        {/* Simple Next Step - Direct to Guide */}
+        {/* Final CTA */}
         <section className="max-w-4xl mx-auto px-6 py-20">
           <div className="glass-card p-8 text-center">
             <h2 className="text-2xl font-mono text-text-primary mb-4">
               Ready to break things?
             </h2>
             <p className="text-text-secondary mb-6">
-              Read the guide before you waste hours debugging hardware issues.
+              Deploy now or waste hours debugging hardware issues.
             </p>
             <Button href="/guides/how-to-use-deepseek-with-openclaw" className="font-mono text-sm">
-              Read the Survival Guide →
+              Deploy Now →
             </Button>
           </div>
         </section>

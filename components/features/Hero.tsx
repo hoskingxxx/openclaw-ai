@@ -11,36 +11,23 @@ export function Hero() {
 
       {/* Main Content */}
       <div className="hero-content relative z-10 max-w-4xl mx-auto text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-muted/30 border border-brand-primary/30 mb-8">
-          <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-          <span className="text-sm text-text-primary">Open Source AI Agent Framework</span>
-        </div>
-
         {/* Main Title */}
         <h1 className="text-4xl md:text-6xl font-bold text-text-primary mb-6 leading-tight">
-          OpenClaw is powerful.
-          <br />
-          <span className="text-brand-primary">It's also annoying.</span>
+          DeepSeek R1: The Survival Guide
         </h1>
 
         {/* Subtitle */}
         <p className="text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
-          <span className="block mb-2 text-brand-primary font-mono text-sm">
-            ⚠️ NOT A BENCHMARK SITE. NOT A PRODUCT PAGE.
-          </span>
-          These are just my personal notes from broken setups.
-          If you are looking for "10x Productivity", please leave.
-          If you are looking for why your R1 crashed with <code>&quot;CUDA OOM&quot;</code>, you are in the right place.
+          Everything here comes from things that actually broke.
         </p>
 
         {/* CTA Button Group */}
         <div className="flex flex-col sm:flex-row gap-6 sm:gap-4 justify-center items-center w-full sm:w-auto">
           <Button variant="primary" size="lg" href="/guides/how-to-use-deepseek-with-openclaw">
-            Read the DeepSeek R1 Guide
+            Fix DeepSeek R1 on 8GB GPUs
           </Button>
           <Button variant="secondary" size="lg" href="/oom">
-            View the OOM Error Log
+            See why it crashed
           </Button>
         </div>
 
@@ -74,28 +61,9 @@ Traceback (most recent call last):
             </pre>
           </div>
           <p className="text-xs text-text-tertiary mt-3 font-mono">
-            Log captured from a standard RTX 3070 setup running R1. <Link href="/oom" className="text-brand-primary hover:text-brand-hover underline">View OOM solutions →</Link>
+            Log captured from a standard RTX 3070 setup running R1. <Link href="/oom" className="text-brand-primary hover:text-brand-hover underline">See why it crashed →</Link>
           </p>
         </div>
-
-        {/* Core Features Preview - Hidden for now */}
-        {/* <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-          <div className="glass-card p-4 rounded-lg">
-            <div className="text-brand-primary text-2xl mb-2">⚡</div>
-            <h4 className="text-text-primary font-semibold mb-1">Local Execution</h4>
-            <p className="text-sm text-text-secondary">Deploy on your own hardware, private and secure</p>
-          </div>
-          <div className="glass-card p-4 rounded-lg">
-            <div className="text-brand-primary text-2xl mb-2">🎯</div>
-            <h4 className="text-text-primary font-semibold mb-1">Goal-Driven</h4>
-            <p className="text-sm text-text-secondary">Give work requirements, it breaks down and executes</p>
-          </div>
-          <div className="glass-card p-4 rounded-lg">
-            <div className="text-brand-primary text-2xl mb-2">🔌</div>
-            <h4 className="text-text-primary font-semibold mb-1">Multi-Platform</h4>
-            <p className="text-sm text-text-secondary">WhatsApp, Telegram, Slack, Discord and more</p>
-          </div>
-        </div> */}
       </div>
     </section>
   );
