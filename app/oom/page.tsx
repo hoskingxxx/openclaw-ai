@@ -1,5 +1,5 @@
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+import { Navigation } from "@/components/features/Navigation";
+import { Footer } from "@/components/features/Footer";
 import Link from "next/link";
 import type { Metadata } from "next";
 

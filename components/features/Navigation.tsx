@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { navigation } from "@/lib/content";
-import { MenuIcon, XIcon } from "./icons";
+import { MenuIcon, XIcon } from "@/components/icons";
 
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

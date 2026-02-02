@@ -1,7 +1,7 @@
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { NextStepCard } from "@/components/NextSteps";
+import { Navigation } from "@/components/features/Navigation";
+import { Footer } from "@/components/features/Footer";
+import { Breadcrumbs } from "@/components/features/Breadcrumbs";
+import { NextStepCard } from "@/components/features/NextSteps";
 import { faqs } from "@/lib/content";
 import type { Metadata } from "next";
 

@@ -1,6 +1,6 @@
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Navigation } from "@/components/features/Navigation";
+import { Footer } from "@/components/features/Footer";
+import { Breadcrumbs } from "@/components/features/Breadcrumbs";
 import Link from "next/link";
 import type { Metadata } from "next";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronRightIcon } from "./icons";
+import { ChevronRightIcon } from "@/components/icons";
 
 interface TableOfContentsProps {
   items: Array<{

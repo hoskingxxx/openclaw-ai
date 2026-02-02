@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRightIcon } from "./icons";
+import { ArrowRightIcon } from "@/components/icons";
 
 interface NextStepProps {
   title: string;

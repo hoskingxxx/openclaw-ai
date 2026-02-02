@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Hero } from "@/components/Hero";
-import { Footer } from "@/components/Footer";
-import { Navigation } from "@/components/Navigation";
+import { Hero } from "@/components/features/Hero";
+import { Footer } from "@/components/features/Footer";
+import { Navigation } from "@/components/features/Navigation";
 import { installSteps } from "@/lib/content";
 
 function PromoBanner() {

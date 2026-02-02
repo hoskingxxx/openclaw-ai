@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { NextStepCard } from "@/components/NextSteps";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { NextStepCard } from "@/components/features/NextSteps";
+import { Breadcrumbs } from "@/components/features/Breadcrumbs";
 
 export default function NotFoundPage() {
   return (
