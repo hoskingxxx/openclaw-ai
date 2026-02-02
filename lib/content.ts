@@ -104,7 +104,11 @@ export const faqs = [
       },
       {
         q: "Does it support DeepSeek?",
-        a: "✅ Yes, it works well with DeepSeek R1 for local deployment.\n\n**Why DeepSeek + OpenClaw is a good combination**:\n- DeepSeek R1 runs locally, hardware dependent\n- Strong reasoning, suitable for complex task breakdown\n- Fully controllable privacy, data stays local\n- Suitable for 7×24 operation on Mac Mini or local servers\n\n**Config example (.env)**:\n```bash\n# Install Ollama & pull model\ncurl -fsSL https://ollama.com/install.sh | sh\nollama run deepseek-r1:8b\n\n# Configure OpenClaw (.env file)\nLLM_PROVIDER=\"ollama\"\nLLM_BASE_URL=\"http://localhost:11434/v1\"\nLLM_MODEL=\"deepseek-r1:8b\"\n```\n\n👉 Check the hardware requirements before running local models.",
+        a: "✅ Yes, it works well with DeepSeek R1 for local deployment.\n\n**Why DeepSeek + OpenClaw is a good combination**:\n- DeepSeek R1 runs locally, hardware dependent\n- Strong reasoning, suitable for complex task breakdown\n- Fully controllable privacy, data stays local\n- Suitable for 7×24 operation on Mac Mini or local servers\n\n**Config example (.env)**:\n```bash\n# Install Ollama & pull model\ncurl -fsSL https://ollama.com/install.sh | sh\nollama run deepseek-r1:8b\n\n# Configure OpenClaw (.env file)\nLLM_PROVIDER=\"ollama\"\nLLM_BASE_URL=\"http://localhost:11434/v1\"\nLLM_MODEL=\"deepseek-r1:8b\"\n```\n\n👉 Check the hardware requirements before running local models.\n\n**Real Talk:** You're the DJ. OpenClaw is just the mixer.",
+      },
+      {
+        q: "What is the relationship between OpenClaw and Ollama?",
+        a: "**Ollama is the engine; OpenClaw is the driver.**\n\nOllama runs the DeepSeek model (loads it into VRAM, handles inference). OpenClaw tells it what to do (reads files, runs commands, executes workflows).\n\nIf Ollama is down, OpenClaw is useless. If OpenClaw isn't running, Ollama is just a chatbot.\n\n**Analogy:** Ollama = Engine, OpenClaw = Driver. You need both to drive the car.\n\n**Real Talk:** Don't blame OpenClaw when Ollama crashes. That's like blaming Uber when your car breaks down.",
       },
     ],
   },

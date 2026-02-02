@@ -5,11 +5,11 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Troubleshooting - OpenClaw Crash Fixes",
-  description: "Real crash logs and tested fixes. CUDA OOM, system hangs, connection issues.",
+  title: "Troubleshooting - DeepSeek R1 Crash Fixes & OpenClaw OOM Solutions",
+  description: "Stop debugging DeepSeek R1 crashes. This battle-tested OpenClaw guide explains CUDA OOM errors, VRAM limits, and the fastest fixes that actually work.",
   openGraph: {
-    title: "Troubleshooting - OpenClaw Crash Fixes",
-    description: "Real crash logs and tested fixes.",
+    title: "Troubleshooting - DeepSeek R1 Crash Fixes",
+    description: "CUDA OOM, VRAM limits, and real crash logs.",
     url: "https://openclaw-ai.org/troubleshooting",
   },
 };
@@ -118,6 +118,96 @@ export default function TroubleshootingPage() {
             </p>
           </div>
 
+          {/* ============================================ */}
+          {/* SEO: VRAM Requirements Table (Featured Snippet) */}
+          {/* ============================================ */}
+          <section className="mb-16">
+            <h2 className="text-2xl font-bold text-text-primary mb-6">
+              DeepSeek R1 VRAM Requirements
+            </h2>
+            <p className="text-sm text-text-tertiary mb-4">
+              Before you crash, check if your GPU can handle the model. This is physics, not a bug.
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm glass-card">
+                <thead>
+                  <tr className="border-b border-white/10">
+                    <th className="text-left py-3 px-4 font-mono text-text-primary">Model Size</th>
+                    <th className="text-left py-3 px-4 font-mono text-text-primary">Min VRAM</th>
+                    <th className="text-left py-3 px-4 font-mono text-text-primary">Reality Check</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-white/5">
+                    <td className="py-3 px-4 font-mono text-text-secondary">R1 8B (Distill)</td>
+                    <td className="py-3 px-4 font-mono text-green-400">8-10 GB</td>
+                    <td className="py-3 px-4 text-text-secondary">✅ Works (Slow with long context)</td>
+                  </tr>
+                  <tr className="border-b border-white/5">
+                    <td className="py-3 px-4 font-mono text-text-secondary">R1 14B (Distill)</td>
+                    <td className="py-3 px-4 font-mono text-yellow-400">12-16 GB</td>
+                    <td className="py-3 px-4 text-text-secondary">⚠️ Barely usable (crashes at ~4k tokens)</td>
+                  </tr>
+                  <tr className="border-b border-white/5">
+                    <td className="py-3 px-4 font-mono text-text-secondary">R1 32B (Q4_K_M)</td>
+                    <td className="py-3 px-4 font-mono text-orange-400">24 GB+</td>
+                    <td className="py-3 px-4 text-text-secondary">😓 Painful (24GB crashes at ~6k tokens)</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-text-secondary">R1 67B / 70B</td>
+                    <td className="py-3 px-4 font-mono text-red-400">48 GB+</td>
+                    <td className="py-3 px-4 text-text-secondary">❌ Don't try (consumer GPUs can't handle it)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {/* ============================================ */}
+          {/* SEO: The Blame Matrix (Featured Snippet) */}
+          {/* ============================================ */}
+          <section className="mb-16">
+            <h2 className="text-2xl font-bold text-text-primary mb-6">
+              Why did it crash? (The Blame Matrix)
+            </h2>
+            <p className="text-sm text-text-tertiary mb-4">
+              Match your symptom to the cause. This saves you 4 hours of debugging.
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm glass-card">
+                <thead>
+                  <tr className="border-b border-white/10">
+                    <th className="text-left py-3 px-4 font-mono text-text-primary">Symptom</th>
+                    <th className="text-left py-3 px-4 font-mono text-text-primary">Likely Cause</th>
+                    <th className="text-left py-3 px-4 font-mono text-text-primary">Fix</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-white/5">
+                    <td className="py-3 px-4 font-mono text-text-secondary">OOM on startup</td>
+                    <td className="py-3 px-4 text-text-secondary">Model too large for VRAM</td>
+                    <td className="py-3 px-4 text-green-400">Use 8B Distilled / Quantized</td>
+                  </tr>
+                  <tr className="border-b border-white/5">
+                    <td className="py-3 px-4 font-mono text-text-secondary">Crash after 5-10 mins</td>
+                    <td className="py-3 px-4 text-text-secondary">Context window full (KV Cache)</td>
+                    <td className="py-3 px-4 text-green-400">Reduce <code className="text-text-tertiary">num_ctx</code> to 2048/4096</td>
+                  </tr>
+                  <tr className="border-b border-white/5">
+                    <td className="py-3 px-4 font-mono text-text-secondary">Connection Refused (port 11434)</td>
+                    <td className="py-3 px-4 text-text-secondary">Ollama daemon not running</td>
+                    <td className="py-3 px-4 text-green-400">Run <code className="text-text-tertiary">ollama serve</code></td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-text-secondary">System becomes unresponsive</td>
+                <td className="py-3 px-4 text-text-secondary">RAM swap death (no GPU)</td>
+                    <td className="py-3 px-4 text-green-400">Buy GPU / Use Cloud API</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
           {/* Crash Fixes List */}
           <div className="space-y-6 mb-16">
             {crashFixes.map((fix) => (
@@ -204,6 +294,16 @@ export default function TroubleshootingPage() {
               </div>
             ))}
           </div>
+
+          {/* ============================================ */}
+          {/* SEO: Error Code Variations (Long-tail Search) */}
+          {/* ============================================ */}
+          <section className="mb-16 p-6 bg-background-tertiary/30 rounded-lg border border-white/5">
+            <h3 className="text-sm font-mono text-text-tertiary mb-3">Common Error Variations (SEO Block)</h3>
+            <p className="text-xs text-text-tertiary leading-relaxed">
+              <strong>Also searches for:</strong> MPS out of memory (Mac), Allocated 0 bytes, segmentation fault core dumped, Ollama model requires more VRAM, CUDA error: out of memory, killed (OOM), torch.cuda.OutOfMemoryError: tried to allocate, can't allocate memory, GPU memory exhausted.
+            </p>
+          </section>
 
           {/* Bottom CTA - Soft */}
           <div className="glass-card p-8 text-center">

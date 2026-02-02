@@ -6,11 +6,17 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://openclaw-ai.org"),
   title: "Running DeepSeek R1 Locally: The Unofficial OpenClaw Guide",
-  description: "Battle-tested configurations, hardware reality checks, and OOM error logs. Stop burning your GPU.",
+  description: "Stop debugging DeepSeek R1 crashes. This battle-tested OpenClaw guide explains CUDA OOM errors, VRAM limits, and the fastest fixes that actually work.",
   keywords: [
     "OpenClaw",
-    "Clawdbot",
-    "Moltbot",
+    "DeepSeek R1",
+    "DeepSeek R1 crash",
+    "CUDA OOM",
+    "OpenClaw OOM",
+    "VRAM requirements",
+    "Ollama crash",
+    "torch.cuda.OutOfMemoryError",
+    "MPS out of memory",
     "AI Agent",
     "Local AI Agent",
     "DeepSeek R1 Local",
@@ -21,11 +27,6 @@ export const metadata: Metadata = {
     "ChatGPT",
     "Local AI",
     "AI Automation",
-    "Lane-based queue",
-    "WhatsApp AI",
-    "Telegram AI",
-    "Slack AI",
-    "AI Programmer",
     "Private AI",
     "Local inference",
   ].join(", "),
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://openclaw-ai.org",
     title: "Running DeepSeek R1 Locally: The Unofficial OpenClaw Guide",
-    description: "Battle-tested configurations, hardware reality checks, and OOM error logs. Stop burning your GPU.",
+    description: "Stop debugging DeepSeek R1 crashes. This battle-tested OpenClaw guide explains CUDA OOM errors, VRAM limits, and the fastest fixes that actually work.",
     siteName: "OpenClaw Hub",
     images: [
       {
@@ -55,7 +56,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Running DeepSeek R1 Locally: The Unofficial OpenClaw Guide",
-    description: "Battle-tested configurations, hardware reality checks, and OOM error logs. Stop burning your GPU.",
+    description: "Stop debugging DeepSeek R1 crashes. This battle-tested OpenClaw guide explains CUDA OOM errors, VRAM limits, and the fastest fixes that actually work.",
     images: ["/og-image.png"],
   },
 
