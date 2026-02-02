@@ -84,6 +84,38 @@ Most "OpenClaw is broken" complaints are actually hardware mismatches.
 
 ---
 
+## Option A: The "Poor Man's" Fix (Local Quantization)
+
+If you absolutely refuse to spend money or use the cloud, you **can** run DeepSeek R1 locally on a MacBook or consumer GPU.
+
+**The catch?** You have to use the "Distilled" or heavily quantized versions. You are trading intelligence for existence.
+
+### Step 1: Use Ollama (The Easiest Way)
+
+Instead of fighting with Python venvs, just use Ollama to run a 4-bit quantized version.
+
+```bash
+# 1. Download & Run the 7B or 8B Distill version (Fits in 8GB VRAM)
+ollama run deepseek-r1:8b
+
+# OR if you are really RAM-starved (Fits in <4GB VRAM, but very "dumb")
+ollama run deepseek-r1:1.5b
+```
+
+### Step 2: Point OpenClaw to Ollama
+
+```bash
+# .env configuration for Ollama
+LLM_PROVIDER="openai"
+LLM_BASE_URL="http://localhost:11434/v1"
+LLM_API_KEY="ollama"  # Dummy value, Ollama doesn't check
+LLM_MODEL="deepseek-r1:8b"  # Or :1.5b if you're desperate
+```
+
+> **Reality Check:** The 1.5B version will work, but don't expect complex reasoning. It's good enough for simple file operations and basic tasks. The 8B version is the minimum for anything "smart".
+
+---
+
 ## Hardware Reality Check (The "Money" Section)
 
 This is where most guides lie by omission.
