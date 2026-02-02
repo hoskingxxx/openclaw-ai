@@ -1,73 +1,63 @@
+import Link from "next/link";
+import { Navigation } from "@/components/features/Navigation";
+import { Footer } from "@/components/features/Footer";
 import { Button } from "@/components/ui/Button";
-import { NextStepCard } from "@/components/features/NextSteps";
-import { Breadcrumbs } from "@/components/features/Breadcrumbs";
 
 export default function NotFoundPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-6">
-      <div className="text-center max-w-2xl">
-        {/* 404 Graphic */}
-        <div className="text-8xl md:text-9xl font-bold text-brand-primary mb-6">404</div>
+    <>
+      <Navigation />
+      <main className="min-h-screen flex items-center justify-center px-6">
+        <div className="text-center max-w-2xl">
+          {/* 404 Graphic */}
+          <div className="text-8xl md:text-9xl font-bold text-red-500 mb-6 font-mono">404</div>
 
-        {/* Breadcrumbs */}
-        <Breadcrumbs items={[{ label: "Page Not Found", href: "/404" }]} />
+          {/* Main Title */}
+          <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-4 font-mono">
+            You ventured too deep.
+          </h1>
 
-        {/* Main Title */}
-        <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
-          Oops, Page Not Found
-        </h1>
+          {/* Description */}
+          <p className="text-lg text-text-secondary mb-8">
+            This page crashed (or never existed).<br />
+            <span className="text-text-tertiary">That's what happens when you ignore the compatibility matrix.</span>
+          </p>
 
-        {/* Description */}
-        <p className="text-lg text-text-secondary mb-8">
-          You've stumbled into the OpenClaw digital void.
-          <br />
-          Don't worry, let me help you find your way back.
-        </p>
+          {/* Crash Log Style Box */}
+          <div className="bg-terminal-bg rounded-lg overflow-hidden border border-red-500/30 mb-8">
+            <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+              <span className="ml-2 text-xs text-gray-400 font-mono">error.log</span>
+            </div>
+            <pre className="p-4 overflow-x-auto">
+              <code className="text-sm text-red-300 font-mono leading-relaxed">
+{`[2026-02-02] ERROR: Page not found
+  at /not-found (line 404)
+[WARN] This route was tested on Ubuntu 22.04 / RTX 3090 24GB
+[FATAL] Your journey ends here. Return to safety.`}
+              </code>
+            </pre>
+          </div>
 
-        {/* Search Suggestions */}
-        <div className="glass-card p-6 mb-8 text-left">
-          <h3 className="text-lg font-semibold text-text-primary mb-4">You can try:</h3>
-          <ul className="space-y-3 text-text-secondary">
-            <li className="flex items-center gap-3">
-              <span className="text-brand-primary">•</span>
-              <span>Check if the URL is spelled correctly</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <span className="text-brand-primary">•</span>
-              <span>Use the navigation to explore our content</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <span className="text-brand-primary">•</span>
-              <span>Check the <a href="/guides" className="text-brand-primary hover:underline">Guides</a> or <a href="/faq" className="text-brand-primary hover:underline">FAQ</a></span>
-            </li>
-          </ul>
+          {/* Return Button */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button variant="primary" href="/">
+              Return to Safety (/)
+            </Button>
+            <Button variant="secondary" href="/docs">
+              Start Setup (Survivor Mode)
+            </Button>
+          </div>
+
+          {/* Survival Tip */}
+          <p className="text-xs text-text-tertiary font-mono mt-8">
+            💡 Pro tip: Bookmark the main pages. You'll need them after your next OOM.
+          </p>
         </div>
-
-        {/* Return Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button variant="primary" href="/">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            Back to Home
-          </Button>
-          <Button variant="secondary" href="/guides">
-            <span className="text-xl">📖</span>
-            View Guides
-          </Button>
-        </div>
-      </div>
-
-      {/* Next Step */}
-      <div className="mt-16">
-        <NextStepCard
-          icon="🎯"
-          title="Start with Quick Start Guide"
-          description="If you're new here, check out our quick start guide to deploy OpenClaw in 5 minutes."
-          href="/quick-start"
-          linkText="View Quick Start Guide"
-        />
-      </div>
-    </div>
+      </main>
+      <Footer />
+    </>
   );
 }
