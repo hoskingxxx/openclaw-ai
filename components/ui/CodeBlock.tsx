@@ -26,7 +26,7 @@ export function CodeBlock({ title, code, language = "bash", onCopy }: CodeBlockP
           <span className="text-sm text-text-secondary">{title}</span>
           <button
             onClick={handleCopy}
-            className="text-xs text-text-secondary hover:text-text-primary transition-colors"
+            className="px-3 py-2 min-h-[44px] min-w-[44px] text-xs text-text-secondary hover:text-text-primary hover:bg-white/5 rounded-md transition-colors active:scale-95"
           >
             {copied ? "✓ Copied" : "📋 Copy"}
           </button>

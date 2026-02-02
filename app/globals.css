@@ -164,6 +164,7 @@ a {
   font-weight: 600;
   color: #ffffff;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
 }
 
 .prose th:last-child {
@@ -175,6 +176,7 @@ a {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
 }
 
 .prose td:last-child {
