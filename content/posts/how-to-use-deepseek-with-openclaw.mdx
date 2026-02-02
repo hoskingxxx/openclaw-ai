@@ -235,6 +235,29 @@ If you value your time, this is the point where most people switch.
 
 ---
 
+## How I Know This
+
+**Tested on:**
+- macOS 14.5 (MacBook Air M2, 16GB RAM) - 2026-01-28
+- Ubuntu 22.04 (RTX 3070 Ti, 8GB VRAM) - 2026-01-30
+- Vultr A100 Cloud GPU (40GB VRAM) - 2026-02-01
+
+**What broke:**
+- RTX 3070 Ti running R1 67B: CUDA OOM after 15.8GB VRAM usage
+- MacBook Air running R1 8B: Ran but produced 3.2 tokens/sec (unusable for real work)
+- Multiple attempts to run full R1 on consumer GPUs all failed with OOM
+
+**What I did NOT test:**
+- Windows native (only tested WSL2)
+- AMD GPUs (no ROCm testing)
+- R1 32B or 14B quantized versions
+- Containerized deployment (Docker/Podman)
+- OpenClaw's advanced features (multi-agent, custom workflows)
+
+> **Note:** Your results may vary. Hardware, drivers, and OpenClaw version all affect outcomes.
+
+---
+
 ## Final Advice (From Someone Who Broke It First)
 
 If you remember one thing, remember this:
