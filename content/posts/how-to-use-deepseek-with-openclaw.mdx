@@ -182,6 +182,25 @@ I didn't trust the official specs, so I ran specific tests. Here is exactly wher
 
 ---
 
+## Why I Eventually Gave Up and Rented a Server
+
+I tried to stay local. I really did.
+I spent 4 days tweaking `llama.cpp` parameters, offloading layers to CPU, and closing every Chrome tab to save 200MB of RAM.
+
+**The breaking point:**
+I finally got the 32B model running on my desktop. It was slow, but working.
+Then I asked it to refactor a 500-line file.
+It thought for 4 minutes... and then printed: `Segment fault (core dumped)`.
+
+That was the moment I realized:
+- **Local is for tinkering.** It's fun to optimize.
+- **Cloud is for shipping.** I pay $0.50/hour to Vultr not because I love spending money, but because I hate segfaults.
+
+**If you are just playing around:** Stay local. Use Ollama. It's free and fun.
+**If you actually need to finish a ticket:** <a href="https://www.vultr.com/" target="_blank" rel="noopener noreferrer">Rent a GPU</a>. Kill it when you're done. It's cheaper than your hourly rate debugging VRAM issues.
+
+---
+
 ## Common Failure Modes (So You Don't Panic)
 
 ### 1. OpenClaw Just Hangs
