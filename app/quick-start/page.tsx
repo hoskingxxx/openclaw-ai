@@ -23,7 +23,7 @@ export default function QuickStartPage() {
               Documentation
             </h1>
             <p className="text-xl text-text-secondary">
-              Choose your pain level.
+              Choose how you want to lose time.
             </p>
           </div>
 
@@ -36,19 +36,19 @@ export default function QuickStartPage() {
               <div>
                 <h3 className="text-green-400 font-mono text-sm mb-2">PATH A: CLOUD API</h3>
                 <ul className="space-y-2 text-sm text-text-secondary">
-                  <li>✅ Setup time: 5 mins</li>
-                  <li>✅ Hardware: Any laptop</li>
-                  <li>✅ Cost: ~$1-5/mo (Usage based)</li>
-                  <li>✅ Stability: Production Ready</li>
+                  <li>Setup time: 5 mins</li>
+                  <li>Hardware: Any laptop</li>
+                  <li>Cost: ~$1-5/mo (Usage based)</li>
+                  <li>Stability: Operationally boring, until rate limits hit</li>
                 </ul>
               </div>
               <div className="border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
                 <h3 className="text-orange-400 font-mono text-sm mb-2">PATH B: LOCAL HARDWARE</h3>
                 <ul className="space-y-2 text-sm text-text-secondary">
-                  <li>⚠️ Setup time: 1-4 hours</li>
-                  <li>⚠️ Hardware: 16GB+ RAM / GPU</li>
-                  <li>⚠️ Cost: Electricity + Sanity</li>
-                  <li>⚠️ Stability: Experimental</li>
+                  <li>Setup time: 1-4 hours</li>
+                  <li>Hardware: 16GB+ RAM / GPU</li>
+                  <li>Cost: Electricity + Sanity</li>
+                  <li>Stability: Experimental</li>
                 </ul>
               </div>
             </div>
@@ -65,7 +65,9 @@ export default function QuickStartPage() {
               {/* Step 1 */}
               <div>
                 <h3 className="text-lg font-medium text-text-primary mb-2">1. Install OpenClaw</h3>
-                <p className="text-sm text-text-secondary mb-3">Requires Node.js 22+</p>
+                <p className="text-sm text-text-secondary mb-3">
+                  <code className="text-text-tertiary">node -v # MUST be &gt;=22.3.0 (Tested version)</code>
+                </p>
                 <CodeBlock code="npm install -g openclaw@latest" />
               </div>
 
@@ -80,15 +82,22 @@ export default function QuickStartPage() {
               {/* Step 3 */}
               <div>
                 <h3 className="text-lg font-medium text-text-primary mb-2">3. Configure .env</h3>
-                <p className="text-sm text-text-secondary mb-3">Create a file named <code>.env</code> in your folder.</p>
+                <p className="text-sm text-text-secondary mb-3">
+                  Create <code>.env</code> in the root directory where you run <code>openclaw start</code>.
+                </p>
                 <CodeBlock
                   title=".env"
-                  code={`# Use OpenAI provider because DeepSeek is compatible
+                  code={`# REQUIRED: Use "openai" provider because DeepSeek uses OpenAI-compatible API
 LLM_PROVIDER="openai"
 LLM_BASE_URL="https://api.deepseek.com"
 LLM_API_KEY="sk-your-key-here"
 LLM_MODEL="deepseek-reasoner"`}
                 />
+                <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded">
+                  <p className="text-xs text-yellow-200">
+                    <strong>⚠️ Rate Limit Reality:</strong> Expect 429 errors or region latency during peak hours (9AM-11AM Beijing time). This is not a bug, it's the reality of DeepSeek.
+                  </p>
+                </div>
               </div>
 
               {/* Step 4 */}
@@ -112,6 +121,17 @@ LLM_MODEL="deepseek-reasoner"`}
               </p>
             </div>
 
+            {/* Pre-flight Check */}
+            <div className="mb-8 p-4 bg-background-tertiary/50 rounded-lg border border-white/10">
+              <h4 className="text-sm font-mono text-text-primary mb-3">Pre-flight Checklist:</h4>
+              <div className="space-y-2 text-sm text-text-secondary">
+                <p>Before you start, verify available VRAM:</p>
+                <CodeBlock code="nvidia-smi
+# Look for: Memory-Total (should be 16GB+ for 8B model)" />
+                <p className="text-xs text-text-tertiary mt-2">If Memory-Total is under 16GB, your system will freeze during model load. Stop here.</p>
+              </div>
+            </div>
+
             <div className="space-y-8 border-l-2 border-orange-500/20 pl-6 ml-2">
               {/* Step 1 */}
               <div>
@@ -119,20 +139,32 @@ LLM_MODEL="deepseek-reasoner"`}
                 <CodeBlock code={`# Install Ollama (Mac/Linux)
 curl -fsSL https://ollama.com/install.sh | sh
 
-# Pull the 8B model (Fits in 8GB VRAM)
+# Pull the 8B model
 ollama run deepseek-r1:8b`} />
+                <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded">
+                  <p className="text-xs text-red-200">
+                    <strong>⚠️ 8GB Blood Oath:</strong> 8B model ≠ 8GB VRAM. With long context, you WILL OOM. Start with <code>num_ctx: 4096</code> or lower in your OpenClaw config.
+                  </p>
+                </div>
               </div>
 
               {/* Step 2 */}
               <div>
                 <h3 className="text-lg font-medium text-text-primary mb-2">2. Configure OpenClaw</h3>
-                <p className="text-sm text-text-secondary mb-3">Point it to your local Ollama server.</p>
+                <p className="text-sm text-text-secondary mb-3">
+                  Create <code>.env</code> in the root directory where you run <code>openclaw start</code>.
+                </p>
                 <CodeBlock
                   title=".env"
                   code={`LLM_PROVIDER="ollama"
 LLM_BASE_URL="http://localhost:11434/v1"
 LLM_MODEL="deepseek-r1:8b"`}
                 />
+                <div className="mt-3 p-3 bg-background-tertiary/50 rounded-lg border border-white/10">
+                  <p className="text-xs text-text-tertiary">
+                    <strong>Fail-Fast Tip:</strong> If it freezes on first run, do NOT retry. Lower your context window immediately. Set <code>num_ctx: 2048</code> and test again.
+                  </p>
+                </div>
               </div>
 
                {/* Step 3 */}
@@ -141,6 +173,20 @@ LLM_MODEL="deepseek-r1:8b"`}
                 <CodeBlock code="openclaw start" />
               </div>
             </div>
+          </section>
+
+          {/* Survivor Checklist */}
+          <section className="mb-20 p-6 bg-white/5 rounded-lg border border-white/10">
+            <h3 className="text-lg font-mono text-text-primary mb-4">Before You Report An Issue:</h3>
+            <ul className="space-y-2 text-sm text-text-secondary">
+              <li>[ ] Ran <code>nvidia-smi</code> and verified available VRAM?</li>
+              <li>[ ] <code>.env</code> file exists in current folder?</li>
+              <li>[ ] Using <code>deepseek-reasoner</code> for R1?</li>
+              <li>[ ] Checked <Link href="/oom" className="text-brand-primary hover:underline">OOM solutions</Link>?</li>
+            </ul>
+            <p className="text-xs text-text-tertiary mt-4">
+              If you checked all of these and still have issues, then report a bug.
+            </p>
           </section>
 
           {/* CTA */}

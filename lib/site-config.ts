@@ -14,7 +14,7 @@ export const siteConfig = {
     emoji: "🦞",
     alt: "OpenClaw Lobster Logo",
   },
-  tagline: "No auth. No telemetry. No keys required. Just logs.",
+  tagline: "Privacy: Local logs only. No telemetry.",
   copyright: "© 2026 OpenClaw Community Documentation",
 } as const;
 
