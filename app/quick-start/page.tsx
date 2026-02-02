@@ -27,6 +27,54 @@ export default function QuickStartPage() {
             </p>
           </div>
 
+          {/* Compatibility Matrix (What I Did NOT Test) */}
+          <section className="mb-12 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-6">
+            <h2 className="text-lg font-mono text-yellow-400 mb-4 flex items-center gap-2">
+              <span>⚠️</span> Compatibility Matrix (What I Did NOT Test)
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/10">
+                    <th className="text-left py-2 px-3 font-mono text-text-primary">Platform</th>
+                    <th className="text-center py-2 px-3 font-mono text-text-primary">Status</th>
+                    <th className="text-left py-2 px-3 font-mono text-text-primary">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-white/5">
+                    <td className="py-2 px-3">Ubuntu 22.04 + NVIDIA GPU</td>
+                    <td className="text-center py-2 px-3"><span className="text-green-400 font-mono">✓ TESTED</span></td>
+                    <td className="py-2 px-3 text-text-tertiary text-xs">RTX 3070 Ti (8GB), DeepSeek R1 8B via Ollama</td>
+                  </tr>
+                  <tr className="border-b border-white/5">
+                    <td className="py-2 px-3">macOS (Apple Silicon)</td>
+                    <td className="text-center py-2 px-3"><span className="text-green-400 font-mono">✓ TESTED</span></td>
+                    <td className="py-2 px-3 text-text-tertiary text-xs">M1/M2, DeepSeek API via openai provider</td>
+                  </tr>
+                  <tr className="border-b border-white/5">
+                    <td className="py-2 px-3">Windows (WSL2)</td>
+                    <td className="text-center py-2 px-3"><span className="text-red-400 font-mono">✗ BROKEN</span></td>
+                    <td className="py-2 px-3 text-text-tertiary text-xs">CUDA passthrough issues. Do NOT report bugs.</td>
+                  </tr>
+                  <tr className="border-b border-white/5">
+                    <td className="py-2 px-3">Docker</td>
+                    <td className="text-center py-2 px-3"><span className="text-yellow-400 font-mono">? UNTESTED</span></td>
+                    <td className="py-2 px-3 text-text-tertiary text-xs">GPU pass-through is your problem.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-3">Node.js &lt; 22</td>
+                    <td className="text-center py-2 px-3"><span className="text-red-400 font-mono">✗ UNSUPPORTED</span></td>
+                    <td className="py-2 px-3 text-text-tertiary text-xs">ESM modules require Node 22+. Will crash on import.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-text-tertiary mt-4">
+              <strong>If your setup is not listed here:</strong> Proceed at your own risk. Do NOT report bugs for untested configurations.
+            </p>
+          </section>
+
           {/* Decision Matrix (Reality Check) */}
           <section className="mb-16 bg-white/5 rounded-lg p-6 border border-white/10">
             <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
@@ -62,12 +110,29 @@ export default function QuickStartPage() {
             </div>
 
             <div className="space-y-8 border-l-2 border-green-500/20 pl-6 ml-2">
-              {/* Step 1 */}
+              {/* Step 0: Node.js Prerequisite */}
               <div>
-                <h3 className="text-lg font-medium text-text-primary mb-2">1. Install OpenClaw</h3>
+                <h3 className="text-lg font-medium text-text-primary mb-2">0. Install Node.js (NVM Required)</h3>
                 <p className="text-sm text-text-secondary mb-3">
-                  <code className="text-text-tertiary">node -v # MUST be &gt;=22.3.0 (Tested version)</code>
+                  <strong className="text-red-400">WARNING:</strong> If <code className="text-text-tertiary">node -v</code> returns &lt; 22, STOP. You are wasting your time.
                 </p>
+                <CodeBlock code={`# Install NVM (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+
+# Reload your shell
+source ~/.bashrc  # or: source ~/.zshrc
+
+# Install Node.js 22 (LTS)
+nvm install 22
+nvm use 22`} />
+                <p className="text-xs text-text-tertiary mt-2">
+                  Do NOT use <code className="text-text-tertiary">sudo apt install nodejs</code>. That installs ancient versions.
+                </p>
+              </div>
+
+              {/* Step 1 */}
+              <div className="mt-8">
+                <h3 className="text-lg font-medium text-text-primary mb-2">1. Install OpenClaw</h3>
                 <CodeBlock code="npm install -g openclaw@latest" />
               </div>
 
@@ -75,8 +140,13 @@ export default function QuickStartPage() {
               <div>
                 <h3 className="text-lg font-medium text-text-primary mb-2">2. Get DeepSeek Key</h3>
                 <p className="text-sm text-text-secondary mb-3">
-                  Sign up at <a href="https://platform.deepseek.com" target="_blank" rel="noopener noreferrer" className="text-brand-primary underline">platform.deepseek.com</a>.
+                  Sign up at <a href="https://platform.deepseek.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 underline font-medium">platform.deepseek.com</a>.
                 </p>
+                <div className="mt-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded">
+                  <p className="text-xs text-blue-200">
+                    <strong>💡 Pro Tip:</strong> DeepSeek R1 via API costs ~$1-5/mo for casual use. No VRAM drama.
+                  </p>
+                </div>
               </div>
 
               {/* Step 3 */}
@@ -87,7 +157,8 @@ export default function QuickStartPage() {
                 </p>
                 <CodeBlock
                   title=".env"
-                  code={`# REQUIRED: Use "openai" provider because DeepSeek uses OpenAI-compatible API
+                  code={`# DeepSeek R1 via OpenAI-compatible API (RECOMMENDED)
+# Get your key at: https://platform.deepseek.com
 LLM_PROVIDER="openai"
 LLM_BASE_URL="https://api.deepseek.com"
 LLM_API_KEY="sk-your-key-here"
@@ -121,14 +192,83 @@ LLM_MODEL="deepseek-reasoner"`}
               </p>
             </div>
 
-            {/* Pre-flight Check */}
-            <div className="mb-8 p-4 bg-background-tertiary/50 rounded-lg border border-white/10">
-              <h4 className="text-sm font-mono text-text-primary mb-3">Pre-flight Checklist:</h4>
-              <div className="space-y-2 text-sm text-text-secondary">
-                <p>Before you start, verify available VRAM:</p>
+            {/* VRAM Budget Table */}
+            <div className="mb-8 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+              <h4 className="text-sm font-mono text-red-400 mb-3">VRAM Budget Table (Do The Math):</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-text-secondary">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 px-2 font-mono text-text-primary">Component</th>
+                      <th className="text-right py-2 px-2 font-mono text-text-primary">VRAM Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 px-2">DeepSeek R1 8B Model</td>
+                      <td className="text-right py-2 px-2 font-mono text-red-300">~4.7 GB</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 px-2">KV Cache (context window)</td>
+                      <td className="text-right py-2 px-2 font-mono text-red-300">~1.5 GB</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 px-2">System overhead</td>
+                      <td className="text-right py-2 px-2 font-mono text-red-300">~1.0 GB</td>
+                    </tr>
+                    <tr className="border-b border-white/10">
+                      <td className="py-2 px-2 font-bold text-text-primary">Total (Minimum)</td>
+                      <td className="text-right py-2 px-2 font-mono font-bold text-red-400">~7.2 GB</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td className="py-3 px-2 text-text-tertiary text-xs" colSpan={2}>
+                        <strong className="text-yellow-400">8GB GPU Reality:</strong> You have &lt; 1GB left for reasoning tokens.
+                        Set <code className="text-text-tertiary">OLLAMA_NUM_CTX=2048</code> or die.
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+
+            {/* Shortcut to Sanity (Conversion CTA) */}
+            <div className="mb-8 p-6 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 rounded-lg relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30" />
+              <div className="relative">
+                <h4 className="text-lg font-mono text-blue-300 mb-2 flex items-center gap-2">
+                  <span>⚡</span> Shortcut to Sanity
+                </h4>
+                <p className="text-sm text-text-secondary mb-4">
+                  Wasted 4 hours and still OOM? The pro choice is <strong>Path A</strong>. Rent the metal and start shipping.
+                </p>
+                <a
+                  href="#cloud"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
+                >
+                  <span>→</span> Switch to Cloud API (DeepSeek)
+                </a>
+              </div>
+            </div>
+
+            {/* Pre-flight Check (Suicide Prevention) */}
+            <div className="mb-8 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+              <h4 className="text-sm font-mono text-red-400 mb-3">🛑 Suicide Prevention Checklist:</h4>
+              <div className="space-y-3 text-sm text-text-secondary">
+                <p><strong>Step 1:</strong> Verify you actually have a GPU:</p>
                 <CodeBlock code="nvidia-smi
-# Look for: Memory-Total (should be 16GB+ for 8B model)" />
-                <p className="text-xs text-text-tertiary mt-2">If Memory-Total is under 16GB, your system will freeze during model load. Stop here.</p>
+# If this fails, you CANNOT use local LLMs. Use PATH A (Cloud API)." />
+
+                <p><strong>Step 2:</strong> Check VRAM budget:</p>
+                <CodeBlock code="# Look for: Memory-Total in nvidia-smi output
+# 8GB GPU  → Will OOM with anything beyond num_ctx:2048
+# 12GB GPU → Might survive num_ctx:4096
+# 16GB+    → You're probably fine" />
+
+                <p className="text-xs text-text-tertiary mt-2">
+                  <strong>If you ignored this checklist:</strong> Don't report bugs when your system freezes. You were warned.
+                </p>
               </div>
             </div>
 
@@ -139,11 +279,14 @@ LLM_MODEL="deepseek-reasoner"`}
                 <CodeBlock code={`# Install Ollama (Mac/Linux)
 curl -fsSL https://ollama.com/install.sh | sh
 
-# Pull the 8B model
-ollama run deepseek-r1:8b`} />
+# SAFE MODE: Pull with reduced context (prevents OOM)
+OLLAMA_NUM_CTX=2048 ollama run deepseek-r1:8b
+
+# If that works, try 4096:
+OLLAMA_NUM_CTX=4096 ollama run deepseek-r1:8b`} />
                 <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded">
                   <p className="text-xs text-red-200">
-                    <strong>⚠️ 8GB Blood Oath:</strong> 8B model ≠ 8GB VRAM. With long context, you WILL OOM. Start with <code>num_ctx: 4096</code> or lower in your OpenClaw config.
+                    <strong>⚠️ 8GB Blood Oath:</strong> 8B model ≠ 8GB VRAM. With long context, you WILL OOM. Always use <code className="text-text-tertiary">OLLAMA_NUM_CTX</code> to limit context window.
                   </p>
                 </div>
               </div>
@@ -152,7 +295,7 @@ ollama run deepseek-r1:8b`} />
               <div>
                 <h3 className="text-lg font-medium text-text-primary mb-2">2. Configure OpenClaw</h3>
                 <p className="text-sm text-text-secondary mb-3">
-                  Create <code>.env</code> in the root directory where you run <code>openclaw start</code>.
+                  Create <code>.env</code> in the <strong>current working directory (CWD)</strong> where you run <code>openclaw start</code>.
                 </p>
                 <CodeBlock
                   title=".env"
@@ -160,6 +303,21 @@ ollama run deepseek-r1:8b`} />
 LLM_BASE_URL="http://localhost:11434/v1"
 LLM_MODEL="deepseek-r1:8b"`}
                 />
+                <div className="mt-3 p-3 bg-background-tertiary/50 rounded-lg border border-white/10">
+                  <p className="text-xs font-mono text-text-tertiary mb-2">
+                    <strong>CWD Reality Check:</strong> The .env file MUST be where you run the command.
+                  </p>
+                  <pre className="text-xs text-text-tertiary font-mono">
+{`your-project/
+├── .env              ← PUT IT HERE (NOT in ~)
+├── node_modules/
+└── package.json
+
+# Terminal:
+cd your-project/
+openclaw start        ← .env is read from HERE`}
+                  </pre>
+                </div>
                 <div className="mt-3 p-3 bg-background-tertiary/50 rounded-lg border border-white/10">
                   <p className="text-xs text-text-tertiary">
                     <strong>Fail-Fast Tip:</strong> If it freezes on first run, do NOT retry. Lower your context window immediately. Set <code>num_ctx: 2048</code> and test again.
@@ -175,26 +333,27 @@ LLM_MODEL="deepseek-r1:8b"`}
             </div>
           </section>
 
-          {/* Survivor Checklist */}
+          {/* Survival Status Check */}
           <section className="mb-20 p-6 bg-white/5 rounded-lg border border-white/10">
-            <h3 className="text-lg font-mono text-text-primary mb-4">Before You Report An Issue:</h3>
+            <h3 className="text-lg font-mono text-text-primary mb-4">🛑 Survival Status Check:</h3>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>[ ] Ran <code>nvidia-smi</code> and verified available VRAM?</li>
               <li>[ ] <code>.env</code> file exists in current folder?</li>
               <li>[ ] Using <code>deepseek-reasoner</code> for R1?</li>
               <li>[ ] Checked <Link href="/oom" className="text-brand-primary hover:underline">OOM solutions</Link>?</li>
+              <li>[ ] Set <code>OLLAMA_NUM_CTX=2048</code> before trying larger contexts?</li>
             </ul>
             <p className="text-xs text-text-tertiary mt-4">
-              If you checked all of these and still have issues, then report a bug.
+              <strong>If you survived all of these and still see crashes:</strong> THEN you can report a bug. Bring logs.
             </p>
           </section>
 
-          {/* CTA */}
+          {/* Final CTA */}
           <div className="glass-card p-8 text-center mt-12">
-             <h3 className="text-xl font-bold text-text-primary mb-2">Stuck?</h3>
-             <p className="text-text-secondary mb-6">Read the full guide for common OOM fixes.</p>
+             <h3 className="text-xl font-bold text-text-primary mb-2">System Crashed?</h3>
+             <p className="text-text-secondary mb-6">Read the crash logs. Don't touch the settings if it works.</p>
              <Button href="/guides/how-to-use-deepseek-with-openclaw" variant="secondary">
-               Go to Survival Guide →
+               Debug Crash Logs →
              </Button>
           </div>
 
