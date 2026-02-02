@@ -210,9 +210,7 @@ export default function ResourcesPage() {
               </div>
             </div>
 
-            {/* API Card 2 - REMOVED: APIFFFF (dead link) */}
-
-            {/* API Card 3 */}
+            {/* API Card 2 */}
             <div className="glass-card p-6 hover:border-brand-primary/50 transition-all">
               <div className="flex items-start justify-between mb-4">
                 <div>
