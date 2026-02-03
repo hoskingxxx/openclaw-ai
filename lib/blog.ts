@@ -28,6 +28,18 @@ function createCanonicalPath(slug: string): string {
 // Blog post metadata (extracted from frontmatter)
 export const blogPosts: BlogPost[] = [
   {
+    slug: "openclaw-security-rce-cve-2026-25253",
+    canonicalPath: createCanonicalPath("openclaw-security-rce-cve-2026-25253"),
+    title: "CVE-2026-25253: OpenClaw RCE Vulnerability - Critical Security Alert",
+    description: "OpenClaw has a critical Remote Code Execution vulnerability. Learn how to patch it, or use a VPS to isolate your AI setup.",
+    date: "2026-02-03",
+    author: "LazyDev",
+    tags: ["Security", "CVE", "RCE", "OpenClaw", "Vulnerability"],
+    category: "Security",
+    featured: true,
+    seoKeywords: ["OpenClaw RCE", "CVE-2026-25253", "OpenClaw vulnerability", "OpenClaw security", "AI security"],
+  },
+  {
     slug: "how-to-use-deepseek-with-openclaw",
     canonicalPath: createCanonicalPath("how-to-use-deepseek-with-openclaw"),
     title: "Running OpenClaw with DeepSeek R1: The Unofficial, Battle-Tested Guide",
@@ -36,7 +48,7 @@ export const blogPosts: BlogPost[] = [
     author: "LazyDev",
     tags: ["DeepSeek", "OpenClaw", "Tutorial", "Local Deployment"],
     category: "Tutorial",
-    featured: true,
+    featured: false,
     seoKeywords: ["DeepSeek R1", "OpenClaw configuration", "Local LLM setup", "Hardware requirements"],
   },
 ];
@@ -102,8 +114,8 @@ export function getFeaturedPostPath(): string {
 }
 
 // HARDCODED PATH - Nuclear fix for redirect loop
-// The actual file is at: app/guides/[slug]/page.tsx with slug "how-to-use-deepseek-with-openclaw"
-export const FEATURED_POST_PATH = "/guides/how-to-use-deepseek-with-openclaw";
+// Updated to point to new security article
+export const FEATURED_POST_PATH = "/guides/openclaw-security-rce-cve-2026-25253";
 
 // ============================================================================
 // Export for convenience

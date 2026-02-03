@@ -5,7 +5,8 @@ import { Navigation } from "@/components/features/Navigation";
 import { Button } from "@/components/ui/Button";
 
 // HARDCODED PATH - Nuclear fix for redirect loop
-const FEATURED_POST_PATH = "/guides/how-to-use-deepseek-with-openclaw";
+// Updated to point to new security article
+const FEATURED_POST_PATH = "/guides/openclaw-security-rce-cve-2026-25253";
 
 function PromoBanner() {
   return (
