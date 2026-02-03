@@ -63,6 +63,18 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     seoKeywords: ["OpenClaw JSON error", "DeepSeek R1 JSON mode", "OpenClaw parsing failed", "DeepSeek thinking tags"],
   },
+  {
+    slug: "fix-openclaw-cuda-oom-errors",
+    canonicalPath: createCanonicalPath("fix-openclaw-cuda-oom-errors"),
+    title: "How to fix OpenClaw CUDA out of memory (OOM) errors with DeepSeek R1",
+    description: "OpenClaw crashes with CUDA out of memory errors when running DeepSeek R1. Learn the difference between Model OOM and Agent Loop OOM, and how to fix both with quantization and hardware upgrades.",
+    date: "2026-02-03",
+    author: "LazyDev",
+    tags: ["CUDA", "OOM", "DeepSeek", "OpenClaw", "VRAM", "Troubleshooting"],
+    category: "Troubleshooting",
+    featured: false,
+    seoKeywords: ["OpenClaw CUDA OOM", "DeepSeek R1 out of memory", "OpenClaw VRAM error", "CUDA out of memory fix", "GPU memory optimization"],
+  },
 ];
 
 // ============================================================================

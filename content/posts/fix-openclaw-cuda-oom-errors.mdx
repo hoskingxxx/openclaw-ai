@@ -1,0 +1,311 @@
+---
+title: "How to fix OpenClaw CUDA out of memory (OOM) errors with DeepSeek R1"
+description: "OpenClaw crashes with CUDA out of memory errors when running DeepSeek R1. Learn the difference between Model OOM and Agent Loop OOM, and how to fix both with quantization and hardware upgrades."
+date: "2026-02-03"
+author: "LazyDev"
+tags: ["CUDA", "OOM", "DeepSeek", "OpenClaw", "VRAM", "Troubleshooting"]
+category: "Troubleshooting"
+featured: false
+seoKeywords: ["OpenClaw CUDA OOM", "DeepSeek R1 out of memory", "OpenClaw VRAM error", "CUDA out of memory fix", "GPU memory optimization"]
+---
+
+> **TL;DR: The Fix**
+>
+> OpenClaw crashes with `CUDA out of memory` when your GPU doesn't have enough VRAM for the model. DeepSeek R1 32B needs ~24GB VRAM — most consumer GPUs have 8-12GB.
+>
+> **Quick Fix #1 (Quantize):** Run a smaller, quantized version:
+>
+> ```bash
+> # Use Q4_K_M quantization (cuts VRAM usage by ~60%)
+> ollama run deepseek-r1:32b-q4_K_M
+>
+> # Or use the 8B model instead
+> ollama run deepseek-r1:8b
+> ```
+>
+> **Quick Fix #2 (Reduce Context):** Limit context window to save VRAM:
+>
+> ```bash
+> ollama run deepseek-r1:latest \
+>   --num_ctx 4096 \
+>  --num-gpu-layers 35
+> ```
+
+---
+
+## What You're Seeing
+
+When OpenClaw runs out of GPU memory, you get errors like:
+
+```bash
+Error: CUDA out of memory. Tried to allocate 2.5GiB
+  (GPU 0: NVIDIA GeForce RTX 3080; 10GiB total capacity;
+   8.2GiB already allocated; 1.5GiB free; 9.7GiB reserved)
+
+Stack trace:
+  at /pytorch/aten/src/ATen/cuda/CUDAGraphs.cuh:287
+  at openclaw/runtime/gpu_allocator.py:142
+  at Model.load_weights (/lib/model_loader.py:89)
+```
+
+Or the more cryptic version:
+
+```bash
+RuntimeError: [OutOfMemory] GPU allocator failed
+  Model: deepseek-r1:32b
+  Required: 24576MiB
+  Available: 10240MiB
+  Shortfall: 14136MiB
+```
+
+OpenClaw crashes mid-task, usually during model loading or after processing a few messages.
+
+---
+
+## Root Cause: Two Types of OOM
+
+Most developers confuse these, but the fix is different for each:
+
+### Type 1: Model OOM (Hardware Limit)
+
+**Symptoms:** Crashes immediately on model load, or fails on the first request.
+
+**Cause:** The model itself is too big for your GPU.
+
+| Model | VRAM Required (FP16) | VRAM Required (Q4) |
+|-------|---------------------|-------------------|
+| DeepSeek R1 8B | ~16GB | ~6GB |
+| DeepSeek R1 32B | ~64GB | ~20GB |
+| DeepSeek R1 70B | ~140GB | ~42GB |
+
+**The Math:** Your 12GB GPU cannot run DeepSeek R1 32B, even with quantization. The model file is larger than your VRAM capacity.
+
+### Type 2: Agent Loop OOM (Context Overflow)
+
+**Symptoms:** Works at first, crashes after processing 5-10 messages.
+
+**Cause:** OpenClaw accumulates conversation history in VRAM. Each message adds tokens to the context window. Eventually, the KV cache fills all available memory.
+
+**What's Happening:**
+1. OpenClaw starts with 2GB VRAM usage (model loaded)
+2. Each message adds ~100-500MB to KV cache
+3. After 15 messages, VRAM is full
+4. CUDA allocator throws OOM error
+
+---
+
+## The Fix: Match the Solution to the Type
+
+### For Model OOM: Hardware or Quantization
+
+**Option 1: Quantize the Model (Recommended for Local)**
+
+Run a quantized version that fits in your VRAM:
+
+```bash
+# Check available quantized versions
+ollama list | grep deepseek
+
+# Run Q4 version (uses ~60% less VRAM)
+ollama run deepseek-r1:32b-q4_K_M
+
+# Configure OpenClaw to use quantized model
+export OPENCLAW_MODEL="deepseek-r1:32b-q4_K_M"
+openclaw serve
+```
+
+**Option 2: Offload to CPU (Slow, but works)**
+
+Let the GPU handle layers and CPU handle the rest:
+
+```bash
+# Only load 35 layers on GPU, rest on CPU
+ollama run deepseek-r1:32b \
+  --num-gpu-layers 35 \
+  --num_ctx 2048
+```
+
+Warning: CPU inference is 5-10x slower. Not recommended for production.
+
+### For Agent Loop OOM: Trim Context
+
+**Option 1: Reduce Context Window**
+
+```bash
+# Default is usually 16384, cut to 4096
+ollama run deepseek-r1:latest \
+  --num_ctx 4096 \
+  --repeat-penalty 0.6
+```
+
+**Option 2: Enable Auto-Pruning in OpenClaw**
+
+```python
+# openclaw_config.py
+from openclaw import Client
+
+client = Client(model="deepseek-r1:latest")
+
+# Auto-prune conversation history to last N messages
+client.max_history_messages = 10
+client.context_window = 4096
+
+# OpenClaw will drop old messages to prevent OOM
+response = client.generate("Your prompt here")
+```
+
+**Option 3: Manual Context Trimming**
+
+```python
+def trim_history(history, max_tokens=8000):
+    """Keep only recent messages within token limit."""
+    tokens = sum(len(m["content"]) for m in history)
+    while tokens > max_tokens and len(history) > 2:
+        removed = history.pop(0)
+        tokens -= len(removed["content"])
+    return history
+
+# Call before each generation
+conversation = trim_history(conversation)
+response = client.generate(conversation)
+```
+
+---
+
+## When This Happens
+
+| Scenario | OOM Type | Most Likely Fix |
+|----------|----------|-----------------|
+| Fresh start, crashes on load | Model OOM | Use smaller model or quantize |
+| Works for 5+ messages, then crashes | Agent Loop OOM | Reduce context or enable pruning |
+| Works with 8B, fails with 32B | Model OOM | Hardware upgrade (see below) |
+| Works in morning, fails after hours | Memory Leak | Restart OpenClaw service |
+
+**Pattern Observed:** Agent Loop OOM is the #1 issue for production OpenClaw deployments running DeepSeek R1 32B or larger.
+
+---
+
+## Hardware Limitations: When You Need a VPS
+
+Sometimes the fix is "you need a bigger GPU." Here's the reality:
+
+**Your Consumer GPU:**
+- RTX 3060 (12GB): Handles DeepSeek R1 8B (Q4)
+- RTX 3080 (10GB): Struggles with R1 8B, can't run R1 32B
+- RTX 4090 (24GB): Handles R1 32B (Q4), not R1 70B
+
+**For Production Stability:**
+
+If you're running OpenClaw in production with DeepSeek R1 32B or larger, consumer GPUs will bottleneck you. You need:
+
+- **Dedicated VRAM:** 24GB+ for R1 32B, 48GB+ for R1 70B
+- **Isolation:** Don't run AI workloads on your development machine
+- **Scalability:** Ability to add more GPU instances as traffic grows
+
+**Recommended VPS Solutions:**
+
+**[AFFILIATE_LINK: DigitalOcean H100]** - NVIDIA H100 GPU with 80GB VRAM. Runs DeepSeek R1 70B at full precision. Starts at $3.50/hr.
+
+**[AFFILIATE_LINK: Vultr A100]** - A100 40GB/80GB options. Hourly billing, perfect for testing different model sizes.
+
+**[AFFILIATE_LINK: Lambda Labs]** - Specialized AI cloud, cheapest H100 pricing at $2.49/hr. GPU-optimized images preloaded with CUDA.
+
+**[AFFILIATE_LINK: RunPod]** - Budget GPU marketplace. Spot instances start at $0.20/hr for RTX 4000 Ada. Good for development, not production.
+
+**Cost Reality Check:** A $20/mo VPS with 4GB RAM cannot run DeepSeek R1. You're paying for VRAM, not system RAM. Plan accordingly.
+
+---
+
+## Complete Working Example
+
+Here's a complete OpenClaw config that handles both types of OOM:
+
+```python
+# openclaw_config.py
+from openclaw import Client
+
+# Initialize with memory-safe settings
+client = Client(model="deepseek-r1:8b-q4_K_M")
+
+# Prevent agent loop OOM
+client.max_history_messages = 12
+client.context_window = 4096
+
+# Enable memory debugging
+client.debug_memory = True
+
+# Auto-restart on OOM (last resort)
+client.auto_restart_on_oom = True
+
+# Usage with error handling
+try:
+    response = client.generate("Your prompt here")
+    print(response.text)
+except RuntimeError as e:
+    if "out of memory" in str(e).lower():
+        # Fallback: trim history and retry
+        client.conversation_history = client.conversation_history[-6:]
+        response = client.generate("Your prompt here")
+    else:
+        raise
+```
+
+---
+
+## FAQ
+
+<div itemScope itemType="https://schema.org/FAQPage">
+  <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+    <h3 itemProp="name">Q: Will adding more system RAM fix CUDA OOM errors?</h3>
+    <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+      <p itemProp="text">
+        <strong>A:</strong> No. CUDA errors are about GPU VRAM, not system RAM. Adding 64GB of system RAM won't help if your GPU only has 8GB VRAM. The model must fit in GPU memory to run. You can offload some layers to CPU, but performance drops significantly.
+      </p>
+    </div>
+  </div>
+
+  <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+    <h3 itemProp="name">Q: Can I run DeepSeek R1 32B on an RTX 3060 (12GB)?</h3>
+    <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+      <p itemProp="text">
+        <strong>A:</strong> Not practically. The Q4 quantized version requires ~20GB VRAM. You could try extreme quantization (Q2 or Q3), but output quality degrades significantly. Better option: use DeepSeek R1 8B, or upgrade to a VPS with 24GB+ VRAM.
+      </p>
+    </div>
+  </div>
+
+  <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+    <h3 itemProp="name">Q: Why does it work for 10 messages then crash?</h3>
+    <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+      <p itemProp="text">
+        <strong>A:</strong> That's Agent Loop OOM. OpenClaw accumulates conversation history in the KV cache, which grows with each message. After 10-15 messages, the cache fills your VRAM. Fix: reduce context window (--num_ctx 4096) or enable history pruning (client.max_history_messages = 10).
+      </p>
+    </div>
+  </div>
+
+  <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+    <h3 itemProp="name">Q: Is a VPS worth it for running OpenClaw?</h3>
+    <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+      <p itemProp="text">
+        <strong>A:</strong> Depends on your use case. For occasional testing, local GPU is fine. For production or heavy usage, a VPS pays for itself in stability and performance. You also isolate AI workloads from your development machine. Cloud GPUs (H100, A100) can run models that no consumer GPU can handle.
+      </p>
+    </div>
+  </div>
+</div>
+
+---
+
+## Related Fixes
+
+- [How to Fix OpenClaw JSON Parsing Errors](/guides/fix-openclaw-json-mode-errors) - DeepSeek thinking tags break JSON mode
+
+- [CVE-2026-25253: OpenClaw RCE Vulnerability Guide](/guides/openclaw-security-rce-cve-2026-25253) - Security considerations for production deployments
+
+- [DeepSeek R1 Context Window Optimization](/guides/deepseek-r1-optimization) - Balancing quality vs memory usage
+
+---
+
+> **Need more VRAM?** For production DeepSeek R1 deployments, a dedicated GPU VPS is the most reliable solution.
+>
+> **[AFFILIATE_LINK: DigitalOcean H100]** - 80GB VRAM, runs R1 70B at full precision
+> **[AFFILIATE_LINK: Lambda Labs]** - Cheapest H100 pricing, preconfigured CUDA images
+> **[AFFILIATE_LINK: RunPod]** - Budget spot instances for testing and development
