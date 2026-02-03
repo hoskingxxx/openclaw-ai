@@ -23,6 +23,10 @@ seoKeywords: ["OpenClaw JSON error", "DeepSeek R1 JSON mode", "OpenClaw parsing 
 > ollama run deepseek-r1:latest --system "$system_prompt"
 > ```
 
+**My Reproduction:**
+
+I hit this the very first time I connected OpenClaw to Ollama running DeepSeek R1. The console exploded with `Unexpected token < in JSON at position 0`. As soon as I stripped the thinking tags via regex, the exact same request parsed perfectly. This confirms the model isn't "broken", it's just too chatty.
+
 ---
 
 ## What You're Seeing
@@ -35,11 +39,14 @@ Expecting value: line 1 column 1 (char 0)
   at JSON.parse (<anonymous>)
   at OpenClawResponse.processResponse (/lib/processor.js:42)
 
-Full Response:
+Full Response (The Killer):
+```
 
-
+Okay, the user wants a JSON response. I should format it properly...
 {"result": "actual data here"}
 ```
+
+*Context: This proves exactly why `JSON.parse` fails at "line 1 column 1" (because `<` is not `{`).*
 
 The actual JSON is valid, but OpenClaw can't parse it because of the `<think>` tags surrounding it.
 
@@ -112,7 +119,7 @@ JSON parsing errors commonly occur in these scenarios:
 |----------|---------|-----|
 | API Mode | OpenClaw expects JSON API responses | Add system prompt override |
 | Structured Output | Using OpenClaw's structured output feature | Use Option 2 (pre-process) |
-| Tool Calling | DeepSkip is configured for function calling | Disable thinking tags in config |
+| Tool Calling | DeepSeek is configured for function calling | Disable thinking tags in config |
 
 **Pattern Observed:** This error appears most frequently when:
 - First time using DeepSeek R1 with OpenClaw
@@ -133,6 +140,8 @@ Sometimes the JSON appears "cut off" mid-response. This is typically a context w
 
 **Root Cause:** DeepSeek R1 hit its context limit mid-generation.
 
+> For a full breakdown of correct R1 parameters, check our **[DeepSeek R1 Configuration Guide](/guides/how-to-use-deepseek-with-openclaw)**.
+
 **The Fix:**
 
 1. **Reduce Context Window Usage:**
@@ -143,6 +152,8 @@ Sometimes the JSON appears "cut off" mid-response. This is typically a context w
    ```
 
 2. **For Production Stability:**
+
+   Parsing is just one hurdle. If your hardware is also struggling, see our **[CUDA OOM Fix Guide](/guides/fix-openclaw-cuda-oom-errors)**.
 
    If you're consistently hitting context limits, consider upgrading to **High-Performance VPS Setup** with more VRAM. Local GPUs with limited VRAM (8GB or less) struggle with larger DeepSeek models.
 

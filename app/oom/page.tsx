@@ -38,17 +38,110 @@ export default function OOMPage() {
 
           {/* Title */}
           <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-            CUDA OOM Errors
+            Hardware Reality Check
           </h1>
 
-          <p className="text-lg text-text-secondary mb-2">
-            Real crash logs and tested fixes
+          <p className="text-lg text-text-secondary mb-6">
+            CUDA OOM Errors & The Cold, Hard Math
           </p>
+
+          {/* Frame Shift: Identity Switch */}
+          <div className="mb-12 p-6 bg-brand-primary/10 border border-brand-primary/30 rounded-lg">
+            <p className="text-sm text-brand-primary font-mono mb-3">
+              <strong>💡 Stop Debugging. Start Calculating.</strong>
+            </p>
+            <p className="text-sm text-text-secondary leading-relaxed mb-3">
+              You've read the crash logs in the Survival Guide. You know the pain.
+            </p>
+            <p className="text-sm text-text-secondary leading-relaxed mb-3">
+              This page is no longer about fixing errors. It's about fixing your decision-making process.
+            </p>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              I have tested every option below with my own wallet. Here is the cold, hard math on how to stop losing time.
+            </p>
+          </div>
 
           {/* Maintenance Disclaimer */}
           <p className="text-sm text-text-tertiary mb-12">
             <em>Snapshot from February 2026. Information may go stale as software updates. Always verify with current documentation.</em>
           </p>
+
+          {/* ============================================ */}
+          {/* Profile-Based Decision Matrix */}
+          {/* ============================================ */}
+          <section className="mb-16">
+            <h2 className="text-2xl font-bold text-text-primary mb-6">
+              Choose Your Path
+            </h2>
+            <p className="text-sm text-text-tertiary mb-8">
+              Don't guess. Identify your profile and see the math.
+            </p>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Option A: Local Purist */}
+              <div className="glass-card p-6 border-l-4 border-l-orange-500">
+                <h3 className="text-lg font-semibold text-text-primary mb-4">
+                  Option A: The Local Purist (RTX 3090/4090)
+                </h3>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <p className="text-text-tertiary font-mono mb-1">Who is this for:</p>
+                    <p className="text-text-secondary">You have $1500+ sunk cost and enjoy heat.</p>
+                  </div>
+                  <div>
+                    <p className="text-text-tertiary font-mono mb-1">The Reality:</p>
+                    <p className="text-text-secondary">24GB VRAM is the <strong>absolute floor</strong> for decent R1 performance.</p>
+                  </div>
+                  <div>
+                    <p className="text-text-tertiary font-mono mb-1">Verdict:</p>
+                    <p className="text-text-secondary">Great for privacy, terrible for ROI unless you run it 24/7.</p>
+                  </div>
+                  <p className="text-text-tertiary text-xs mt-4">
+                    Still want to try local? Read the crash logs below ↓
+                  </p>
+                </div>
+              </div>
+
+              {/* Option B: Pragmatist (Cloud) */}
+              <div className="glass-card p-6 border-l-4 border-l-green-500">
+                <h3 className="text-lg font-semibold text-text-primary mb-4">
+                  Option B: The Pragmatist (Cloud VPS / H100)
+                </h3>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <p className="text-text-tertiary font-mono mb-1">Who is this for:</p>
+                    <p className="text-text-secondary">You value your time at more than $0.50/hour.</p>
+                  </div>
+                  <div>
+                    <p className="text-text-tertiary font-mono mb-1">The Reality:</p>
+                    <p className="text-text-secondary">Spin up an H100, run your heavy batch job, kill it for the price of a coffee.</p>
+                  </div>
+                  <div>
+                    <p className="text-text-tertiary font-mono mb-1">The Math:</p>
+                    <p className="text-text-secondary">A used 3090 costs ~$800. That's <strong>1,600 hours</strong> of rental time. Will you actually use it that much?</p>
+                  </div>
+                  <a
+                    href="https://www.vultr.com/products/gpu/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-mono text-sm font-bold rounded-lg transition-colors mt-4"
+                  >
+                    Deploy on Vultr (Check Pricing) →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Crash Log Section Header */}
+          <section className="mb-8">
+            <h2 className="text-2xl font-bold text-text-primary mb-4">
+              Real Crash Logs (From My Testing)
+            </h2>
+            <p className="text-sm text-text-tertiary">
+              Still unconvinced? Here's exactly what broke on my hardware.
+            </p>
+          </section>
 
           {/* Crash Log 1: The "Almost Made It" Heartbreak */}
           <section className="mb-12">
@@ -273,17 +366,55 @@ PID    COMMAND        %CPU  %MEM
             </div>
           </section>
 
-          {/* Canonical Page Link */}
-          <div className="glass-card p-8 text-center">
-            <h3 className="text-lg font-semibold text-text-primary mb-4">
-              Need the full setup guide?
-            </h3>
-            <p className="text-text-secondary mb-6">
-              This page only covers crash fixes. For complete setup, see the main guide.
-            </p>
-            <Button href={FEATURED_POST_PATH}>
-              Read the Complete Guide →
-            </Button>
+          {/* ============================================ */}
+          {/* The Killer Conclusion: Time vs. Money */}
+          {/* ============================================ */}
+          <section className="mb-12">
+            <div className="glass-card p-8 border border-brand-primary/30 text-center">
+              <h2 className="text-2xl font-bold text-text-primary mb-6">
+                Final Calculation
+              </h2>
+              <div className="bg-terminal-bg rounded p-6 mb-6 max-w-2xl mx-auto">
+                <pre className="text-sm text-green-400 font-mono">
+                  <code>If you spend 4 hours fixing a CUDA driver to save $2 on hosting,
+you are valuing your time at $0.50/hour.</code>
+                </pre>
+              </div>
+              <p className="text-lg text-text-secondary mb-6 max-w-2xl mx-auto">
+                If you are an engineer, your time is worth more.<br />
+                <strong className="text-brand-primary">Stop fighting physics. Rent the compute.</strong>
+              </p>
+
+              <div className="grid gap-4 md:grid-cols-2 max-w-2xl mx-auto">
+                <Link
+                  href="/troubleshooting"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-text-primary font-mono text-sm rounded-lg transition-colors"
+                >
+                  Still want local? Read Troubleshooting →
+                </Link>
+                <a
+                  href="https://www.vultr.com/products/gpu/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
+                >
+                  Deploy Cloud VPS →
+                </a>
+              </div>
+            </div>
+          </section>
+
+          {/* Internal Links Funnel */}
+          <div className="glass-card p-6 mb-8">
+            <h3 className="text-sm font-mono text-text-tertiary mb-3">Still exploring?</h3>
+            <div className="flex flex-wrap gap-4 text-sm">
+              <Link href="/troubleshooting" className="text-brand-primary hover:text-brand-hover underline">
+                → Troubleshooting Guide
+              </Link>
+              <Link href="/quick-start" className="text-brand-primary hover:text-brand-hover underline">
+                → Quick Start Setup
+              </Link>
+            </div>
           </div>
         </div>
       </main>

@@ -103,12 +103,20 @@ export const faqs = [
         a: "No. It's a 'scheduler' that needs you to connect: OpenAI, Claude or local models.\n\n👉 It doesn't sell models, just makes models 'work'.\n\n**Real Talk:** You're the DJ. OpenClaw is just the mixer.",
       },
       {
-        q: "Does it support DeepSeek?",
-        a: "✅ Yes, it works well with DeepSeek R1 for local deployment.\n\n**Why DeepSeek + OpenClaw is a good combination**:\n- DeepSeek R1 runs locally, hardware dependent\n- Strong reasoning, suitable for complex task breakdown\n- Fully controllable privacy, data stays local\n- Suitable for 7×24 operation on Mac Mini or local servers\n\n**Config example (.env)**:\n```bash\n# Install Ollama & pull model\ncurl -fsSL https://ollama.com/install.sh | sh\nollama run deepseek-r1:8b\n\n# Configure OpenClaw (.env file)\nLLM_PROVIDER=\"ollama\"\nLLM_BASE_URL=\"http://localhost:11434/v1\"\nLLM_MODEL=\"deepseek-r1:8b\"\n```\n\n👉 Check the hardware requirements before running local models.\n\n**Real Talk:** You're the DJ. OpenClaw is just the mixer.",
+        q: "Is my data private with local models?",
+        a: "**Short answer:** If you use Ollama locally, yes. The model runs on your machine.\n\n**How to verify:** Don't take my word for it. Block outbound traffic (except localhost) via Little Snitch or `ufw`. If OpenClaw still talks to your local Ollama, it's local. If it hangs, check your `base_url`.\n\n**Caveat:** If you use API providers (DeepSeek, OpenAI, Anthropic), your prompts go to their servers. Read their privacy policies.",
+      },
+      {
+        q: "Does it support DeepSeek API?",
+        a: "✅ Yes. Set `LLM_PROVIDER=openai` and `BASE_URL=https://api.deepseek.com`.\n\n**Config example (.env)**:\n```bash\nLLM_PROVIDER=\"openai\"\nLLM_BASE_URL=\"https://api.deepseek.com\"\nLLM_API_KEY=\"sk-your-key-here\"\nLLM_MODEL=\"deepseek-reasoner\"\n```\n\n👉 See our **[DeepSeek Config Guide](/guides/how-to-use-deepseek-with-openclaw)** for full setup.",
+      },
+      {
+        q: "Does it support local DeepSeek (Ollama)?",
+        a: "✅ Yes. Use `provider: ollama`.\n\n**Config example (.env)**:\n```bash\n# Install Ollama & pull model\ncurl -fsSL https://ollama.com/install.sh | sh\nollama run deepseek-r1:8b\n\n# Configure OpenClaw\nLLM_PROVIDER=\"ollama\"\nLLM_BASE_URL=\"http://localhost:11434/v1\"\nLLM_MODEL=\"deepseek-r1:8b\"\n```\n\n⚠️ **Warning:** Requires heavy hardware. See **[Hardware Reality Check](/guides/fix-openclaw-cuda-oom-errors)**.",
       },
       {
         q: "What is the relationship between OpenClaw and Ollama?",
-        a: "**Ollama is the engine; OpenClaw is the driver.**\n\nOllama runs the DeepSeek model (loads it into VRAM, handles inference). OpenClaw tells it what to do (reads files, runs commands, executes workflows).\n\nIf Ollama is down, OpenClaw is useless. If OpenClaw isn't running, Ollama is just a chatbot.\n\n**Analogy:** Ollama = Engine, OpenClaw = Driver. You need both to drive the car.\n\n**Real Talk:** Don't blame OpenClaw when Ollama crashes. That's like blaming Uber when your car breaks down.",
+        a: "**Ollama is the engine; OpenClaw is the driver.**\n\nOllama runs the DeepSeek model (loads it into VRAM, handles inference). OpenClaw tells it what to do (reads files, runs commands, executes workflows).\n\nIf Ollama is down, OpenClaw is useless. If OpenClaw isn't running, Ollama is just a chatbot.\n\n**Analogy:** Ollama = Engine, OpenClaw = Driver. You need both to drive the car.",
       },
     ],
   },
@@ -121,11 +129,15 @@ export const faqs = [
       },
       {
         q: "Can it run on Windows / Mac / Linux?",
-        a: "✅ Mac: Most friendly\n✅ Linux / Server: First choice for production\n⚠️ Windows: Usually via WSL2 (strongly recommended)\n\n**Real Talk:** Mac users suffer slowly (3.2 tokens/sec). Windows users suffer dramatically (WSL2 drama). Linux users just suffer.",
+        a: "✅ Mac: Most friendly\n✅ Linux / Server: First choice for production\n⚠️ Windows: Usually via WSL2 (strongly recommended)\n\n**Symptom:** `Error: connect ECONNREFUSED 127.0.0.1:11434` (Networking issue)\n\n**Real Talk:** Mac users suffer slowly (3.2 tokens/sec). Windows users suffer dramatically (WSL2 drama). Linux users just suffer.",
       },
       {
         q: "Can OpenClaw run continuously?",
         a: "Yes. It can: run long-term, retry on failure, save intermediate state, stop by rules.\n\nThis is why it's called an autonomous agent.\n\n**Real Talk:** That's also why it's called a 'security risk'. It doesn't know when to quit.",
+      },
+      {
+        q: "Why am I getting JSON parsing errors?",
+        a: "DeepSeek R1 wraps responses in `` tags before the actual JSON. OpenClaw's JSON parser fails.\n\n**Symptom:** `SyntaxError: Unexpected token <` (The model is 'thinking' out loud)\n\n👉 **Fix it here:** **[JSON Parsing Fix](/guides/fix-openclaw-json-mode-errors)**.",
       },
     ],
   },
@@ -134,7 +146,7 @@ export const faqs = [
     questions: [
       {
         q: "Is OpenClaw safe? How to prevent Prompt Injection?",
-        a: "**Think of OpenClaw as a junior engineer with sudo privileges.**\n\nIf you wouldn't trust a junior intern with root access to this folder, don't trust the agent.\n\n**Hard truth:** The agent can delete files. It can break production. It can deploy bad code.\n\n**Mitigation**:\n- Run in Docker container with read-only filesystem\n- Use dedicated device (Mac Mini, cheap server)\n- Block dangerous commands (rm, format, dd, etc.)\n- Review EVERY execution log\n\n👉 You're giving an AI the keys to your server. Act accordingly.",
+        a: "**Think of OpenClaw as a junior engineer with sudo privileges.**\n\nIf you wouldn't trust a junior intern with root access to this folder, don't trust the agent.\n\n**Real incidents I've stopped:**\n- Agent tried to `rm -rf .` to \"clean build artifacts\"\n- Agent attempted `curl unknown.sh | bash` because it needed a tool\n\n**Mitigation**:\n- Run in Docker container with read-only filesystem\n- Use dedicated device (Mac Mini, cheap server)\n- Block dangerous commands (rm, format, dd, etc.)\n- Review EVERY execution log\n\n👉 **Read the full autopsy:** **[CVE-2026-25253 Analysis](/guides/openclaw-security-rce-cve-2026-25253)**.",
       },
       {
         q: "Will it 'go rogue'?",

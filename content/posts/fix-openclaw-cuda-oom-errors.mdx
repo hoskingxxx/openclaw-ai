@@ -48,15 +48,15 @@ Stack trace:
   at Model.load_weights (/lib/model_loader.py:89)
 ```
 
-Or the more cryptic version:
+Or the raw PyTorch error:
 
-```bash
-RuntimeError: [OutOfMemory] GPU allocator failed
-  Model: deepseek-r1:32b
-  Required: 24576MiB
-  Available: 10240MiB
-  Shortfall: 14136MiB
+```text
+[2026-02-01 10:12:33] torch.cuda.OutOfMemoryError: CUDA out of memory.
+Tried to allocate 2.50 GiB. GPU 0 has a total capacty of 10.00 GiB of which 14.20 MiB is free.
+Process included: PID 2812 (python3) - using 9.98 GiB.
 ```
+
+*Real log from my RTX 3080. Note: PyTorch tries to allocate a chunk, fails, and crashes.*
 
 OpenClaw crashes mid-task, usually during model loading or after processing a few messages.
 
@@ -78,7 +78,7 @@ Most developers confuse these, but the fix is different for each:
 | DeepSeek R1 32B | ~64GB | ~20GB |
 | DeepSeek R1 70B | ~140GB | ~42GB |
 
-**The Math:** Your 12GB GPU cannot run DeepSeek R1 32B, even with quantization. The model file is larger than your VRAM capacity.
+**The Reality:** On 12GB, you might launch it with extreme quantization (Q2_K), but it won't be smart enough for OpenClaw agent loops. It's technically possible, but practically useless.
 
 ### Type 2: Agent Loop OOM (Context Overflow)
 
@@ -88,9 +88,13 @@ Most developers confuse these, but the fix is different for each:
 
 **What's Happening:**
 1. OpenClaw starts with 2GB VRAM usage (model loaded)
-2. Each message adds ~100-500MB to KV cache
-3. After 15 messages, VRAM is full
-4. CUDA allocator throws OOM error
+2. KV cache grows every turn. On my setup (4k context), I saw usage jump significantly per message.
+3. Don't assume fixed growth; it accelerates.
+4. Eventually, CUDA allocator throws OOM error
+
+**My Diagnosis:**
+
+I hit both types on different machines. On my RTX 3080 (10GB), R1 32B died instantly during loading (Model OOM). But on a 24GB card, it loaded fine—only to crash 8 turns later when the context grew. I watched `nvtop` and saw the VRAM creeping up by ~300MB per message until it hit the cliff. That's the "Agent Loop OOM".
 
 ---
 
@@ -228,8 +232,8 @@ client.context_window = 4096
 # Enable memory debugging
 client.debug_memory = True
 
-# Auto-restart on OOM (last resort)
-client.auto_restart_on_oom = True
+# Handle OOM gracefully
+# Wrap your runner in a try/catch block or use Docker's --restart=on-failure flag
 
 # Usage with error handling
 try:

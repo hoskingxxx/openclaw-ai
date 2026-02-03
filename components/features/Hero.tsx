@@ -28,6 +28,9 @@ export function Hero() {
           <p className="text-base md:text-lg lg:text-xl font-mono text-brand-primary font-bold break-words">
             "If your model crashes silently, it's not a bug. It's physics."
           </p>
+          <p className="text-xs text-text-tertiary mt-2 break-words">
+            Seeing silent failures instead of logs? Check <Link href="/guides/fix-openclaw-json-mode-errors" className="text-brand-primary hover:text-brand-hover underline">JSON Parsing Errors →</Link>
+          </p>
         </div>
 
         {/* Subtitle / Lead Text */}
@@ -35,6 +38,7 @@ export function Hero() {
           Battle-tested guides for running DeepSeek R1 locally.<br />
           <span className="text-text-tertiary">Real crash logs. Real fixes. No hype.</span><br />
           <span className="text-text-tertiary">Written by developers who broke their hardware so you don't have to.</span>
+          <span className="text-text-tertiary text-xs block mt-2">(Verify it yourself: Block outbound traffic and watch it still run.)</span>
         </p>
 
         {/* CTA Button Group */}
@@ -67,6 +71,9 @@ export function Hero() {
           </div>
           <p className="text-xs text-text-tertiary mt-3 font-mono break-words">
             RTX 3090 attempting 32B model. <Link href="/troubleshooting" className="text-brand-primary hover:text-brand-hover underline">See why it crashed →</Link>
+          </p>
+          <p className="text-xs text-text-tertiary mt-2 font-mono break-words italic">
+            <strong className="text-brand-primary">My Benchmarking Rig:</strong> I wasted a whole night thinking this was a config bug on my <strong>RTX 3090 (24GB)</strong>. It wasn't. The log above is exactly where I stopped arguing with physics. Even 32B models are brutal; don't assume your hardware is immune.
           </p>
         </div>
       </div>

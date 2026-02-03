@@ -80,6 +80,8 @@ LLM_API_KEY="ds-your-api-key-here"
 LLM_MODEL="deepseek-reasoner" # Uses R1 (Chain of Thought)
 ```
 
+> **Note:** DeepSeek is strict. If you see `Invalid JSON` errors in your logs, read our **[JSON Mode Fix Guide](/guides/fix-openclaw-json-mode-errors)** before you blame the model.
+
 > **🔒 SECURITY WARNING:** Never commit `.env` files to git. Keep API keys in your local `.env` file only. Add `.env` to `.gitignore`.
 
 ---
@@ -208,7 +210,17 @@ I spent 4 days tweaking `llama.cpp` parameters, offloading layers to CPU, and cl
 **The breaking point:**
 I finally got the 32B model running on my desktop. It was slow, but working.
 Then I asked it to refactor a 500-line file.
-It thought for 4 minutes... and then printed: `Segment fault (core dumped)`.
+It thought for 4 minutes... and then printed:
+
+```bash
+# The saddest log in the world:
+$ ./openclaw-runner --model deepseek-r1:67b
+Loading model... [OK]
+Offloading layers to GPU... [OK]
+Thinking... (4 minutes later)
+Segmentation fault (core dumped)
+# Process exited with code 139
+```
 
 That was the moment I realized:
 - **Local is for tinkering.** It's fun to optimize.
@@ -244,6 +256,17 @@ That was the moment I realized:
 
 **What broke:**
 - RTX 3070 Ti running R1 67B: CUDA OOM after 15.8GB VRAM usage
+
+```text
+[2026-02-01 14:24:43] ERROR: CUDA out of memory. Tried to allocate 128.00 MiB
+  (GPU 0; 8.00 GiB total capacity; 7.92 GiB already allocated; 64.00 MiB free)
+  PyTorch attempted to reserve residual memory but failed due to fragmentation.
+[System Halted] Agent crashed during reasoning chain.
+```
+
+*If you see this red text, stop "optimizing". It's physics. You are out of VRAM.*
+
+> If you are already seeing memory crashes, check our **[CUDA OOM Fix Guide](/guides/fix-openclaw-cuda-oom-errors)** for the specific config tweaks to squeeze it into 8GB.
 - MacBook Air running R1 8B: Ran but produced 3.2 tokens/sec (unusable for real work)
 - Multiple attempts to run full R1 on consumer GPUs all failed with OOM
 

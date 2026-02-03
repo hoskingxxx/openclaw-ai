@@ -41,7 +41,7 @@ export default function HomePage() {
               The Fix You Probably Needed
             </h2>
             <p className="text-text-secondary text-sm md:text-base mb-2 break-words">
-              Stop trying to run the 67B model on your laptop. It won't happen.
+              Stop trying to run full-size R1 (67B) — or even unquantized 32B — on a laptop. It won't happen.
             </p>
             <p className="text-text-tertiary text-sm font-mono">
               You're debugging physics. VRAM is not negotiable.
@@ -65,6 +65,9 @@ ollama run deepseek-r1:8b`}
             </div>
             <p className="text-sm text-text-secondary mt-4 break-words">
               This downloads the 8B Distilled version. It's dumber, but it runs.
+            </p>
+            <p className="text-xs text-text-tertiary mt-2 break-words">
+              It runs, but at a cost. See <Link href="/guides/how-to-use-deepseek-with-openclaw" className="text-brand-primary hover:text-brand-hover underline">Optimization Trade-offs →</Link>
             </p>
           </div>
 

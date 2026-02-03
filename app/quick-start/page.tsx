@@ -56,7 +56,7 @@ export default function QuickStartPage() {
                   <tr className="border-b border-white/5">
                     <td className="py-2 px-3">Windows (WSL2)</td>
                     <td className="text-center py-2 px-3"><span className="text-red-400 font-mono">✗ BROKEN</span></td>
-                    <td className="py-2 px-3 text-text-tertiary text-xs">CUDA passthrough issues. Do NOT report bugs.</td>
+                    <td className="py-2 px-3 text-text-tertiary text-xs">CUDA passthrough issues. Do NOT report bugs. <span className="text-xs">(Symptom: <code className="font-mono">nvidia-smi</code> works, but Docker sees 0 GPUs)</span></td>
                   </tr>
                   <tr className="border-b border-white/5">
                     <td className="py-2 px-3">Docker</td>
@@ -110,12 +110,20 @@ export default function QuickStartPage() {
               <h2 className="text-2xl font-bold text-text-primary">Path A: The "Just Work" Method</h2>
             </div>
 
+            {/* Value Proposition */}
+            <div className="mb-8 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+              <p className="text-sm text-green-200">
+                <strong>💡 Why I switched:</strong> I tried Path B first and wasted a whole weekend fighting drivers. This costs ~$0.50/hour, which is cheaper than my hourly rate for debugging CUDA errors.
+              </p>
+            </div>
+
             <div className="space-y-8 border-l-2 border-green-500/20 pl-6 ml-2">
               {/* Step 0: Node.js Prerequisite */}
               <div>
                 <h3 className="text-lg font-medium text-text-primary mb-2">0. Install Node.js (NVM Required)</h3>
                 <p className="text-sm text-text-secondary mb-3">
                   <strong className="text-red-400">WARNING:</strong> If <code className="text-text-tertiary">node -v</code> returns &lt; 22, STOP. You are wasting your time.
+                  <span className="text-text-tertiary text-xs ml-2">(Expect: <code className="font-mono">Error [ERR_REQUIRE_ESM]</code> if you ignore this)</span>
                 </p>
                 <CodeBlock code={`# Install NVM (Node Version Manager)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
@@ -168,6 +176,10 @@ LLM_MODEL="deepseek-reasoner"`}
                 <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded">
                   <p className="text-xs text-yellow-200">
                     <strong>⚠️ Rate Limit Reality:</strong> Expect 429 errors or region latency during peak hours (9AM-11AM Beijing time). This is not a bug, it's the reality of DeepSeek.
+                    <span className="text-text-tertiary text-xs block mt-1">(Log: <code className="font-mono">HTTP 429 "x-ratelimit-remaining: 0"</code>)</span>
+                  </p>
+                  <p className="text-xs text-text-tertiary mt-2">
+                    Hitting limits? Read the <a href="/guides/how-to-use-deepseek-with-openclaw" className="text-blue-400 underline hover:text-blue-300">DeepSeek Configuration Guide</a>.
                   </p>
                 </div>
               </div>
@@ -191,11 +203,40 @@ LLM_MODEL="deepseek-reasoner"`}
               <p className="text-sm text-orange-200">
                 <strong>⚠️ Warning:</strong> If you have less than 16GB RAM, turn back now. Your system will freeze.
               </p>
+              <p className="text-xs text-text-tertiary mt-2">
+                Crashed already? Check the <a href="/guides/fix-openclaw-cuda-oom-errors" className="text-blue-400 underline hover:text-blue-300">CUDA OOM Fix</a> or <a href="/guides/fix-openclaw-json-mode-errors" className="text-blue-400 underline hover:text-blue-300">JSON Parsing Fix</a>.
+              </p>
+            </div>
+
+            {/* The Reality of Path B (Targeted Crash Log) */}
+            <div className="mb-8 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+              <h4 className="text-sm font-mono text-red-400 mb-3">The Reality of Path B:</h4>
+              <p className="text-sm text-text-secondary mb-3">
+                I started here. I thought my RTX 3090 (24GB) was enough. It wasn't.
+              </p>
+              <p className="text-sm text-text-secondary mb-3">
+                Here is the log from my first run:
+              </p>
+              <div className="bg-terminal-bg rounded p-3 mb-3">
+                <pre className="text-xs text-red-300 font-mono overflow-x-auto">
+                  <code>[2026-02-01 14:24:43] ERROR: CUDA out of memory. Tried to allocate 128.00 MiB
+(GPU 0; 23.99 GiB total capacity; 23.10 GiB already allocated; 0 bytes free)</code>
+                </pre>
+              </div>
+              <p className="text-sm text-red-200 font-semibold">
+                If you choose this path, you are choosing to debug physics.
+              </p>
+              <p className="text-xs text-text-tertiary mt-3">
+                Stuck on Path B? Read the <Link href="/troubleshooting" className="text-brand-primary hover:text-brand-hover underline">Real OOM Crash Logs →</Link>
+              </p>
             </div>
 
             {/* VRAM Budget Table */}
             <div className="mb-8 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
               <h4 className="text-sm font-mono text-red-400 mb-3">VRAM Budget Table (Do The Math):</h4>
+              <p className="text-xs text-text-tertiary mb-3 italic">
+                *Measured on: RTX 3070 Ti (8GB), Context=2048, Model=R1-Distill-8B*
+              </p>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-text-secondary">
                   <thead>
@@ -210,7 +251,7 @@ LLM_MODEL="deepseek-reasoner"`}
                       <td className="text-right py-2 px-2 font-mono text-red-300">~4.7 GB</td>
                     </tr>
                     <tr className="border-b border-white/5">
-                      <td className="py-2 px-2">KV Cache (context window)</td>
+                      <td className="py-2 px-2">KV Cache (at 2k ctx)</td>
                       <td className="text-right py-2 px-2 font-mono text-red-300">~1.5 GB</td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -232,6 +273,9 @@ LLM_MODEL="deepseek-reasoner"`}
                   </tfoot>
                 </table>
               </div>
+              <p className="text-xs text-text-tertiary mt-3">
+                Think 16GB means 16GB? Read the <Link href="/oom" className="text-brand-primary hover:text-brand-hover underline">Hardware Reality Check →</Link>
+              </p>
             </div>
 
             {/* Shortcut to Sanity (Conversion CTA) */}
@@ -255,7 +299,7 @@ LLM_MODEL="deepseek-reasoner"`}
 
             {/* Pre-flight Check (Suicide Prevention) */}
             <div className="mb-8 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-              <h4 className="text-sm font-mono text-red-400 mb-3">🛑 Suicide Prevention Checklist:</h4>
+              <h4 className="text-sm font-mono text-red-400 mb-3">🛑 Self-Destruct Checklist:</h4>
               <div className="space-y-3 text-sm text-text-secondary">
                 <p><strong>Step 1:</strong> Verify you actually have a GPU:</p>
                 <CodeBlock code="nvidia-smi
