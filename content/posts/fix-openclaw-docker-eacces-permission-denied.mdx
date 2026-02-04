@@ -17,7 +17,7 @@ seoKeywords: [
 
 > **TL;DR: The Instant Fix**
 >
-> **The Problem:** OpenClay running in Docker can't write to `openclaw.json` or volumes due to UID mismatch. The container runs as `node` (UID 1000) but files are owned by `root` (UID 0).
+> **The Problem:** OpenClaw running in Docker can't write to `openclaw.json` or volumes due to UID mismatch. The container runs as `node` (UID 1000) but files are owned by `root` (UID 0).
 >
 > **The Error:** `EACCES: permission denied` when accessing `/home/node/.openclaw`
 >
@@ -45,7 +45,7 @@ Error: EACCES: permission denied, mkdir '/home/node/.openclaw'
 [Agent] Unable to initialize
 ```
 
-**Context:** This error occurs when OpenClay running in Docker tries to write configuration files or create directories but lacks permission.
+**Context:** This error occurs when OpenClaw running in Docker tries to write configuration files or create directories but lacks permission.
 
 **Observed Behavior:** Container starts but crashes when trying to save state or configuration.
 
