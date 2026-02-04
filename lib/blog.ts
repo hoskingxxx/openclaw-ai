@@ -147,6 +147,18 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     seoKeywords: ["openclaw arm crash", "cannot find module clipboard-linux-arm", "openclaw raspberry pi error", "@mariozechner/clipboard-linux-arm-gnueabihf not found", "openclaw linux arm error"],
   },
+  {
+    slug: "fix-openclaw-install-ps1-npm-enoent-windows",
+    canonicalPath: createCanonicalPath("fix-openclaw-install-ps1-npm-enoent-windows"),
+    title: "Fix 'npm error code ENOENT' in install.ps1 on Windows",
+    description: "Installer crashes with ENOENT? Refresh your PATH or reinstall Node.",
+    date: "2026-02-04",
+    author: "LazyDev",
+    tags: ["Troubleshooting", "Windows"],
+    category: "Troubleshooting",
+    featured: false,
+    seoKeywords: ["openclaw install.ps1 error", "npm error code enoent windows", "openclaw install failed"],
+  },
 ];
 
 // ============================================================================
