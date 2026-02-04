@@ -140,7 +140,7 @@ Sometimes the JSON appears "cut off" mid-response. This is typically a context w
 
 **Root Cause:** DeepSeek R1 hit its context limit mid-generation.
 
-> For a full breakdown of correct R1 parameters, check our **[DeepSeek R1 Configuration Guide](/posts/how-to-use-deepseek-with-openclaw)**.
+> For a full breakdown of correct R1 parameters, check our **[DeepSeek R1 Configuration Guide](/guides/how-to-use-deepseek-with-openclaw)**.
 
 **The Fix:**
 
@@ -153,7 +153,7 @@ Sometimes the JSON appears "cut off" mid-response. This is typically a context w
 
 2. **For Production Stability:**
 
-   Parsing is just one hurdle. If your hardware is also struggling, see our **[CUDA OOM Fix Guide](/posts/fix-openclaw-cuda-oom-errors)**.
+   Parsing is just one hurdle. If your hardware is also struggling, see our **[CUDA OOM Fix Guide](/guides/fix-openclaw-cuda-oom-errors)**.
 
    If you're consistently hitting context limits, consider upgrading to **High-Performance VPS Setup** with more VRAM. Local GPUs with limited VRAM (8GB or less) struggle with larger DeepSeek models.
 
@@ -221,9 +221,9 @@ print(response.parsed_json)  # Works!
 
 ## Related Fixes
 
-- [CVE-2026-25253: OpenClaw RCE Vulnerability Guide](/posts/openclaw-security-rce-cve-2026-25253) - Security considerations for production deployments
+- [CVE-2026-25253: OpenClaw RCE Vulnerability Guide](/guides/openclaw-security-rce-cve-2026-25253) - Security considerations for production deployments
 
-- [How to Fix OpenClaw OOM Errors](/posts/fix-openclaw-cuda-oom-errors) - VRAM optimization tips
+- [How to Fix OpenClaw OOM Errors](/guides/fix-openclaw-cuda-oom-errors) - VRAM optimization tips
 
 - **DeepSeek R1 Optimization Guide** *(Coming Soon)* - Context window and performance tuning
 

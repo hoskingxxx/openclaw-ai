@@ -80,7 +80,7 @@ LLM_API_KEY="ds-your-api-key-here"
 LLM_MODEL="deepseek-reasoner" # Uses R1 (Chain of Thought)
 ```
 
-> **Note:** DeepSeek is strict. If you see `Invalid JSON` errors in your logs, read our **[JSON Mode Fix Guide](/posts/fix-openclaw-json-mode-errors)** before you blame the model.
+> **Note:** DeepSeek is strict. If you see `Invalid JSON` errors in your logs, read our **[JSON Mode Fix Guide](/guides/fix-openclaw-json-mode-errors)** before you blame the model.
 
 > **🔒 SECURITY WARNING:** Never commit `.env` files to git. Keep API keys in your local `.env` file only. Add `.env` to `.gitignore`.
 
@@ -266,7 +266,7 @@ That was the moment I realized:
 
 *If you see this red text, stop "optimizing". It's physics. You are out of VRAM.*
 
-> If you are already seeing memory crashes, check our **[CUDA OOM Fix Guide](/posts/fix-openclaw-cuda-oom-errors)** for the specific config tweaks to squeeze it into 8GB.
+> If you are already seeing memory crashes, check our **[CUDA OOM Fix Guide](/guides/fix-openclaw-cuda-oom-errors)** for the specific config tweaks to squeeze it into 8GB.
 - MacBook Air running R1 8B: Ran but produced 3.2 tokens/sec (unusable for real work)
 - Multiple attempts to run full R1 on consumer GPUs all failed with OOM
 

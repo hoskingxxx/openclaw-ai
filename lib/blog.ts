@@ -66,14 +66,26 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "fix-openclaw-cuda-oom-errors",
     canonicalPath: createCanonicalPath("fix-openclaw-cuda-oom-errors"),
-    title: "How to fix OpenClaw CUDA out of memory (OOM) errors with DeepSeek R1",
-    description: "OpenClaw crashes with CUDA out of memory errors when running DeepSeek R1. Learn the difference between Model OOM and Agent Loop OOM, and how to fix both with quantization and hardware upgrades.",
+    title: "Fix OpenClaw CUDA OOM: The $0.50 Solution vs. The 4-Hour Debug",
+    description: "Stop fighting VRAM physics. Copy my config to fix OOM on RTX 3090, or see why renting an H100 is cheaper than your hourly rate.",
     date: "2026-02-03",
     author: "LazyDev",
     tags: ["CUDA", "OOM", "DeepSeek", "OpenClaw", "VRAM", "Troubleshooting"],
     category: "Troubleshooting",
     featured: false,
     seoKeywords: ["OpenClaw CUDA OOM", "DeepSeek R1 out of memory", "OpenClaw VRAM error", "CUDA out of memory fix", "GPU memory optimization"],
+  },
+  {
+    slug: "fix-openclaw-slow-inference",
+    canonicalPath: createCanonicalPath("fix-openclaw-slow-inference"),
+    title: "OpenClaw Slow Inference? Why 3.5s/token Is Normal (And How to Fix It)",
+    description: "OpenClaw generating at 3.5 seconds per token? That's painfully slow. Learn why Mac RAM bandwidth kills inference speed, and see the config that gets you to 100 t/s.",
+    date: "2026-02-04",
+    author: "LazyDev",
+    tags: ["Performance", "Slow", "Inference", "OpenClaw", "VRAM", "Troubleshooting"],
+    category: "Troubleshooting",
+    featured: false,
+    seoKeywords: ["OpenClaw slow", "OpenClaw inference speed", "OpenClaw 3s per token", "OpenClaw tokens per second", "why is OpenClaw so slow"],
   },
 ];
 
