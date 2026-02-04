@@ -35,10 +35,12 @@
 ### SEO Infrastructure
 - `app/robots.ts` - Robots.txt generator
 - `app/sitemap.ts` - Dynamic sitemap with blog posts
-- `app/icon.tsx` - Favicon generator
+- `app/icon.svg` - Lobster emoji favicon 🦞
+- `app/icon.tsx` - Favicon generator (PNG)
 - `app/apple-icon.tsx` - iOS icon
 - `app/manifest.ts` - PWA manifest
 - Breadcrumb schema on guide pages
+- `npm run check:links` - Linkinator crawler validation
 
 ### Analytics
 - Umami Analytics (ID: 5db90e55-9103-490f-8df0-9636a84942c8)
@@ -69,11 +71,17 @@
 | Slug | Title | Date | Category |
 |------|-------|------|----------|
 | `how-to-use-deepseek-with-openclaw` | Running OpenClaw with DeepSeek R1: The Unofficial, Battle-Tested Guide | 2026-02-01 | Tutorial |
+| `fix-openclaw-json-mode-errors` | DeepSeek R1 + OpenClaw: Fix JSON Mode Errors with Thinking Tags | 2026-02-03 | Troubleshooting |
+| `fix-openclaw-cuda-oom-errors` | Fix OpenClaw CUDA OOM Errors: DeepSeek R1 VRAM Guide | 2026-02-03 | Troubleshooting |
+| `openclaw-security-rce-cve-2026-25253` | CVE-2026-25253: OpenClaw RCE Vulnerability Security Guide | 2026-02-03 | Security |
 
-**Total Posts:** 1
+**Total Posts:** 4
 
 ### Content Files (in `content/posts/`)
 - `how-to-use-deepseek-with-openclaw.mdx`
+- `fix-openclaw-json-mode-errors.mdx`
+- `fix-openclaw-cuda-oom-errors.mdx`
+- `openclaw-security-rce-cve-2026-25253.mdx`
 
 ---
 

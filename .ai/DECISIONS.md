@@ -166,3 +166,35 @@
 - [ ] Whether to add comments to the site
 - [ ] Whether to create a newsletter
 - [ ] What to do with the openclaw-ai.org domain (DNS fix needed)
+
+---
+
+## 2026-02-03: Technical SEO & Branding Architecture
+
+### SEO Validation: Dynamic Crawling Over Static Analysis
+**Decision:** Adopted `linkinator` (dynamic crawling) over regex scripts for link validation.
+**Rationale:**
+- We value "Google's perspective" (runtime 404 checks) over static code analysis
+- Real crawler behavior matters more than code patterns
+- `npm run check:links` must pass before any deployment
+
+### Favicon Strategy: Code-First SVG
+**Decision:** Switched to Code-First SVG (`app/icon.svg`) instead of binary uploads.
+**Rationale:**
+- Uses "Lobster Emoji" 🦞 style to match OpenClaw brand identity
+- Editable as text, version-controllable
+- Next.js App Router auto-detects `app/icon.svg`
+
+### Crawler Silence Protocol
+**Decision:** Maintain a dummy `public/favicon.ico` (even if empty) to silence dumb crawlers.
+**Rationale:**
+- Even with `app/icon.svg`, crawlers blindly request `/favicon.ico` at root
+- Providing a file (0-byte) stops 404 errors from polluting logs
+- Keeps SEO check green
+
+### Monetization UX: No Bridge Pages
+**Decision:** Rejected "Coming Soon" placeholder pages. Use **Bold Text** placeholders instead.
+**Rationale:**
+- Dead links hurt SEO and user experience
+- `**DeepSeek R1 Optimization** *(Coming Soon)*` is better than a 404
+- No "bridge pages" - convert placeholders to links when content exists

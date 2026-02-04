@@ -57,29 +57,32 @@ Expecting value: line 1 column 1 (char 0)
 
 ---
 
-## 3. Monetization (The "Shovel")
+## 3. Monetization & Affiliate Strategy
+
+### Phase-Based Approach
+
+**Phase 1 (No Links Yet):**
+- Use **Bold Text** for product names only
+- Do NOT use broken links or `[PLACEHOLDERS]`
+- Format: `**DigitalOcean H100** *(Coming Soon)*`
+- Never create "bridge pages" or dead links
+
+**Phase 2 (Links Active):**
+- Once affiliate approval is granted
+- Convert Bold Text into direct deep links
+- Update internal references to use actual URLs
+
+### Placement Strategy
+- Affiliate recommendations go in the "Solution" section
+- Frame as technical recommendation, NOT sales pitch
+- Example: "To avoid OOM with 32B models, we recommend **High-Performance VPS** for dedicated VRAM."
+- Never before the technical solution - always after
 
 ### When to Mention VPS Solutions
 - **VRAM Limitations**: "Your 8GB GPU can't handle 32B models"
 - **CPU Bottlenecks**: "Local CPU inference is slow for production"
 - **Stability Concerns**: "Production deployments need dedicated resources"
 - **Isolation Needs**: "Run AI workloads separately from your main machine"
-
-### Affiliate Link Placeholders
-Use these exact placeholders:
-```markdown
-[AFFILIATE_LINK: DigitalOcean] - $200 credit, 4GB RAM from $24/mo
-[AFFILIATE_LINK: Vultr] - Performance optimized, 4GB RAM from $22/mo
-[AFFILIATE_LINK: Linode] - Linux-friendly, 4GB RAM from $20/mo
-[AFFILIATE_LINK: Hetzner] - Budget option, 4GB RAM from €10/mo
-```
-
-### Soft-Sell Framing
-```markdown
-**For Production Stability:**
-If you're running OpenClaw in production, consider a VPS with dedicated VRAM.
-[AFFILIATE_LINK: DigitalOcean]
-```
 
 ---
 

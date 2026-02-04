@@ -139,3 +139,25 @@ When creating a new guide:
 ❌ Using arbitrary color values
 ❌ Creating blog routes (use /guides)
 ❌ Publishing .ai/ files directly (use generate-context.js)
+
+---
+
+## Deployment & Quality Assurance
+
+### The "Green Check" Rule
+**BEFORE any `git push` to production, you MUST:**
+1. Run `npm run check:links` (in a separate terminal while `npm run dev` is active)
+2. Verify ZERO failures (even favicon.ico 404s count)
+3. Fix any broken links before pushing
+
+### Zero 404 Policy
+- If `check:links` reports ANY failure, do not push
+- Fix it first
+- Internal links must match real file slugs
+- External links must be live
+
+### Internal Linking Protocol
+- **Never guess slugs** - Always read `lib/blog.ts` or check file structure
+- Confirm destination URL exists before linking
+- Use `canonicalPath` from `lib/blog.ts` for internal links
+- For placeholder content: use bold text with *(Coming Soon)*, not broken links

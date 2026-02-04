@@ -1,0 +1,29 @@
+[SCREEN 1: THE ERROR]
+Error: CUDA out of memory. Tried to allocate 20.00 MiB.
+GPU 0 has a total capacity of 24.00 GiB of which 0 bytes is free.
+[PROCESS EXITED] Agent crashed during reasoning chain.
+
+[SCREEN 2: THE FIX]
+// config.json
+{
+  "num_ctx": 4096,  // <--- REDUCE THIS
+  "n_gpu_layers": 20 // <--- LOWER THIS
+}
+
+[SCREEN 3: THE REALITY]
+Still crashing?
+Your model is too big for your card.
+Stop debugging physics.
+
+DeepSeek R1 32B needs ~24GB VRAM.
+Your RTX 3060 has 12GB.
+
+[SCREEN 4: THE $0.50 SOLUTION]
+Option A: Spend 4 hours debugging quantization
+Option B: Rent an H100 for $0.50/hour
+
+You do the math.
+
+[SCREEN 5: CALL TO ACTION]
+LINK IN BIO for $200 Free Cloud Credit
+Run OpenClaw at 100 t/s. No OOM. No headache.
