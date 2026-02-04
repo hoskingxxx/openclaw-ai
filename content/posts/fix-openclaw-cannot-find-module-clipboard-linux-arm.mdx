@@ -1,6 +1,6 @@
 ---
 title: "Fix 'Cannot find module @mariozechner/clipboard-linux-arm-gnueabihf' in OpenClaw"
-description: "OpenClaw crashes on Linux ARM? It's a missing native clipboard module. Here is the npm upgrade fix and workaround."
+description: "OpenClaw crashes on Linux ARM? It's a missing native clipboard module. Here is the OpenClaw upgrade fix and Docker workaround."
 date: "2026-02-04"
 author: "LazyDev"
 tags: ["Troubleshooting", "Linux", "ARM", "Node.js"]
@@ -22,8 +22,8 @@ seoKeywords: [
 > **The Error:** `Error: Cannot find module '@mariozechner/clipboard-linux-arm-gnueabihf'`
 >
 > **The Solution:**
-> 1. **Quick Fix:** Upgrade npm to v9+ (includes ARM prebuilds)
-> 2. **Workaround:** Use the fallback pure-JS clipboard
+> 1. **Quick Fix:** Upgrade OpenClaw to latest version (dependency is now optional)
+> 2. **Workaround:** Use Docker (bypass native dependencies)
 >
 > **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
 
@@ -73,129 +73,79 @@ On Linux ARM (aarch64), if the npm version is old (< 9.0.0), it may:
 
 ---
 
-## Solution A: Upgrade npm (The Fix)
+## Solution A: Upgrade OpenClaw (Recommended)
 
-The easiest fix is to upgrade npm to version 9.0.0 or later, which includes ARM prebuilds.
+The clipboard dependency was made optional in newer versions of OpenClaw. Upgrading is the cleanest fix.
 
-### Step 1: Check Current npm Version
-
-```bash
-# Check npm version
-npm --version
-
-# If below 9.0.0, upgrade needed
-# Output example: v8.19.4 (too old)
-```
-
-### Step 2: Upgrade npm
+### Step 1: Check Current Version
 
 ```bash
-# Using npm itself
-npm install -g npm@latest
+# Check current OpenClaw version
+openclaw --version
 
-# Or using Node.js installer
-# Download latest LTS from https://nodejs.org/
+# Or if installed via npm
+npm list -g openclaw
 ```
 
-### Step 3: Clear npm Cache and Reinstall
+### Step 2: Upgrade OpenClaw
 
 ```bash
-# Clear npm cache
-npm cache clean --force
+# Uninstall old version
+npm uninstall -g openclaw
 
-# Remove node_modules
-rm -rf node_modules package-lock.json
+# Install latest version
+npm install -g openclaw@latest
 
-# Reinstall OpenClaw
-npm install @m1heng/openclaw
-
-# Or using npx
-npx openclaw start
-```
-
-### Step 4: Verify Clipboard Module Loads
-
-```bash
-# Test if clipboard works
-node -e "require('@mariozechner/clipboardy'); console.log('Clipboard OK');"
-
-# Should output: Clipboard OK
-```
-
----
-
-## Solution B: Use Pure-JS Clipboard Fallback
-
-If upgrading npm doesn't work or you're stuck on an old Node version, use the fallback clipboard package.
-
-### Step 1: Install Clipboardy (Pure-JS)
-
-```bash
-# Clipboardy is the pure-JS fallback, works on any architecture
-npm install clipboardy
-```
-
-### Step 2: Configure OpenClaw to Use Clipboardy
-
-```javascript
-// In your OpenClaw config
-const clipboardy = require('clipboardy');
-
-// Use clipboardy instead of @mariozechner/clipboard
-clipboardy.writeSync('Your text here');
-
-const text = clipboardy.readSync();
-```
-
-### Step 3: Update OpenClaw Config
-
-```javascript
-// openclaw_config.json
-{
-  "clipboardModule": "clipboardy",
-  "clipboardOptions": {
-    "copyWithoutFormat": true
-  }
-}
-```
-
----
-
-## Solution C: Build from Source (Last Resort)
-
-If prebuilts don't exist for your ARM version, compile from source.
-
-### Step 1: Install Build Tools
-
-```bash
-# Ubuntu/Debian
-sudo apt-get update
-sudo apt-get install -y build-essential python3
-
-# Alpine Linux
-apk add build-base python3
-```
-
-### Step 2: Build Module
-
-```bash
-# Clone the clipboard repository
-git clone https://github.com/mariozechner/clipboardy.git
-cd clipboardy
-
-# Build for ARM
-npm rebuild
-npm install
-
-# Install globally
-npm install -g .
+# Or using npx (always runs latest)
+npx openclaw@latest start
 ```
 
 ### Step 3: Verify Installation
 
 ```bash
-node -e "require('clipboardy'); console.log('Clipboardy OK');"
+# Check version again
+openclaw --version
+
+# Start OpenClaw
+openclaw start
+
+# Should work without clipboard errors
 ```
+
+**Why This Works:** Newer versions of OpenClaw made the clipboard dependency optional. If it can't load, OpenClaw continues without clipboard functionality instead of crashing.
+
+---
+
+## Solution B: Use Docker (Bypass Native Dependencies)
+
+If upgrading doesn't work or you need immediate results, Docker bypasses all native module issues.
+
+### Step 1: Create Dockerfile
+
+```dockerfile
+FROM node:18-alpine
+
+# Install OpenClaw
+RUN npm install -g openclaw
+
+# Set working directory
+WORKDIR /app
+
+# Everything works in Linux container
+CMD ["openclaw"]
+```
+
+### Step 2: Build and Run
+
+```bash
+# Build image
+docker build -t openclaw-arm .
+
+# Run container
+docker run -it --rm openclaw-arm
+```
+
+**Why This Works:** Docker creates an isolated environment where OpenClaw runs without ARM-specific native dependencies.
 
 ---
 
@@ -205,7 +155,7 @@ node -e "require('clipboardy'); console.log('Clipboardy OK');"
 >
 > Every hour you spend rebuilding modules, searching for ARM-compatible packages, or debugging architecture mismatches is an hour you're not shipping.
 >
-> **调试 ARM 兼容性非常耗时。x86 VPS 开箱即用。**
+> **Debugging ARM compatibility is a huge time sink. x86 VPS just works.**
 
 ### Local ARM vs Cloud VPS Comparison
 
@@ -230,32 +180,28 @@ node -e "require('clipboardy'); console.log('Clipboardy OK');"
 uname -m
 # Output: aarch64 (ARM64)
 
-# 2. Check current npm version
-npm --version
-# If below 9.0.0, upgrade needed
+# 2. Check current OpenClaw version
+openclaw --version
+# Or: npm list -g openclaw
 
-# 3. Upgrade npm
-npm install -g npm@latest
+# 3. Uninstall old version
+npm uninstall -g openclaw
 
-# 4. Clear cache and reinstall
-npm cache clean --force
-cd /path/to/openclaw
-npm install
+# 4. Install latest version
+npm install -g openclaw@latest
 
-# 5. Verify clipboard works
-npx openclaw start
+# 5. Verify it works
+openclaw start
+# Should start without clipboard errors
 ```
 
-### Docker for ARM (Alternative)
+### Docker Alternative (Instant Fix)
 
 ```dockerfile
 FROM node:18-alpine
 
 # Install OpenClaw
 RUN npm install -g openclaw
-
-# Install clipboardy (works on all architectures)
-RUN npm install clipboardy
 
 # Set working directory
 WORKDIR /app
@@ -278,16 +224,16 @@ docker run -it --rm openclaw-arm
     <h3 itemProp="name">Q: Why does this happen on Raspberry Pi but not x86?</h3>
     <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
       <p itemProp="text">
-        <strong>A:</strong> The clipboard package only includes prebuilt binaries for x86/x86_64. On ARM (aarch64), npm tries to find an ARM binary, fails, and doesn't fall back to pure-JS properly. npm 9+ fixed this fallback behavior.
+        <strong>A:</strong> The clipboard package only includes prebuilt binaries for x86/x86_64. On ARM (aarch64), the package tries to load an ARM binary that doesn't exist. Newer OpenClaw versions made this dependency optional to fix this issue.
       </p>
     </div>
   </div>
 
   <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
-    <h3 itemProp="name">Q: Will upgrading npm break my other projects?</h3>
+    <h3 itemProp="name">Q: Will upgrading OpenClaw break my configuration?</h3>
     <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
       <p itemProp="text">
-        <strong>A:</strong> Usually not. npm maintains backward compatibility. However, you may need to update package-lock.json in your projects. Test in a clean directory first before upgrading globally.
+        <strong>A:</strong> Usually not. OpenClaw maintains backward compatibility for config files. Your <code>openclaw.json</code> should work with newer versions. Backup your config before upgrading just in case.
       </p>
     </div>
   </div>
@@ -302,10 +248,10 @@ docker run -it --rm openclaw-arm
   </div>
 
   <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
-    <h3 itemProp="name">Q: What if I'm stuck on an old Node version?</h3>
+    <h3 itemProp="name">Q: What if I can't upgrade OpenClaw?</h3>
     <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
       <p itemProp="text">
-        <strong>A:</strong> Use the pure-JS <code>clipboardy</code> package as a workaround. It doesn't have native dependencies and works on any architecture. Performance is acceptable for most clipboard operations.
+        <strong>A:</strong> Use Docker. It creates an isolated Linux environment that bypasses ARM native module issues entirely. See <strong>Solution B</strong> above for Docker setup.
       </p>
     </div>
   </div>
@@ -314,7 +260,7 @@ docker run -it --rm openclaw-arm
     <h3 itemProp="name">Q: Is this specific to OpenClaw?</h3>
     <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
       <p itemProp="text">
-        <strong>A:</strong> No. Any app using <code>@mariozechner/clipboard</code> on Linux ARM will have this issue. OpenClaw is just one affected application. Upgrade npm to v9+ to fix it system-wide.
+        <strong>A:</strong> No. Any app using <code>@mariozechner/clipboard</code> on Linux ARM will have this issue. OpenClaw fixed it by making the dependency optional. Other apps may still have this problem.
       </p>
     </div>
   </div>
@@ -336,6 +282,6 @@ docker run -it --rm openclaw-arm
 
 > **Bottom Line:** ARM compatibility issues are time sinks.
 >
-> Upgrade npm to v9+ for the quick fix, or use x86 VPS to avoid ARM debugging entirely.
+> Upgrade OpenClaw to the latest version for the quick fix, or use x86 VPS to avoid ARM debugging entirely.
 >
 > **[Deploy on Vultr (H100/A100 Ready)](https://www://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
