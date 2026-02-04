@@ -346,17 +346,27 @@ export default function TroubleshootingPage() {
             </p>
           </section>
 
-          {/* Bottom CTA - Soft */}
-          <div className="glass-card p-8 text-center">
-            <h3 className="text-xl font-bold text-text-primary mb-4">
-              Still stuck? Read the full crash logs.
-            </h3>
-            <p className="text-text-secondary mb-6">
-              The OOM page has detailed logs, "Things I tried" sections, and the math on VRAM budgets.
-            </p>
-            <Button href="/oom" variant="secondary">
-              Read Full OOM Logs →
-            </Button>
+          {/* Bottom CTA for Frustrated Debuggers */}
+          <div className="mt-16 mb-8 p-8 border border-orange-500/20 bg-orange-500/5 rounded-2xl text-center">
+            <div className="mx-auto max-w-2xl">
+              <h3 className="text-2xl font-bold tracking-tight text-text-primary mb-3">
+                Still broken?
+              </h3>
+              <p className="text-text-secondary mb-6 text-lg">
+                Stop debugging environment issues. Rent a clean Linux box and deploy in minutes.
+              </p>
+              <a
+                href="https://www.vultr.com/?ref=9863490"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium transition-all rounded-lg bg-[#FF4500] text-white hover:bg-[#FF4500]/90 hover:scale-105 shadow-lg shadow-orange-500/20"
+              >
+                Deploy on Vultr ($100 Free Credit) →
+              </a>
+              <p className="mt-4 text-xs text-text-tertiary">
+                *Save 4+ hours of debugging for less than $0.10/hour.
+              </p>
+            </div>
           </div>
 
         </div>
