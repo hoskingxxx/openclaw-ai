@@ -1,0 +1,316 @@
+---
+title: "Fix 'Failed to start CLI: Error: spawn npm ENOENT' in OpenClaw"
+description: "See the 'spawn npm ENOENT' error? It means Node/NPM is missing or not in your PATH. Here is the instant fix for Mac, Linux, and Docker."
+date: "2026-02-04"
+author: "LazyDev"
+tags: ["Troubleshooting", "Environment", "Node.js"]
+category: "Troubleshooting"
+featured: false
+seoKeywords: [
+  "openclaw npm error",
+  "spawn npm enoent",
+  "openclaw nodejs missing",
+  "openclaw cli failed to start"
+]
+---
+
+> **TL;DR: The Instant Fix**
+>
+> **The Problem:** OpenClaw can't find `npm` to execute CLI commands. Either Node.js isn't installed, or it's not in your PATH.
+>
+> **The Error:** `Error: spawn npm ENOENT`
+>
+> **The Solution:**
+> 1. **Check if Node is installed:** `node --version`
+> 2. **Add npm to PATH:** Export Node binary directory to PATH
+> 3. **Or:** Use a VPS where everything is pre-configured
+>
+> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
+
+---
+
+## The Log: What You're Seeing
+
+**The Error:**
+
+```bash
+[2026-02-04 10:23:45] INFO: Starting OpenClaw agent...
+[2026-02-04 10:23:45] ERROR: Failed to start CLI
+Error: spawn npm ENOENT
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:283:19)
+    at onErrorNT (node:internal/child_process:477:11)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+[Agent] Unable to execute tool: run_command
+[System] CLI initialization failed
+```
+
+**Context:** This error occurs when OpenClaw tries to execute `npm` commands but can't find the `npm` executable.
+
+**Observed Behavior:** OpenClaw starts loading, then immediately crashes when it tries to use any CLI-based tool.
+
+---
+
+## Why This Happens (It's Not a Bug)
+
+This is an **Environment Configuration Mismatch**.
+
+OpenClaw's CLI tools assume:
+- **Node.js is installed** on your system
+- **`npm` is accessible** via PATH
+- **Permissions allow** executing subprocesses
+
+But your setup has:
+- **Node.js not installed** OR
+- **Node not in PATH** OR
+- **Wrong Node version** (< 18.x)
+
+**The error `ENOENT` means "Error NO ENTry" — the system cannot find the file you asked it to execute.**
+
+### Common Scenarios
+
+| Scenario | Why It Fails |
+|----------|--------------|
+| **Fresh OS install** | Node.js not installed |
+| **Multiple Node versions** | Wrong Node version in PATH |
+| **Docker container** | Node not installed in container |
+| **Windows** | Node installed but PATH not updated |
+| **macOS with Homebrew** | Homebrew binaries not in PATH |
+
+---
+
+## Solution A: Verify Node Installation
+
+**Step 1: Check if Node is installed**
+
+```bash
+# Check Node version
+node --version
+
+# Check npm version
+npm --version
+
+# Check which npm is being used
+which npm
+```
+
+**Expected Output:**
+```
+v18.x.x or higher
+9.x.x or higher
+/usr/local/bin/npm  (or similar)
+```
+
+**If you get `command not found`:** Node.js is not installed.
+
+**Step 2: Install Node.js (if missing)**
+
+```bash
+# macOS (Homebrew)
+brew install node
+
+# Ubuntu/Debian
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Windows
+# Download from: https://nodejs.org/
+```
+
+**Step 3: Add Node to PATH (if installed but not found)**
+
+```bash
+# Find your Node installation
+# Common locations:
+# macOS Homebrew: /opt/homebrew/bin/
+# Linux: /usr/local/bin/ or /usr/bin/
+# Windows: C:\Program Files\nodejs\
+
+# Add to PATH (macOS/Linux)
+export PATH="/opt/homebrew/bin:$PATH"
+
+# Make it permanent (add to ~/.zshrc or ~/.bashrc)
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+---
+
+## Solution B: The Docker Fix
+
+If you're running OpenClaw in Docker, Node.js must be installed **inside the container**.
+
+**Dockerfile example:**
+
+```dockerfile
+FROM node:18-alpine
+
+# Install OpenClaw
+RUN npm install -g openclaw
+
+# Set working directory
+WORKDIR /app
+
+# This ensures npm is available
+CMD ["openclaw"]
+```
+
+**Verify npm is in container:**
+
+```bash
+# Build and run
+docker build -t openclaw-cli .
+docker run -it openclaw-cli sh
+
+# Inside container, verify:
+which npm
+# Should output: /usr/local/bin/npm
+```
+
+---
+
+## Solution C: The VPS Fix (Recommended)
+
+Why debug environment issues when you can have everything pre-configured?
+
+### Local vs Cloud Comparison
+
+| Issue | Local Setup | Cloud VPS (Vultr) |
+|-------|-------------|-------------------|
+| **Node.js** | Manual install required | Pre-installed |
+| **npm in PATH** | Requires shell config | Already configured |
+| **Version conflicts** | nvm needed | Isolated environment |
+| **Setup Time** | 30-60 minutes | 60 seconds |
+| **Ongoing maintenance** | You manage it | Host manages it |
+
+### The ROI Calculation
+
+**Local "Free" Setup:**
+- Install Node.js: 10 minutes
+- Debug PATH issues: 20 minutes
+- Handle version conflicts: 30 minutes
+- **Total time:** 60 minutes × $50/hr = **$50**
+
+**Cloud Setup:**
+- Create instance: 2 minutes
+- Everything pre-installed
+- **Total time:** 2 minutes = **$0**
+
+---
+
+## The "Survival" Recommendation
+
+> **Stop debugging environment issues.**
+>
+> Every hour you spend fixing PATH, installing Node versions, or debugging Docker is an hour you're not shipping.
+>
+> **The smart choice:** Deploy on a VPS where everything just works.
+
+**[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
+
+---
+
+## Complete Working Example
+
+### Verified Configuration
+
+```bash
+# 1. Verify Node installation
+node --version  # Should be v18+
+npm --version   # Should be v9+
+
+# 2. Verify npm in PATH
+which npm       # Should show path to npm
+
+# 3. Start OpenClaw
+openclaw start
+
+# Success: [INFO] CLI initialized successfully
+```
+
+### Docker Configuration
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  openclaw:
+    image: node:18-alpine
+    working_dir: /app
+    command: npx openclaw start
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+```
+
+---
+
+## FAQ
+
+<div itemScope itemType="https://schema.org/FAQPage">
+  <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+    <h3 itemProp="name">Q: I have Node installed but still get ENOENT?</h3>
+    <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+      <p itemProp="text">
+        <strong>A:</strong> Node is installed but not in your PATH. Run <code>which npm</code> to see if it's found. If not, add Node's binary directory to your PATH environment variable.
+      </p>
+    </div>
+  </div>
+
+  <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+    <h3 itemProp="name">Q: What Node version does OpenClaw need?</h3>
+    <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+      <p itemProp="text">
+        <strong>A:</strong> OpenClaw requires Node.js 18.x or higher. Older versions may have compatibility issues with CLI tool execution.
+      </p>
+    </div>
+  </div>
+
+  <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+    <h3 itemProp="name">Q: Can I use nvm to manage Node versions?</h3>
+    <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+      <p itemProp="text">
+        <strong>A:</strong> Yes, but ensure nvm is loaded in your shell before starting OpenClaw. Add <code>source ~/.nvm/nvm.sh</code> to your shell config if needed.
+      </p>
+    </div>
+  </div>
+
+  <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+    <h3 itemProp="name">Q: Why does this happen in Docker?</h3>
+    <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+      <p itemProp="text">
+        <strong>A:</strong> Your Docker image doesn't have Node.js installed. Use a Node-based image (like <code>node:18-alpine</code>) or install Node in your Dockerfile.
+      </p>
+    </div>
+  </div>
+
+  <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+    <h3 itemProp="name">Q: Is a VPS worth it just to avoid environment issues?</h3>
+    <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+      <p itemProp="text">
+        <strong>A:</strong> Yes. VPS instances come with Node.js pre-installed and properly configured. You save hours of environment setup and ongoing maintenance.
+      </p>
+    </div>
+  </div>
+</div>
+
+---
+
+## Related Fixes
+
+- [Fix OpenClaw CUDA OOM Errors](/guides/fix-openclaw-cuda-oom-errors) - VRAM optimization guide
+
+- [Fix OpenClaw Slow Inference](/guides/fix-openclaw-slow-inference) - Bandwidth explained
+
+- [Fix OpenClaw JSON Parsing Errors](/guides/fix-openclaw-json-mode-errors) - DeepSeek thinking tags
+
+- **[Running OpenClaw with DeepSeek R1: Complete Guide](/guides/how-to-use-deepseek-with-openclaw)** - Setup and configuration
+
+---
+
+> **Bottom Line:** This isn't an OpenClaw bug. It's an environment configuration issue.
+>
+> Fix it locally in 30 minutes, or deploy on a VPS in 30 seconds.
+>
+> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*

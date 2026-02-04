@@ -87,6 +87,18 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     seoKeywords: ["OpenClaw slow", "OpenClaw inference speed", "OpenClaw 3s per token", "OpenClaw tokens per second", "why is OpenClaw so slow"],
   },
+  {
+    slug: "fix-openclaw-spawn-npm-enoent",
+    canonicalPath: createCanonicalPath("fix-openclaw-spawn-npm-enoent"),
+    title: "Fix 'Failed to start CLI: Error: spawn npm ENOENT' in OpenClaw",
+    description: "See the 'spawn npm ENOENT' error? It means Node/NPM is missing or not in your PATH. Here is the instant fix for Mac, Linux, and Docker.",
+    date: "2026-02-04",
+    author: "LazyDev",
+    tags: ["Troubleshooting", "Environment", "Node.js"],
+    category: "Troubleshooting",
+    featured: false,
+    seoKeywords: ["openclaw npm error", "spawn npm enoent", "openclaw nodejs missing", "openclaw cli failed to start"],
+  },
 ];
 
 // ============================================================================
