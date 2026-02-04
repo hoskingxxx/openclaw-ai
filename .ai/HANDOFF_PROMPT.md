@@ -1,17 +1,19 @@
 # 🔴 AI Handoff Prompt - Copy & Paste This to ChatGPT/Gemini
 
+**最后更新：** 2026-02-04
+
 ---
 
 ## 项目上下文：OpenClaw AI Survival Guide
 
-你正在接手一个 **Next.js 14** 网站，专注于帮助开发者运行 DeepSeek R1 本地部署。
+你正在接手一个 **Next.js 16.1.6** 网站，专注于帮助开发者运行 DeepSeek R1 本地部署，解决 OOM 错误和性能问题。
 
 ### 📁 先读这些文件（按顺序）：
 
-1. `.ai/INDEX.md` - 项目总览和当前阶段
-2. `.ai/STATE.md` - 技术栈、路由、内容库
-3. `.ai/RULES.md` - 编码规范和约束
-4. `.ai/DECISIONS.md` - 已做的战略决策
+1. `.ai/PROJECT_STATE.md` - 技术栈、路由、内容库（最新状态）
+2. `.ai/RULES.md` - 编码规范和约束
+3. `.ai/DECISIONS.md` - 已做的战略决策
+4. `.ai/CONTENT_PLAYBOOK.md` - 内容创作指南
 5. `lib/blog.ts` - 所有文章的元数据（SSOT）
 
 ### 🎯 当前状态
@@ -19,19 +21,24 @@
 **项目阶段：** Profit-First（盈利优先）- 停止复杂系统建设，专注流量和变现
 
 **最新重点：**
-- SEO 焦点：AEO（Answer Engine Optimization）+ Security（安全）
-- 当前流量策略：抓住"OpenClaw RCE 漏洞"搜索趋势
+- SEO 焦点：AEO（Answer Engine Optimization）+ 长尾故障关键词
+- 当前流量策略：抓住"OpenClaw slow"、"CUDA OOM"等痛点搜索
 - 变现路径：VPS 联盟链接（DigitalOcean 等）
+- 标题策略：点击诱饵优化（提升 US CTR）
 
 ### 📊 内容现状
 
-**已发布文章：**
-1. `openclaw-security-rce-cve-2026-25253` - **Featured** - RCE 漏洞警告（带 VPS 推荐）
-2. `how-to-use-deepseek-with-openclaw` - DeepSeek R1 部署教程
+**已发布文章（5 篇）：**
+1. `openclaw-security-rce-cve-2026-25253` - **Featured** - RCE 漏洞警告（含 VPS 推荐）
+2. `how-to-use-deepseek-with-openclaw` - DeepSeek R1 部署教程（实战测试）
+3. `fix-openclaw-json-mode-errors` - JSON 解析错误修复（DeepSeek thinking tags 问题）
+4. `fix-openclaw-cuda-oom-errors` - CUDA OOM 错误修复（点击诱饵标题）
+5. `fix-openclaw-slow-inference` - 推理速度慢问题（新增，针对 #6 排名关键词）
 
 **内容位置：**
 - MDX 源文件：`content/posts/*.mdx`
 - 元数据配置：`lib/blog.ts`（添加新文章必须更新这里）
+- 视频脚本：`assets/video_scripts/*.txt`（非技术用户录制用）
 
 ### 🛠️ 技术栈
 

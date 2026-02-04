@@ -2,7 +2,7 @@
 
 **Project ID:** openclaw-ai-org
 **Current Phase:** Profit-First (Traffic + Monetization)
-**Last Updated:** 2026-02-03
+**Last Updated:** 2026-02-04
 
 ---
 
@@ -12,13 +12,16 @@
 **目标：** 停止复杂系统建设，专注流量获取和变现
 
 **当前策略：**
-1. 抓住搜索趋势（Security/RCE 漏洞类关键词）
+1. 抓住长尾关键词（"OpenClaw slow"、CUDA OOM、JSON 错误）
 2. 通过 VPS 联盟链接变现
-3. 快速内容迭代，不求完美
+3. 点击诱饵标题优化（提升 US CTR）
 
-### 最新发布内容
+### 最新发布内容（5 篇文章）
 - **Featured:** `openclaw-security-rce-cve-2026-25253` - RCE 漏洞警告（含 VPS 推荐）
-- **Archive:** `how-to-use-deepseek-with-openclaw` - DeepSeek 部署教程
+- `how-to-use-deepseek-with-openclaw` - DeepSeek R1 部署教程（实战测试）
+- `fix-openclaw-json-mode-errors` - JSON 解析错误修复
+- `fix-openclaw-cuda-oom-errors` - CUDA OOM 错误修复（点击诱饵标题）
+- `fix-openclaw-slow-inference` - 推理速度慢问题（新增）
 
 ---
 
