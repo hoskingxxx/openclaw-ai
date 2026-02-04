@@ -86,6 +86,11 @@ export const metadata: Metadata = {
   verification: {
     google: "lnGWnIBkynUpLCvSTBaQo1UJC_tBWsGTlrZKZOzMkUM",
   },
+
+  // Other verification tags
+  other: {
+    "impact-site-verification": "2f0e85b6-bb5c-46ca-81f2-11cb12e06541",
+  },
 };
 
 export default function RootLayout({
