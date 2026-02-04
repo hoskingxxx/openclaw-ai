@@ -1,7 +1,7 @@
 # OpenClaw Project State
 
-**Last Updated:** 2026-02-03
-**Status:** Live on Vercel
+**Last Updated:** 2026-02-04
+**Status:** Live on Vercel (fixed build error)
 
 ---
 
@@ -71,17 +71,19 @@
 | Slug | Title | Date | Category |
 |------|-------|------|----------|
 | `how-to-use-deepseek-with-openclaw` | Running OpenClaw with DeepSeek R1: The Unofficial, Battle-Tested Guide | 2026-02-01 | Tutorial |
-| `fix-openclaw-json-mode-errors` | DeepSeek R1 + OpenClaw: Fix JSON Mode Errors with Thinking Tags | 2026-02-03 | Troubleshooting |
-| `fix-openclaw-cuda-oom-errors` | Fix OpenClaw CUDA OOM Errors: DeepSeek R1 VRAM Guide | 2026-02-03 | Troubleshooting |
-| `openclaw-security-rce-cve-2026-25253` | CVE-2026-25253: OpenClaw RCE Vulnerability Security Guide | 2026-02-03 | Security |
+| `fix-openclaw-json-mode-errors` | How to fix OpenClaw JSON Mode parsing errors with DeepSeek R1 | 2026-02-03 | Troubleshooting |
+| `fix-openclaw-cuda-oom-errors` | Fix OpenClaw CUDA OOM: The $0.50 Solution vs. The 4-Hour Debug | 2026-02-03 | Troubleshooting |
+| `openclaw-security-rce-cve-2026-25253` | CVE-2026-25253: OpenClaw RCE Vulnerability - Critical Security Alert | 2026-02-03 | Security |
+| `fix-openclaw-slow-inference` | OpenClaw Slow Inference? Why 3.5s/token Is Normal (And How to Fix It) | 2026-02-04 | Troubleshooting |
 
-**Total Posts:** 4
+**Total Posts:** 5
 
 ### Content Files (in `content/posts/`)
 - `how-to-use-deepseek-with-openclaw.mdx`
 - `fix-openclaw-json-mode-errors.mdx`
 - `fix-openclaw-cuda-oom-errors.mdx`
 - `openclaw-security-rce-cve-2026-25253.mdx`
+- `fix-openclaw-slow-inference.mdx` (NEW)
 
 ---
 
@@ -108,6 +110,14 @@
    - Resolved by simplifying `next.config.mjs`
    - Hardcoded `FEATURED_POST_PATH` in `app/page.tsx`
 
+3. **404 Error Rate (FIXED):** 31% 404 error rate in GSC due to broken internal links
+   - Fixed 12 internal links pointing to `/posts/` instead of `/guides/`
+   - All internal links now correctly point to `/guides/{slug}`
+
+4. **Build Error (FIXED):** Missing `lucide-react` dependency caused build failures
+   - Installed `lucide-react` package
+   - Build now succeeds on Vercel
+
 ---
 
 ## SEO KEYWORDS TARGETING
@@ -125,6 +135,7 @@
 - "OpenClaw OOM"
 - "Ollama crash"
 - "MPS out of memory"
+- "OpenClaw slow" (ranking #6 - now has dedicated page)
 
 ---
 
@@ -141,4 +152,6 @@
 
 1. Create more content targeting long-tail DeepSeek keywords
 2. Fix DNS for openclaw-ai.org domain
-3. Add "OpenClaw security" content
+3. Add "OpenClaw security" content (DONE - CVE article published)
+4. Create video content using scripts in `assets/video_scripts/`
+5. Set up affiliate links for VPS recommendations

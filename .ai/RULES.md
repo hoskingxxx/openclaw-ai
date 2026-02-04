@@ -1,6 +1,6 @@
 # OpenClaw Project Rules
 
-**Last Updated:** 2026-02-03
+**Last Updated:** 2026-02-04
 
 ---
 
@@ -139,6 +139,7 @@ When creating a new guide:
 ❌ Using arbitrary color values
 ❌ Creating blog routes (use /guides)
 ❌ Publishing .ai/ files directly (use generate-context.js)
+❌ Using `/posts/` in internal links (always use `/guides/`)
 
 ---
 

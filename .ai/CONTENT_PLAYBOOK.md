@@ -1,6 +1,6 @@
 # OpenClaw Content Playbook (AEO Edition)
 
-**Last Updated:** 2026-02-03
+**Last Updated:** 2026-02-04
 **Phase:** Profit-First (Traffic + Monetization)
 
 ---
@@ -8,12 +8,24 @@
 ## 1. The "Answer-First" Rule
 
 ### H1 Title Format
+**Two Approaches:**
+
+**A. Question-Based (Informational Intent)**
 - Must be a specific user question
 - Examples:
   - ✅ "How to fix JSON errors in OpenClaw?"
   - ✅ "Why does OpenClaw crash with DeepSeek R1?"
   - ❌ "JSON Error Guide" (too vague)
   - ❌ "Understanding OpenClaw" (not a question)
+
+**B. Clickbait-Optimized (High CTR Intent)**
+- Use for troubleshooting/fix articles
+- Format: "Problem: The Comparison/Hook"
+- Examples:
+  - ✅ "Fix OpenClaw CUDA OOM: The $0.50 Solution vs. The 4-Hour Debug"
+  - ✅ "OpenClaw Slow Inference? Why 3.5s/token Is Normal (And How to Fix It)"
+  - ❌ "How to fix OOM" (too boring, low CTR)
+- **Rule:** Frontmatter `title` can be clickbait, `description` remains SEO-accurate
 
 ### First 100 Words: Direct Answer (TL;DR)
 - **No fluff, no intro**
@@ -259,6 +271,35 @@ When passing to another AI:
 2. Send them the latest `lib/blog.ts`
 3. Include current task context
 4. Remind them of the guardrails
+
+---
+
+## 13. Video Script Assets
+
+### Purpose
+Text-based scripts for non-technical user to record tutorial videos
+
+### Location
+`assets/video_scripts/{topic}_script.txt`
+
+### Format
+```text
+[SCREEN 1: TITLE]
+Content to display on screen
+
+[SCREEN 2: TITLE]
+Content to display on screen
+```
+
+### Guidelines
+- Max 5-6 screens per video
+- Start with the error/problem
+- Show the fix (config or code)
+- End with CTA (affiliate link)
+- User records screen, overlays text
+
+### Existing Scripts
+- `oom_fix_script.txt` - CUDA OOM error fix (5 screens)
 
 ---
 

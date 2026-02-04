@@ -1,6 +1,6 @@
 # OpenClaw Project Decisions Log
 
-**Last Updated:** 2026-02-03
+**Last Updated:** 2026-02-04
 
 ---
 
@@ -166,6 +166,42 @@
 - [ ] Whether to add comments to the site
 - [ ] Whether to create a newsletter
 - [ ] What to do with the openclaw-ai.org domain (DNS fix needed)
+
+---
+
+## 2026-02-04: Clickbait Title Strategy & Keyword Expansion
+
+### Clickbait Title Optimization
+**Decision:** Update article titles to be more compelling for US CTR
+**Rationale:**
+- US CTR was low (1.7%) with descriptive titles
+- Test: "How to fix..." → "Fix X: The $0.50 Solution vs. The 4-Hour Debug"
+- Balance between clickbait and technical accuracy
+- Keep frontmatter descriptive for SEO, title catchy for clicks
+
+**Example:**
+- Old: "How to fix OpenClaw CUDA out of memory (OOM) errors with DeepSeek R1"
+- New: "Fix OpenClaw CUDA OOM: The $0.50 Solution vs. The 4-Hour Debug"
+
+### "OpenClaw Slow" Keyword Targeting
+**Decision:** Create dedicated page for "openclaw slow" keyword (ranking #6)
+**Rationale:**
+- GSC shows ranking #6 without dedicated content
+- High intent: users experiencing slow inference
+- Capture traffic from Mac users with bandwidth limitations
+- Bridge to VPS affiliate recommendations
+
+**Content Created:** `fix-openclaw-slow-inference.mdx`
+
+### Video Script Asset Creation
+**Decision:** Create text-based video scripts for non-technical user to record
+**Rationale:**
+- User is not a developer but can record screen
+- Scripts provide exact text to display on screen
+- Format: [SCREEN X] with error logs, config snippets, CTAs
+- Location: `assets/video_scripts/`
+
+**First Script:** OOM fix script (5 screens, error → fix → CTA)
 
 ---
 
