@@ -5,9 +5,11 @@ import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
 import { Button } from "@/components/ui/Button";
 import RealityCheck from "@/components/RealityCheck";
+import { HashScrollFix } from "@/components/HashScrollFix";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
@@ -146,6 +148,9 @@ export default async function BlogPostPage({
   return (
     <>
       <Navigation />
+      <Suspense fallback={null}>
+        <HashScrollFix />
+      </Suspense>
       <main className="min-h-screen">
         {/* Breadcrumbs */}
         <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-8">
@@ -195,21 +200,23 @@ export default async function BlogPostPage({
             dangerouslySetInnerHTML={{ __html: postContent.content }}
           />
 
-          {/* Article Bottom CTA */}
-          <div className="mt-12 p-6 bg-muted rounded-xl border border-border">
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              Bookmark this site
-            </h3>
-            <p className="text-muted-foreground mb-4">
-              New fixes are added as soon as they appear on GitHub Issues.
-            </p>
-            <Link
-              href="/guides/openclaw-error-index"
-              className="text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
-            >
-              Browse Error Index &rarr;
-            </Link>
-          </div>
+          {/* Article Bottom CTA - Skip on error index page */}
+          {post.slug !== "openclaw-error-index" && (
+            <div className="mt-12 p-6 bg-muted rounded-xl border border-border">
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                Bookmark this site
+              </h3>
+              <p className="text-muted-foreground mb-4">
+                New fixes are added as soon as they appear on GitHub Issues.
+              </p>
+              <Link
+                href="/guides/openclaw-error-index"
+                className="text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
+              >
+                Browse Error Index &rarr;
+              </Link>
+            </div>
+          )}
         </article>
       </main>
 
