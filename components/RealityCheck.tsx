@@ -1,7 +1,63 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AlertTriangle, XCircle, CheckCircle2, ShieldAlert, Zap } from "lucide-react";
+
+declare global {
+  interface Window {
+    umami?:
+      | ((eventName: string, eventData?: Record<string, unknown>) => unknown)
+      | {
+          track?: (eventName: string, eventData?: Record<string, unknown>) => unknown;
+        };
+  }
+}
+
+function sleep(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
+
+async function trackEvent(
+  eventName: string,
+  eventData?: Record<string, unknown>,
+  opts?: { retryDelayMs?: number; maxRetries?: number }
+): Promise<boolean> {
+  if (typeof window === "undefined") return false;
+
+  const retryDelayMs = opts?.retryDelayMs ?? 500;
+  const maxRetries = opts?.maxRetries ?? 5;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const umami = window.umami;
+
+    if (umami) {
+      try {
+        if (typeof umami === "function") {
+          umami(eventName, eventData);
+        } else if (typeof umami === "object" && typeof umami.track === "function") {
+          umami.track(eventName, eventData);
+        } else {
+          throw new Error("window.umami has unsupported shape");
+        }
+
+        if (process.env.NODE_ENV === "development") {
+          // eslint-disable-next-line no-console
+          console.log(`[umami] tracked: ${eventName}`, eventData ?? {});
+        }
+
+        return true;
+      } catch {
+        // Fall through to retry
+      }
+    }
+
+    if (attempt < maxRetries) {
+      await sleep(retryDelayMs);
+    }
+  }
+
+  return false;
+}
 
 const MODEL_OPTIONS = [
   { id: "deepseek-r1-distill-14b", label: "DeepSeek R1 Distill (14B)" },
@@ -35,6 +91,13 @@ export default function RealityCheck() {
   const [model, setModel] = useState(MODEL_OPTIONS[1].id);
   const [vram, setVram] = useState(VRAM_OPTIONS[1].id);
   const [env, setEnv] = useState(ENV_OPTIONS[1].id);
+
+  const impressionTimerRef = useRef<number | null>(null);
+  const impressionSentRef = useRef(false);
+
+  const hwStatus = DECISION_MATRIX[model]?.[vram] || "red";
+  const isLocal = env.includes("local");
+  const securityRisk = isLocal;
 
   const hwStatus = DECISION_MATRIX[model]?.[vram] || "red";
   const isLocal = env.includes("local");
@@ -101,6 +164,66 @@ export default function RealityCheck() {
   // 增加 UTM 参数和 Umami 事件追踪
   const affLink = `https://www.vultr.com/?ref=9863490&utm_source=openclaw_tool&utm_medium=calculator&utm_campaign=${securityRisk ? 'security_risk' : hwStatus}`;
 
+  const handleImpression = useCallback(async () => {
+    if (impressionSentRef.current) return;
+    impressionSentRef.current = true;
+
+    const path =
+      typeof window !== "undefined"
+        ? `${window.location.pathname}${window.location.search}${window.location.hash}`
+        : "";
+
+    await trackEvent(
+      "reality_check_impression",
+      {
+        path,
+        model,
+        env,
+        vram,
+        status: securityRisk ? "security_risk" : hwStatus,
+      },
+      { retryDelayMs: 500, maxRetries: 5 }
+    );
+  }, [model, env, vram, hwStatus, securityRisk]);
+
+  const handleClick = useCallback(async () => {
+    const path =
+      typeof window !== "undefined"
+        ? `${window.location.pathname}${window.location.search}${window.location.hash}`
+        : "";
+
+    await trackEvent(
+      "reality_check_click",
+      {
+        path,
+        model,
+        env,
+        vram,
+        status: securityRisk ? "security_risk" : hwStatus,
+        target: "vultr_affiliate",
+      },
+      { retryDelayMs: 500, maxRetries: 5 }
+    );
+  }, [model, env, vram, hwStatus, securityRisk]);
+
+  useEffect(() => {
+    // 1s debounce for impression to avoid spam + allow analytics script to load.
+    if (impressionTimerRef.current) {
+      window.clearTimeout(impressionTimerRef.current);
+    }
+
+    impressionTimerRef.current = window.setTimeout(() => {
+      void handleImpression();
+    }, 1000);
+
+    return () => {
+      if (impressionTimerRef.current) {
+        window.clearTimeout(impressionTimerRef.current);
+        impressionTimerRef.current = null;
+      }
+    };
+  }, [handleImpression]);
+
   return (
     <div className="my-8 p-6 rounded-xl border border-border bg-card shadow-sm text-card-foreground">
       <div className="flex items-center gap-2 mb-6">
@@ -162,9 +285,7 @@ export default function RealityCheck() {
           href={affLink}
           target="_blank"
           rel="noopener noreferrer"
-          data-umami-event={content.event}
-          data-umami-event-model={model}
-          data-umami-event-env={env}
+          onClick={() => void handleClick()}
           className={`inline-flex w-full items-center justify-center rounded-md px-4 py-3 text-sm font-bold transition-transform hover:scale-[1.01] ${content.btn}`}
         >
           {content.btnText}
