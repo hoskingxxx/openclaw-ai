@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { usePathname } from "next/navigation"
 
 // ============================================================================
 // SINGLE SOURCE OF TRUTH: VRAM Calculator Data
@@ -38,8 +39,18 @@ const DECISION_MATRIX: Record<string, Record<string, Status>> = {
 export function VramCalculator() {
   const [model, setModel] = useState("deepseek-r1-distill-32b")
   const [vram, setVram] = useState("12gb")
+  const pathname = usePathname()
 
   const status = DECISION_MATRIX[model]?.[vram] || "yellow" // Safety fallback
+
+  // Determine intent from status
+  const getIntent = (s: Status) => {
+    switch(s) {
+      case "red": return "hardware_blocked"
+      case "yellow": return "performance_concern"
+      case "green": return "hardware_ready"
+    }
+  }
 
   // Helper for content based on status
   const getContent = (s: Status) => {
@@ -113,6 +124,10 @@ export function VramCalculator() {
             href={`https://www.vultr.com/?ref=9863490&utm_source=calculator&utm_medium=cta&utm_content=${status}`}
             target="_blank"
             rel="noopener noreferrer"
+            data-umami-event="vultr_click"
+            data-umami-event-post={pathname?.split("/").filter(Boolean).pop() || ""}
+            data-umami-event-source="vram_calc_result"
+            data-umami-event-intent={getIntent(status)}
             className={`inline-block px-4 py-2 rounded-md text-sm font-bold transition-colors ${content.btn}`}
           >
             {content.cta}

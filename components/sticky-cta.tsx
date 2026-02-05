@@ -44,6 +44,10 @@ export function StickyCTA() {
           href="https://www.vultr.com/?ref=9863490"
           target="_blank"
           rel="noopener noreferrer"
+          data-umami-event="vultr_click"
+          data-umami-event-post={pathname?.split("/").filter(Boolean).pop() || ""}
+          data-umami-event-source="sticky_banner"
+          data-umami-event-intent="environment_frustration"
           className="px-4 py-2 bg-[#FF4500] hover:bg-[#FF4500]/90 text-white text-sm font-bold rounded shadow-lg transition-transform hover:scale-105"
         >
           Deploy Now →

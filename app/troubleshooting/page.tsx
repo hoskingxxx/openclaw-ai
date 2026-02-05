@@ -359,6 +359,10 @@ export default function TroubleshootingPage() {
                 href="https://www.vultr.com/?ref=9863490"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-umami-event="vultr_click"
+                data-umami-event-post="troubleshooting"
+                data-umami-event-source="page_cta"
+                data-umami-event-intent="environment_frustration"
                 className="inline-flex items-center justify-center px-6 py-3 text-base font-medium transition-all rounded-lg bg-[#FF4500] text-white hover:bg-[#FF4500]/90 hover:scale-105 shadow-lg shadow-orange-500/20"
               >
                 Deploy on Vultr (Limited Time Promotion) →

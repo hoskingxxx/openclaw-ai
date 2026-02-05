@@ -188,19 +188,31 @@ export default function RealityCheck() {
         ? `${window.location.pathname}${window.location.search}${window.location.hash}`
         : "";
 
+    // Extract slug from path (e.g., /guides/hardware-requirements-reality-check → hardware-requirements-reality-check)
+    const slug = path.split("/").filter(Boolean).pop() || "";
+
+    // Determine source and intent from current state
+    let source: string;
+    let intent: string;
+
+    if (securityRisk) {
+      source = "realitycheck_unsafe";
+      intent = "security_concern";
+    } else {
+      source = `realitycheck_${hwStatus}`;
+      intent = hwStatus === "green" ? "deployment_ready" : hwStatus === "yellow" ? "performance_concern" : "hardware_blocked";
+    }
+
     await trackEvent(
-      "reality_check_click",
+      "vultr_click",
       {
-        path,
-        model,
-        env,
-        vram,
-        status: securityRisk ? "security_risk" : hwStatus,
-        target: "vultr_affiliate",
+        post: slug,
+        source,
+        intent,
       },
       { retryDelayMs: 500, maxRetries: 5 }
     );
-  }, [model, env, vram, hwStatus, securityRisk]);
+  }, [hwStatus, securityRisk]);
 
   useEffect(() => {
     // 1s debounce for impression to avoid spam + allow analytics script to load.
@@ -291,6 +303,10 @@ export default function RealityCheck() {
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => void handleClick()}
+          data-umami-event="vultr_click"
+          data-umami-event-post={typeof window !== "undefined" ? window.location.pathname.split("/").pop() : ""}
+          data-umami-event-source={securityRisk ? "realitycheck_unsafe" : `realitycheck_${hwStatus}`}
+          data-umami-event-intent={securityRisk ? "security_concern" : hwStatus === "green" ? "deployment_ready" : hwStatus === "yellow" ? "performance_concern" : "hardware_blocked"}
           className={`inline-flex w-full items-center justify-center rounded-md px-4 py-3 text-sm font-bold transition-transform hover:scale-[1.01] ${content.btn}`}
         >
           {content.btnText}

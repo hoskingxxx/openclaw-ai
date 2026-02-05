@@ -52,6 +52,10 @@ export default function HomePage() {
               href="https://www.vultr.com/?ref=9863490"
               target="_blank"
               rel="noopener noreferrer"
+              data-umami-event="vultr_click"
+              data-umami-event-post="homepage"
+              data-umami-event-source="hero_section"
+              data-umami-event-intent="getting_started"
               className="px-8 py-4 text-lg font-bold text-[#FF4500] bg-orange-50 dark:bg-orange-900/20 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 border border-orange-200 dark:border-orange-800 transition-all flex items-center gap-2"
             >
               🚀 Rent Cloud GPU

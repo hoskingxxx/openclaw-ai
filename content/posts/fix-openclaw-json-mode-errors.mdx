@@ -18,7 +18,7 @@ seoKeywords: ["OpenClaw JSON error", "DeepSeek R1 JSON mode", "OpenClaw parsing 
 > ```python
 > system_prompt = """You are a JSON-only API. Output valid JSON directly.
 > Do NOT use <think> tags. Do NOT include any text before or after the JSON.
-> Format: {"key": "value"}"""
+> Format: json object like {"key": "value"}"""
 >
 > ollama run deepseek-r1:latest --system "$system_prompt"
 > ```
@@ -40,13 +40,16 @@ Expecting value: line 1 column 1 (char 0)
   at OpenClawResponse.processResponse (/lib/processor.js:42)
 
 Full Response (The Killer):
-```
+````
 
 Okay, the user wants a JSON response. I should format it properly...
+```
+json
 {"result": "actual data here"}
 ```
+````
 
-*Context: This proves exactly why `JSON.parse` fails at "line 1 column 1" (because `<` is not `{`).*
+*Context: This proves exactly why `JSON.parse` fails at "line 1 column 1" (because `<` is not an opening brace).*
 
 The actual JSON is valid, but OpenClaw can't parse it because of the `<think>` tags surrounding it.
 
@@ -77,7 +80,7 @@ Override the default system prompt to explicitly disable thinking:
 ```bash
 ollama run deepseek-r1:latest \
   --system "You are a JSON API. Output ONLY valid JSON. No thinking tags, no markdown code blocks, no explanations. Just the JSON." \
-  --prompt 'Generate {"status": "ok"}'
+  --prompt 'Generate JSON with status ok'
 ```
 
 ### Option 2: Pre-Process the Response
@@ -177,10 +180,10 @@ Rules:
 3. No markdown code blocks
 4. No explanations before/after JSON
 
-Format: {"key": "value"}"""
+Format: json object like {"key": "value"}"""
 
 # Now JSON responses will parse correctly
-response = client.generate("Return {'status': 'ok', 'message': 'test'}")
+response = client.generate("Return json object with status ok")
 print(response.parsed_json)  # Works!
 ```
 

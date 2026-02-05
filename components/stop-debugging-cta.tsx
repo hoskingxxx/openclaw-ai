@@ -1,6 +1,10 @@
+"use client"
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export function StopDebuggingCTA() {
+  const pathname = usePathname();
   return (
     <div className="my-12 p-6 border-l-4 border-[#FF4500] bg-slate-50 dark:bg-slate-900/50 rounded-r-lg shadow-sm">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -21,6 +25,10 @@ export function StopDebuggingCTA() {
             href="https://www.vultr.com/?ref=9863490"
             target="_blank"
             rel="noopener noreferrer"
+            data-umami-event="vultr_click"
+            data-umami-event-post={pathname?.split("/").filter(Boolean).pop() || ""}
+            data-umami-event-source="stop_debugging_box"
+            data-umami-event-intent="time_wasted"
             className="inline-flex items-center px-6 py-3 text-sm font-bold text-white transition-all bg-[#FF4500] rounded hover:bg-[#FF4500]/90 hover:scale-105 shadow-md"
           >
             Deploy on Vultr (Cloud GPU) →

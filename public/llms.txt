@@ -29,25 +29,16 @@ Focus: OOM error fixes, CUDA troubleshooting, VRAM optimization.
 ---
 
 ## Rules
-- Static content only (no user accounts, no databases)
-- No SaaS features (focus on education/authority)
-- "Survivor" tone (write for developers who crashed systems)
-- Honest, technical, no exaggerated claims
-- Vultr affiliate: `https://www.vultr.com/?ref=9863490`
-- CTA: "Deploy on Vultr (Limited Time Offer)"
-- Server Components by default
-- Semantic HTML, mobile-first
-- No "any" types in TypeScript
-- Semantic CSS variables only (`bg-background`, `text-primary`)
+- Static content only
+- No SaaS features (yet)
+- No hype content
+- Survivor tone - honest, technical
 
 ---
 
 ## Recent Decisions
-- # OpenClaw Project Decisions Log
-- STRATEGIC DECISIONS
-- CONTENT DECISIONS
 
 ---
 
-Generated: 2026-02-05T08:04:05.988Z
+Generated: 2026-02-05T11:00:38.469Z
 Schema: 1.0
