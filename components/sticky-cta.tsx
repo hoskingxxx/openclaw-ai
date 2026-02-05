@@ -1,6 +1,8 @@
 "use client"
+
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { trackVultrClick } from "@/lib/tracking"
 
 export function StickyCTA() {
   const [isVisible, setIsVisible] = useState(false)
@@ -20,6 +22,11 @@ export function StickyCTA() {
   }, [isExcludedPage])
 
   if (!isVisible || isExcludedPage) return null
+
+  // Get post slug for UTM
+  const postSlug = pathname?.split("/").filter(Boolean).pop() || "";
+  const utmContent = "sticky_banner";
+  const affLink = `https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=${postSlug}&utm_content=${utmContent}`;
 
   return (
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-[400px] z-50 animate-in slide-in-from-bottom-5">
@@ -41,13 +48,16 @@ export function StickyCTA() {
         </div>
 
         <a
-          href="https://www.vultr.com/?ref=9863490"
+          href={affLink}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackVultrClick({ placement: "sticky_banner", ctaId: "sticky_deploy_button", postSlug, utmContent })}
           data-umami-event="vultr_click"
-          data-umami-event-post={pathname?.split("/").filter(Boolean).pop() || ""}
-          data-umami-event-source="sticky_banner"
-          data-umami-event-intent="environment_frustration"
+          data-umami-event-post={postSlug}
+          data-umami-event-placement="sticky_banner"
+          data-umami-event-cta-id="sticky_deploy_button"
+          data-umami-event-ref="9863490"
+          data-umami-event-utm_content={utmContent}
           className="px-4 py-2 bg-[#FF4500] hover:bg-[#FF4500]/90 text-white text-sm font-bold rounded shadow-lg transition-transform hover:scale-105"
         >
           Deploy Now →

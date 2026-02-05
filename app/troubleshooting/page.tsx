@@ -311,9 +311,15 @@ export default function TroubleshootingPage() {
                           Renting a GPU isn't giving up—it's basic math. Stop debugging hardware and start shipping code.
                         </p>
                         <a
-                          href="https://www.vultr.com/products/gpu/"
+                          href="https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=troubleshooting&utm_content=low_vram_trap"
                           target="_blank"
                           rel="noopener noreferrer"
+                          data-umami-event="vultr_click"
+                          data-umami-event-post="troubleshooting"
+                          data-umami-event-placement="low_vram_trap"
+                          data-umami-event-cta-id="trap_rent_gpu_button"
+                          data-umami-event-ref="9863490"
+                          data-umami-event-utm_content="low_vram_trap"
                           className="inline-flex items-center gap-2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
                         >
                           Rent a GPU (~billable hourly rates) →
@@ -356,13 +362,15 @@ export default function TroubleshootingPage() {
                 Stop debugging environment issues. Rent a clean Linux box and deploy in minutes.
               </p>
               <a
-                href="https://www.vultr.com/?ref=9863490"
+                href="https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=troubleshooting&utm_content=page_cta"
                 target="_blank"
                 rel="noopener noreferrer"
                 data-umami-event="vultr_click"
                 data-umami-event-post="troubleshooting"
-                data-umami-event-source="page_cta"
-                data-umami-event-intent="environment_frustration"
+                data-umami-event-placement="page_cta"
+                data-umami-event-cta-id="page_deploy_button"
+                data-umami-event-ref="9863490"
+                data-umami-event-utm_content="page_cta"
                 className="inline-flex items-center justify-center px-6 py-3 text-base font-medium transition-all rounded-lg bg-[#FF4500] text-white hover:bg-[#FF4500]/90 hover:scale-105 shadow-lg shadow-orange-500/20"
               >
                 Deploy on Vultr (Limited Time Promotion) →

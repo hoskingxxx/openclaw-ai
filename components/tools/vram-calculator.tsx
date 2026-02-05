@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { usePathname } from "next/navigation"
+import { trackVultrClick } from "@/lib/tracking"
 
 // ============================================================================
 // SINGLE SOURCE OF TRUTH: VRAM Calculator Data
@@ -80,6 +81,9 @@ export function VramCalculator() {
   }
 
   const content = getContent(status)
+  const postSlug = pathname?.split("/").filter(Boolean).pop() || ""
+  const utmContent = `vram_calc_${status}`
+  const affLink = `https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=${postSlug}&utm_content=${utmContent}`
 
   return (
     <div className="my-8 p-6 border border-border rounded-xl bg-card shadow-sm">
@@ -121,13 +125,17 @@ export function VramCalculator() {
 
         {content.cta && (
           <a
-            href={`https://www.vultr.com/?ref=9863490&utm_source=calculator&utm_medium=cta&utm_content=${status}`}
+            href={affLink}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackVultrClick({ placement: "vram_calc", ctaId: `vram_calc_${status}_button`, verdict: status, postSlug, utmContent })}
             data-umami-event="vultr_click"
-            data-umami-event-post={pathname?.split("/").filter(Boolean).pop() || ""}
-            data-umami-event-source="vram_calc_result"
-            data-umami-event-intent={getIntent(status)}
+            data-umami-event-post={postSlug}
+            data-umami-event-placement="vram_calc"
+            data-umami-event-cta-id={`vram_calc_${status}_button`}
+            data-umami-event-verdict={status}
+            data-umami-event-ref="9863490"
+            data-umami-event-utm_content={utmContent}
             className={`inline-block px-4 py-2 rounded-md text-sm font-bold transition-colors ${content.btn}`}
           >
             {content.cta}

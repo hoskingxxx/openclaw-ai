@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AlertTriangle, XCircle, CheckCircle2, ShieldAlert, Zap } from "lucide-react";
+import { trackVultrClick } from "@/lib/tracking";
 
 declare global {
   interface Window {
@@ -168,8 +169,15 @@ export default function RealityCheck() {
   };
 
   const content = getContent();
-  // 增加 UTM 参数和 Umami 事件追踪
-  const affLink = `https://www.vultr.com/?ref=9863490&utm_source=openclaw_tool&utm_medium=calculator&utm_campaign=${securityRisk ? 'security_risk' : hwStatus}`;
+
+  // Determine verdict for tracking
+  const verdict = securityRisk ? ("unsafe" as const) : hwStatus;
+
+  // UTM content based on verdict
+  const utmContent = `realitycheck_${verdict}`;
+
+  // Affiliate link with standardized UTM parameters
+  const affLink = `https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=${verdict}&utm_content=${utmContent}`;
 
   const handleImpression = useCallback(async () => {
     if (impressionSentRef.current) return;
@@ -193,37 +201,19 @@ export default function RealityCheck() {
     );
   }, [model, env, vram, hwStatus, securityRisk]);
 
-  const handleClick = useCallback(async () => {
-    const path =
-      typeof window !== "undefined"
-        ? `${window.location.pathname}${window.location.search}${window.location.hash}`
-        : "";
+  const handleClick = useCallback(() => {
+    const slug = typeof window !== "undefined"
+      ? window.location.pathname.split("/").filter(Boolean).pop() || ""
+      : "";
 
-    // Extract slug from path (e.g., /guides/hardware-requirements-reality-check → hardware-requirements-reality-check)
-    const slug = path.split("/").filter(Boolean).pop() || "";
-
-    // Determine source and intent from current state
-    let source: string;
-    let intent: string;
-
-    if (securityRisk) {
-      source = "realitycheck_unsafe";
-      intent = "security_concern";
-    } else {
-      source = `realitycheck_${hwStatus}`;
-      intent = hwStatus === "green" ? "deployment_ready" : hwStatus === "yellow" ? "performance_concern" : "hardware_blocked";
-    }
-
-    await trackEvent(
-      "vultr_click",
-      {
-        post: slug,
-        source,
-        intent,
-      },
-      { retryDelayMs: 500, maxRetries: 5 }
-    );
-  }, [hwStatus, securityRisk]);
+    trackVultrClick({
+      placement: "reality_check",
+      ctaId: verdict === "unsafe" ? "rc_security_button" : `rc_${verdict}_button`,
+      verdict,
+      postSlug: slug,
+      utmContent: utmContent,
+    });
+  }, [verdict, utmContent]);
 
   useEffect(() => {
     // 1s debounce for impression to avoid spam + allow analytics script to load.
@@ -318,9 +308,12 @@ export default function RealityCheck() {
           rel="noopener noreferrer"
           onClick={() => void handleClick()}
           data-umami-event="vultr_click"
-          data-umami-event-post={typeof window !== "undefined" ? window.location.pathname.split("/").pop() : ""}
-          data-umami-event-source={securityRisk ? "realitycheck_unsafe" : `realitycheck_${hwStatus}`}
-          data-umami-event-intent={securityRisk ? "security_concern" : hwStatus === "green" ? "deployment_ready" : hwStatus === "yellow" ? "performance_concern" : "hardware_blocked"}
+          data-umami-event-post={typeof window !== "undefined" ? window.location.pathname.split("/").filter(Boolean).pop() : ""}
+          data-umami-event-placement="reality_check"
+          data-umami-event-cta-id={verdict === "unsafe" ? "rc_security_button" : `rc_${verdict}_button`}
+          {...verdict && { "data-umami-event-verdict": verdict }}
+          data-umami-event-ref="9863490"
+          data-umami-event-utm_content={utmContent}
           className={`inline-flex w-full items-center justify-center rounded-md px-4 py-3 text-sm font-bold transition-transform hover:scale-[1.01] ${content.btn}`}
         >
           {content.btnText}

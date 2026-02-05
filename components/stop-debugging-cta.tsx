@@ -2,9 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { trackVultrClick } from "@/lib/tracking";
 
 export function StopDebuggingCTA() {
   const pathname = usePathname();
+  const postSlug = pathname?.split("/").filter(Boolean).pop() || "";
+  const utmContent = "stop_debugging_box";
+  const affLink = `https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=${postSlug}&utm_content=${utmContent}`;
+
   return (
     <div className="my-12 p-6 border-l-4 border-[#FF4500] bg-slate-50 dark:bg-slate-900/50 rounded-r-lg shadow-sm">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -22,13 +27,16 @@ export function StopDebuggingCTA() {
         </div>
         <div className="flex flex-col items-end gap-2 shrink-0">
           <a
-            href="https://www.vultr.com/?ref=9863490"
+            href={affLink}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackVultrClick({ placement: "stop_debugging_box", ctaId: "stop_debugging_button", postSlug, utmContent })}
             data-umami-event="vultr_click"
-            data-umami-event-post={pathname?.split("/").filter(Boolean).pop() || ""}
-            data-umami-event-source="stop_debugging_box"
-            data-umami-event-intent="time_wasted"
+            data-umami-event-post={postSlug}
+            data-umami-event-placement="stop_debugging_box"
+            data-umami-event-cta-id="stop_debugging_button"
+            data-umami-event-ref="9863490"
+            data-umami-event-utm_content={utmContent}
             className="inline-flex items-center px-6 py-3 text-sm font-bold text-white transition-all bg-[#FF4500] rounded hover:bg-[#FF4500]/90 hover:scale-105 shadow-md"
           >
             Deploy on Vultr (Cloud GPU) →
