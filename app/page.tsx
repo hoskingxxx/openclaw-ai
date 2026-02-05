@@ -3,6 +3,7 @@ import { Hero } from "@/components/features/Hero";
 import { Footer } from "@/components/features/Footer";
 import { Navigation } from "@/components/features/Navigation";
 import { Button } from "@/components/ui/Button";
+import { StopDebuggingCTA } from "@/components/stop-debugging-cta";
 
 // HARDCODED PATH - Nuclear fix for redirect loop
 // Updated to point to new security article
@@ -33,6 +34,31 @@ export default function HomePage() {
       <main>
         {/* Hero Section */}
         <Hero />
+
+        {/* Triage CTA */}
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+          <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+            {/* Action A: Diagnosis */}
+            <Link
+              href="/guides/openclaw-error-index"
+              className="px-8 py-4 text-lg font-bold text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-all flex items-center gap-2 border border-slate-700"
+            >
+              🔍 Find Your Error Code
+              <span className="text-xs font-normal opacity-70 block ml-2">(Ctrl+F Fix)</span>
+            </Link>
+
+            {/* Action B: Solution */}
+            <a
+              href="https://www.vultr.com/?ref=9863490"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 text-lg font-bold text-[#FF4500] bg-orange-50 dark:bg-orange-900/20 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 border border-orange-200 dark:border-orange-800 transition-all flex items-center gap-2"
+            >
+              🚀 Rent Cloud GPU
+              <span className="text-xs font-normal opacity-70 text-slate-600 dark:text-slate-400 block ml-2">(Stop OOM)</span>
+            </a>
+          </div>
+        </section>
 
         {/* The Fix You Probably Needed */}
         <section id="quick-fix" className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
