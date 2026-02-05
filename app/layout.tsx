@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { FAQStructuredData, SoftwareStructuredData, WebSiteStructuredData } from "@/components/SEO/StructuredData";
 import NextTopLoader from "nextjs-toploader";
+import { UmamiAnalytics } from "@/components/UmamiAnalytics";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -106,12 +107,8 @@ export default function RootLayout({
         <SoftwareStructuredData />
         <FAQStructuredData />
 
-        {/* Umami Analytics */}
-        <script
-          defer
-          src="https://analytics.umami.is/script.js"
-          data-website-id="5db90e55-9103-490f-8df0-9636a84942c8"
-        />
+        {/* Umami Analytics - with internal traffic filtering */}
+        <UmamiAnalytics />
       </head>
       <body className="font-sans antialiased">
         <NextTopLoader
