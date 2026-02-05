@@ -99,10 +99,6 @@ export default function RealityCheck() {
   const isLocal = env.includes("local");
   const securityRisk = isLocal;
 
-  const hwStatus = DECISION_MATRIX[model]?.[vram] || "red";
-  const isLocal = env.includes("local");
-  const securityRisk = isLocal;
-
   const getContent = () => {
     const baseBtn = "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20";
 
