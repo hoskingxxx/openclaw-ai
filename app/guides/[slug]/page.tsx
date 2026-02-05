@@ -14,6 +14,8 @@ import matter from "gray-matter";
 import { remark } from "remark";
 import remarkHtml from "remark-html";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
@@ -60,6 +62,55 @@ async function getPostContent(slug: string) {
 
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
+
+  // Sanitize schema - allow safe tags and attributes for Vultr affiliate links
+  const schema = {
+    ...defaultSchema,
+    tagNames: [
+      ...(defaultSchema.tagNames || []),
+      // Basic markdown tags
+      "p", "br", "strong", "em", "code", "pre", "blockquote",
+      "h1", "h2", "h3", "h4", "h5", "h6",
+      "ul", "ol", "li",
+      "a", "hr",
+      "div", "span",
+      "table", "thead", "tbody", "tr", "td", "th",
+    ],
+    attributes: {
+      ...(defaultSchema.attributes || {}),
+      // Allow className on common elements
+      p: ["className"],
+      div: ["className", "itemScope", "itemType", "itemProp", "itemscope"],
+      span: ["className", "itemScope", "itemType", "itemProp", "itemscope"],
+      code: ["className"],
+      pre: ["className"],
+      table: ["className"],
+      thead: ["className"],
+      tbody: ["className"],
+      tr: ["className"],
+      td: ["className"],
+      th: ["className"],
+      // Vultr affiliate link attributes
+      a: [
+        "href",
+        "title",
+        "target",
+        "rel",
+        // Umami tracking attributes
+        "data-umami-event",
+        "data-umami-event-post",
+        "data-umami-event-placement",
+        "data-umami-event-cta-id",
+        "data-umami-event-ref",
+        "data-umami-event-utm_content",
+        "data-umami-event-verdict",
+      ],
+    },
+    protocols: {
+      ...(defaultSchema.protocols || {}),
+      href: ["http", "https"],
+    },
+  };
 
   const processedContent = await remark()
     .use(remarkGfm)
