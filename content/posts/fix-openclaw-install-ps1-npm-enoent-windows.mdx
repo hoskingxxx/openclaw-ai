@@ -81,7 +81,18 @@ But on Windows, you're seeing:
 |-------|------------------------|----------------------|
 | **Prerequisite Check** | Queries Node.js version | Uses cached PATH, finds Node |
 | **npm Detection** | Queries npm version | Uses cached PATH, finds npm |
-| **Dependency Install** | Calls `npm install` | Tries to use npm from cached PATH → **ENOENT** |
+| **Dependency Install** | Calls `npm install` (may spawn git) | Tries to use npm/git from cached PATH → **ENOENT** |
+
+### Common Cause: Missing Git
+
+npm often tries to spawn `git` to fetch packages from GitHub. If `git.exe` is missing from PATH:
+
+```
+npm error syscall spawn git
+npm error code ENOENT
+```
+
+**The Fix:** Install Git for Windows and add it to PATH.
 
 The issue is that PowerShell caches the PATH environment variable. When you install Node.js, it updates PATH in the registry, but your open PowerShell session still has the old PATH.
 
@@ -107,7 +118,7 @@ exit
 
 This NEW PowerShell session will read the updated PATH from the registry.
 
-### Step 3: Verify npm is Actually Found
+### Step 3: Verify Toolchain (Node & Git)
 
 ```powershell
 # Check if npm is in your PATH
@@ -116,9 +127,23 @@ where.exe npm
 # Should output something like:
 # C:\Program Files\nodejs\npm.cmd
 
+# Check if Git is installed
+git --version
+
+# Should output something like:
+# git version 2.x.x
+
 # If you see "INFO: Could not find files for the given pattern(s)",
 # your PATH is still not updated. Restart your computer.
 ```
+
+> **If `git` command is not found:**
+>
+> OpenClaw needs Git to download dependencies. npm often tries to spawn `git` to fetch packages from GitHub. If `git.exe` is missing from PATH, Windows throws `ENOENT`.
+>
+> 👉 **Download Git for Windows:** https://git-scm.com/download/win
+>
+> *(Select "Run Git from the Windows Command Prompt" during install)*
 
 ### Step 4: Run install.ps1 Again
 
@@ -246,12 +271,15 @@ exit
 # 3. Open FRESH PowerShell
 # Press Win + X → Windows PowerShell
 
-# 4. Verify Node.js and npm are in PATH
+# 4. Verify Node.js, npm, and Git are in PATH
 node --version
 # Output: v18.x.x or higher
 
 npm --version
 # Output: 9.x.x or higher
+
+git --version
+# Output: git version 2.x.x
 
 where.exe npm
 # Output: C:\Program Files\nodejs\npm.cmd
