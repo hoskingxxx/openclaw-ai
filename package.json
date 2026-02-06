@@ -10,6 +10,7 @@
     "lint": "next lint",
     "validate": "tsx scripts/validate-build.ts",
     "check:links": "node scripts/check-links.mjs",
+    "check:constraints": "node scripts/check-mdx-naked-html.js && node scripts/check-globals-css-scope.js",
     "test": "vitest run",
     "test:watch": "vitest"
   },
