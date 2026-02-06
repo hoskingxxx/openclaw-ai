@@ -222,13 +222,23 @@ main[data-section="guides"] .prose a[data-link="brand"]:hover {
   text-decoration: underline;
 }
 
-/* Affiliate links in guides - force blue color */
+/* Affiliate links in guides - force blue color, even in blockquotes */
 main[data-section="guides"] a[data-link="affiliate"] {
   color: #60a5fa !important;
   text-decoration: none;
 }
 
 main[data-section="guides"] a[data-link="affiliate"]:hover {
+  color: #93c5fd !important;
+  text-decoration: underline;
+}
+
+/* IMPORTANT: Affiliate links in blockquotes specifically */
+main[data-section="guides"] .prose blockquote a[data-link="affiliate"] {
+  color: #60a5fa !important;
+}
+
+main[data-section="guides"] .prose blockquote a[data-link="affiliate"]:hover {
   color: #93c5fd !important;
   text-decoration: underline;
 }
