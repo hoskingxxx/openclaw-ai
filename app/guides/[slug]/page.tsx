@@ -109,7 +109,15 @@ async function getPostContent(slug: string): Promise<{
         "data-link",
         "data-cta",
       ],
-      "*": [...((defaultSchema.attributes || {})["*"] || []), classAttribute, "id"],
+      "*": [
+        ...((defaultSchema.attributes || {})["*"] || []),
+        classAttribute,
+        "id",
+        // Schema.org attributes for FAQ structured data
+        "itemscope",
+        "itemtype",
+        "itemprop",
+      ],
     },
     protocols: {
       ...(defaultSchema.protocols || {}),
