@@ -167,10 +167,10 @@ export default async function BlogPostPage({
         <HashScrollFix />
       </Suspense>
       <main className="min-h-screen">
-        {/* Single 960px Rail */}
-        <div className="mx-auto w-full max-w-[960px] px-4 sm:px-6 py-4">
-          {/* Breadcrumbs */}
-          <div className="py-8 pb-4">
+        {/* Single 960px Rail - NO padding on rail wrapper */}
+        <div className="mx-auto w-full max-w-[960px] py-4">
+          {/* Breadcrumbs - with padding */}
+          <div className="px-4 sm:px-6 py-8 pb-4">
             <Breadcrumbs
               items={[
                 { label: "Guides", href: "/guides" },
@@ -181,8 +181,8 @@ export default async function BlogPostPage({
 
           {/* Article */}
           <article>
-            {/* Article Header */}
-            <header className="mb-8">
+            {/* Article Header - with padding */}
+            <header className="px-4 sm:px-6 mb-8">
               <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
                 <span className="px-3 py-1 text-sm font-medium bg-brand-primary/20 text-brand-primary rounded flex-shrink-0">
                   {post.category}
@@ -208,30 +208,36 @@ export default async function BlogPostPage({
               </div>
             </header>
 
-            {/* RealityCheck Calculator - For specific articles */}
-            {(post.slug === "hardware-requirements-reality-check" || post.slug === "fix-openclaw-install-ps1-npm-enoent-windows") && <RealityCheck />}
+            {/* RealityCheck Calculator - For specific articles - with padding */}
+            <div className="px-4 sm:px-6">
+              {(post.slug === "hardware-requirements-reality-check" || post.slug === "fix-openclaw-install-ps1-npm-enoent-windows") && <RealityCheck />}
+            </div>
 
-            {/* Article Body */}
-            <div
-              className="glass-card w-full p-6 prose prose-invert prose-sm md:prose-base prose-max-w-none break-words"
-              dangerouslySetInnerHTML={{ __html: postContent.content }}
-            />
+            {/* Article Body - glass-card outer edge now aligns to 960px rail */}
+            <div className="px-4 sm:px-6">
+              <div
+                className="glass-card w-full p-6 prose prose-invert prose-sm md:prose-base prose-max-w-none break-words"
+                dangerouslySetInnerHTML={{ __html: postContent.content }}
+              />
+            </div>
 
-            {/* Article Bottom CTA - Skip on error index page */}
+            {/* Article Bottom CTA - Skip on error index page - with padding */}
             {post.slug !== "openclaw-error-index" && (
-              <div className="mt-12 p-6 bg-muted rounded-xl border border-border">
-                <h3 className="text-xl font-semibold text-foreground mb-2">
-                  Bookmark this site
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  New fixes are added as soon as they appear on GitHub Issues.
-                </p>
-                <Link
-                  href="/guides/openclaw-error-index"
-                  className="text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
-                >
-                  Browse Error Index &rarr;
-                </Link>
+              <div className="px-4 sm:px-6 mt-12">
+                <div className="p-6 bg-muted rounded-xl border border-border">
+                  <h3 className="text-xl font-semibold text-foreground mb-2">
+                    Bookmark this site
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    New fixes are added as soon as they appear on GitHub Issues.
+                  </p>
+                  <Link
+                    href="/guides/openclaw-error-index"
+                    className="text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    Browse Error Index &rarr;
+                  </Link>
+                </div>
               </div>
             )}
           </article>
