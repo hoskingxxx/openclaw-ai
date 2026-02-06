@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronRightIcon } from "@/components/icons";
 
 interface TableOfContentsProps {
@@ -11,50 +11,59 @@ interface TableOfContentsProps {
   }>;
 }
 
+const HEADER_OFFSET = 80;
+
+function scrollToId(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const top = window.scrollY + el.getBoundingClientRect().top - HEADER_OFFSET;
+  window.scrollTo({ top, behavior: "smooth" });
+
+  // keep URL shareable without triggering default jump
+  history.replaceState(null, "", `#${id}`);
+}
+
 export function TableOfContents({ items }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("");
 
+  const ids = useMemo(() => items.map((x) => x.id), [items]);
+
   useEffect(() => {
+    if (!ids.length) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (!visible.length) return;
+
+        // choose the one closest to top (stable)
+        visible.sort(
+          (a, b) => a.boundingClientRect.top - b.boundingClientRect.top
+        );
+
+        setActiveId((visible[0].target as HTMLElement).id);
       },
       { rootMargin: "-20% 0px -70% 0px" }
     );
 
-    items.forEach((item) => {
-      const element = document.getElementById(item.id);
-      if (element) observer.observe(element);
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
-  }, [items]);
+  }, [ids]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 80; // Navbar height
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-    }
+    scrollToId(id);
   };
 
   if (!items || items.length === 0) return null;
 
   return (
-    <aside className="hidden lg:block fixed right-0 top-24 w-64 pr-8">
+    <aside className="sticky top-24 w-full">
       <nav className="space-y-1" aria-label="Table of contents">
         <h3 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-4 px-3">
           Contents
@@ -96,6 +105,12 @@ export function TableOfContents({ items }: TableOfContentsProps) {
 export function MobileTableOfContents({ items }: TableOfContentsProps) {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleMobileClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    scrollToId(id);
+    setIsOpen(false); // close after navigation
+  };
+
   if (!items || items.length === 0) return null;
 
   return (
@@ -122,6 +137,7 @@ export function MobileTableOfContents({ items }: TableOfContentsProps) {
               <li key={item.id}>
                 <a
                   href={`#${item.id}`}
+                  onClick={(e) => handleMobileClick(e, item.id)}
                   className="block py-2 px-3 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 rounded-lg transition-colors"
                 >
                   {item.label}

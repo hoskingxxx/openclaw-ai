@@ -22,6 +22,9 @@ import rehypeStringify from "rehype-stringify";
 import rehypeSlug from "rehype-slug";
 import { rehypeVultrEnrich } from "@/lib/rehype-vultr-enrich";
 import { rehypeGroupIds } from "@/lib/rehype-group-ids";
+import { rehypeCollectHeadings, type TocItem } from "@/lib/rehype-collect-headings";
+import { rehypeDecisionGate, preprocessDecisionGates } from "@/lib/rehype-decision-gate";
+import { TableOfContents, MobileTableOfContents } from "@/components/features/TableOfContents";
 
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
@@ -58,7 +61,11 @@ export async function generateMetadata({
   };
 }
 
-async function getPostContent(slug: string) {
+async function getPostContent(slug: string): Promise<{
+  frontmatter: Record<string, unknown>;
+  content: string;
+  toc: TocItem[];
+} | null> {
   const postsDirectory = path.join(process.cwd(), "content/posts");
   const fullPath = path.join(postsDirectory, `${slug}.mdx`);
 
@@ -68,6 +75,11 @@ async function getPostContent(slug: string) {
 
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
+
+  // Preprocess :::decision-gate blocks before remark
+  const contentWithGates = preprocessDecisionGates(content);
+
+  const tocItems: TocItem[] = [];
 
   // Sanitize schema - allow Vultr affiliate links with security
   // Merge with defaultSchema to preserve table support
@@ -112,8 +124,9 @@ async function getPostContent(slug: string) {
   const processedContent = await remark()
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: false })
-    .use(rehypeGroupIds)  // Assign clean IDs to Group headings
-    .use(rehypeSlug)      // Generate slugs for other headings
+    .use(rehypeGroupIds)           // Assign clean IDs to Group headings
+    .use(rehypeSlug)               // Generate slugs for other headings
+    .use(rehypeCollectHeadings, { collector: tocItems })  // Collect h2/h3 for TOC (after rehypeSlug)
     .use(rehypeVultrEnrich, { postSlug: slug, placementDefault: "mdx_auto" })
     .use(rehypeSanitize, schema)
     .use(rehypeExternalLinks, {
@@ -121,11 +134,12 @@ async function getPostContent(slug: string) {
       rel: ["nofollow", "noopener", "noopener noreferrer"],
     })
     .use(rehypeStringify)
-    .process(content);
+    .process(contentWithGates);
 
   return {
     frontmatter: data,
     content: processedContent.toString(),
+    toc: tocItems,
   };
 }
 
@@ -164,62 +178,78 @@ export default async function BlogPostPage({
           />
         </div>
 
-        {/* Article Content */}
-        <article className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-          {/* Article Header */}
-          <header className="mb-8">
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
-              <span className="px-3 py-1 text-sm font-medium bg-brand-primary/20 text-brand-primary rounded flex-shrink-0">
-                {post.category}
-              </span>
-              <span className="text-xs sm:text-sm text-text-tertiary break-words">{post.date}</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary mb-4 break-words leading-tight">
-              {post.title}
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-text-secondary mb-6 break-words">
-              {post.description}
-            </p>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-text-tertiary">
-              <span>By: {post.author}</span>
-              <span>•</span>
-              <div className="flex flex-wrap gap-1 sm:gap-2">
-                {post.tags.map((tag) => (
-                  <span key={tag} className="text-brand-primary break-words">
-                    #{tag}
+        {/* Article Content + TOC */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+          {/* Mobile TOC */}
+          <div className="lg:hidden mb-6">
+            <MobileTableOfContents items={postContent.toc} />
+          </div>
+
+          {/* Two-column grid: article + TOC */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_256px] gap-8">
+            {/* Left: Article */}
+            <article>
+              {/* Article Header */}
+              <header className="mb-8">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
+                  <span className="px-3 py-1 text-sm font-medium bg-brand-primary/20 text-brand-primary rounded flex-shrink-0">
+                    {post.category}
                   </span>
-                ))}
-              </div>
+                  <span className="text-xs sm:text-sm text-text-tertiary break-words">{post.date}</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary mb-4 break-words leading-tight">
+                  {post.title}
+                </h1>
+                <p className="text-base sm:text-lg md:text-xl text-text-secondary mb-6 break-words">
+                  {post.description}
+                </p>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-text-tertiary">
+                  <span>By: {post.author}</span>
+                  <span>•</span>
+                  <div className="flex flex-wrap gap-1 sm:gap-2">
+                    {post.tags.map((tag) => (
+                      <span key={tag} className="text-brand-primary break-words">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </header>
+
+              {/* RealityCheck Calculator - For specific articles */}
+              {(post.slug === "hardware-requirements-reality-check" || post.slug === "fix-openclaw-install-ps1-npm-enoent-windows") && <RealityCheck />}
+
+              {/* Article Body */}
+              <div
+                className="glass-card p-4 sm:p-6 md:p-8 prose prose-invert prose-sm md:prose-base max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-blockquote:border-brand-primary prose-blockquote:bg-brand-muted/20 prose-blockquote:text-muted-foreground prose-img:rounded-lg prose-hr:border-border break-words"
+                dangerouslySetInnerHTML={{ __html: postContent.content }}
+              />
+
+              {/* Article Bottom CTA - Skip on error index page */}
+              {post.slug !== "openclaw-error-index" && (
+                <div className="mt-12 p-6 bg-muted rounded-xl border border-border">
+                  <h3 className="text-xl font-semibold text-foreground mb-2">
+                    Bookmark this site
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    New fixes are added as soon as they appear on GitHub Issues.
+                  </p>
+                  <Link
+                    href="/guides/openclaw-error-index"
+                    className="text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    Browse Error Index &rarr;
+                  </Link>
+                </div>
+              )}
+            </article>
+
+            {/* Right: Desktop TOC */}
+            <div className="hidden lg:block">
+              <TableOfContents items={postContent.toc} />
             </div>
-          </header>
-
-          {/* RealityCheck Calculator - For specific articles */}
-          {(post.slug === "hardware-requirements-reality-check" || post.slug === "fix-openclaw-install-ps1-npm-enoent-windows") && <RealityCheck />}
-
-          {/* Article Body */}
-          <div
-            className="glass-card p-4 sm:p-6 md:p-8 prose prose-invert prose-sm md:prose-base max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-blockquote:border-brand-primary prose-blockquote:bg-brand-muted/20 prose-blockquote:text-muted-foreground prose-img:rounded-lg prose-hr:border-border break-words"
-            dangerouslySetInnerHTML={{ __html: postContent.content }}
-          />
-
-          {/* Article Bottom CTA - Skip on error index page */}
-          {post.slug !== "openclaw-error-index" && (
-            <div className="mt-12 p-6 bg-muted rounded-xl border border-border">
-              <h3 className="text-xl font-semibold text-foreground mb-2">
-                Bookmark this site
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                New fixes are added as soon as they appear on GitHub Issues.
-              </p>
-              <Link
-                href="/guides/openclaw-error-index"
-                className="text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
-              >
-                Browse Error Index &rarr;
-              </Link>
-            </div>
-          )}
-        </article>
+          </div>
+        </div>
       </main>
 
       <Footer />

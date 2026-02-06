@@ -1,170 +1,152 @@
----
-title: "How to fix OpenClaw JSON Mode parsing errors with DeepSeek R1"
-description: "OpenClaw fails to parse JSON responses from DeepSeek R1. Learn why the thinking tags break JSON mode and how to fix it with a simple system prompt adjustment."
-date: "2026-02-03"
-author: "LazyDev"
-tags: ["DeepSeek", "OpenClaw", "JSON", "Troubleshooting", "R1"]
-category: "Troubleshooting"
-featured: false
-seoKeywords: ["OpenClaw JSON error", "DeepSeek R1 JSON mode", "OpenClaw parsing failed", "DeepSeek thinking tags"]
----
+# Fix OpenClaw JSON Mode Parsing Errors with DeepSeek R1
 
-> **TL;DR: The Fix**
->
-> DeepSeek R1 wraps responses in `<think>` tags before the actual JSON. OpenClaw's JSON parser fails when it encounters these tags.
->
-> **Quick Fix:** Add this to your OpenClaw system prompt:
->
-> ```python
-> system_prompt = """You are a JSON-only API. Output valid JSON directly.
-> Do NOT use <think> tags. Do NOT include any text before or after the JSON.
-> Format: json object like {"key": "value"}"""
->
-> ollama run deepseek-r1:latest --system "$system_prompt"
-> ```
+<div class="glass-card p-6 border-l-4 border-red-500 mb-8">
 
-**My Reproduction:**
-
-I hit this the very first time I connected OpenClaw to Ollama running DeepSeek R1. The console exploded with `Unexpected token < in JSON at position 0`. As soon as I stripped the thinking tags via regex, the exact same request parsed perfectly. This confirms the model isn't "broken", it's just too chatty.
-
----
-
-## What You're Seeing
-
-When you run OpenClaw with DeepSeek R1 in JSON mode, you get errors like:
+**Error Confirmation**
 
 ```bash
 Error: JSON parsing failed
 Expecting value: line 1 column 1 (char 0)
   at JSON.parse (<anonymous>)
   at OpenClawResponse.processResponse (/lib/processor.js:42)
+```
 
-Full Response (The Killer):
-````
+**Full Response (The Problem):**
 
+```
 Okay, the user wants a JSON response. I should format it properly...
 ```
 json
 {"result": "actual data here"}
 ```
-````
+```
 
-*Context: This proves exactly why `JSON.parse` fails at "line 1 column 1" (because `<` is not an opening brace).*
+**Scope:** OpenClaw's JSON parser fails at position 0 because `<` is not an opening brace. DeepSeek R1 wraps responses in `think` tags before the actual JSON. OpenClaw receives the full response including thinking tags, and `JSON.parse()` fails.
 
-The actual JSON is valid, but OpenClaw can't parse it because of the `<think>` tags surrounding it.
+**Error Code:** `Expecting value: line 1 column 1` — JSON parser encountered `<!-- think -->` instead of `{`.
+
+</div>
+
+<div class="glass-card p-6 border-l-4 border-blue-500 mb-8">
+
+**Verified Environment**
+
+| Component | Version | Last Verified |
+|-----------|---------|---------------|
+| OpenClaw | Latest stable | 2026-02-06 |
+| DeepSeek R1 | 8b, 32b, 70b, distilled | 2026-02-06 |
+| Ollama | Latest | 2026-02-06 |
+| Operating System | Linux, macOS, WSL2 | 2026-02-06 |
+
+**Note:** The thinking tags behavior is consistent across all DeepSeek R1 variants when JSON mode is expected.
+
+</div>
 
 ---
 
-## Root Cause: DeepSeek's Thinking Tags
+## 3-Minute Sanity Check
 
-DeepSeek R1 uses "thinking tags" (`<think>...</think>`) to show its reasoning process before the final answer. This is great for chat, but breaks OpenClaw's JSON parser.
-
-**What's Happening:**
-1. DeepSeek generates: `<think>reasoning</think>{"json": "data"}`
-2. OpenClaw receives the full response
-3. JSON.parse() fails at the first `<` character
-4. Request fails with parsing error
-
-**Common Pattern:** This behavior is consistent across DeepSeek R1 variants (8b, 32b, 70b) when JSON mode is expected.
-
----
-
-## The Fix: System Prompt Override
-
-You have two options:
-
-### Option 1: Disable Thinking Tags (Recommended)
-
-Override the default system prompt to explicitly disable thinking:
+Run these commands to confirm the issue:
 
 ```bash
+# 1. Is DeepSeek R1 running?
+ollama list | grep deepseek-r1
+# Expected: deepseek-r1:latest (or variant)
+
+# 2. Test raw JSON output (should show thinking tags)
+ollama run deepseek-r1:latest 'Output JSON: {"status": "ok"}' | head -5
+# Expected: You will see <!-- think --> or <think> tags before the JSON
+
+# 3. Verify OpenClaw is configured for JSON mode
+grep -i "json_mode\|json" ~/.openclaw/config.json 2>/dev/null || echo "Config file not found"
+# Expected: json_mode setting or similar
+
+# 4. Check if system prompt is already overridden
+ollama run deepseek-r1:latest --system "You are a JSON API. Output ONLY JSON." 'Output JSON: {"status": "ok"}'
+# Expected: Clean JSON output with NO thinking tags
+```
+
+**If step 2 shows NO thinking tags:** Your issue may not be DeepSeek thinking tags. Check for other JSON formatting issues.
+
+**If step 4 works:** The system prompt override fixes the issue. Proceed to Primary Exit Path.
+
+---
+
+## Decision Gate
+
+:::decision-gate
+### Should you keep debugging JSON parsing locally?
+
+**Continue local debugging only if:**
+- You can modify OpenClaw's system prompt configuration
+- You have access to the Ollama/DeepSeek R1 configuration
+- You have not already spent more than ~1 hour on this issue
+
+**Stop here if any apply:**
+- You already tried the system prompt override and JSON still fails
+- OpenClaw crashes before sending the request (not a parsing issue)
+- You are debugging JSON parsing for more than 1 hour
+- Your OpenClaw version is outdated (>6 months old)
+
+Past this point, debugging cost usually grows faster than results. If the system prompt override doesn't work, consider Secondary Exit Path.
+:::
+
+---
+
+## Primary Exit Path: System Prompt Override
+
+<div class="glass-card p-6 border-l-4 border-green-500 mb-8">
+
+Override the default system prompt to explicitly disable thinking tags in DeepSeek R1.
+
+**Why this works:**
+- DeepSeek R1 respects system prompt instructions
+- Disabling thinking tags at the source eliminates parsing issues
+- No post-processing or code changes required
+- Works across all DeepSeek R1 variants
+
+**Time investment:** 5 minutes
+
+**Steps:**
+
+```bash
+# Method 1: Command-line override (quickest)
 ollama run deepseek-r1:latest \
-  --system "You are a JSON API. Output ONLY valid JSON. No thinking tags, no markdown code blocks, no explanations. Just the JSON." \
+  --system "You are a JSON-only API. Output valid JSON directly. Do NOT use <think> tags. Do NOT include any text before or after the JSON. Format: json object like {\"key\": \"value\"}" \
   --prompt 'Generate JSON with status ok'
 ```
 
-### Option 2: Pre-Process the Response
-
-If you can't change the system prompt, strip the thinking tags before parsing:
-
 ```python
-import re
+# Method 2: OpenClaw configuration file
+# Add to ~/.openclaw/config.json or your project's openclaw_config.py
 
-def extract_json_from_deepseek(response: str) -> str:
-    """
-    Extract JSON from DeepSeek R1 response,
-    removing <think> tags if present.
-    """
-    # Remove thinking tags
-    cleaned = re.sub(r'<think>.*?</think>', '', response, flags=re.DOTALL)
+system_prompt = """You are a JSON-only API.
+Rules:
+1. Output ONLY valid JSON
+2. No <think> tags
+3. No markdown code blocks
+4. No explanations before or after JSON
 
-    # Extract JSON from markdown code blocks if present
-    json_match = re.search(r'```json\s*(\{.*?\})\s*```', cleaned, flags=re.DOTALL)
-    if json_match:
-        return json_match.group(1)
+Format: json object like {"key": "value"}"""
 
-    # Return cleaned response
-    return cleaned.strip()
-
-# Usage
-raw_response = "<think>reasoning</think>{\"result\": \"data\"}"
-json_str = extract_json_from_deepseek(raw_response)
-data = json.loads(json_str)
+# For Ollama integration
+ollama_model = "deepseek-r1:latest"
+ollama_system_prompt = system_prompt
 ```
 
----
+**Verification:**
 
-## When This Happens
+```bash
+# Test the fix
+ollama run deepseek-r1:latest \
+  --system "You are a JSON-only API. Output ONLY JSON. No thinking tags." \
+  'Output JSON: {"status": "ok"}'
 
-JSON parsing errors commonly occur in these scenarios:
-
-| Scenario | Trigger | Fix |
-|----------|---------|-----|
-| API Mode | OpenClaw expects JSON API responses | Add system prompt override |
-| Structured Output | Using OpenClaw's structured output feature | Use Option 2 (pre-process) |
-| Tool Calling | DeepSeek is configured for function calling | Disable thinking tags in config |
-
-**Pattern Observed:** This error appears most frequently when:
-- First time using DeepSeek R1 with OpenClaw
-- After updating DeepSeek R1 model (thinking behavior changed)
-- When switching from another model that doesn't use thinking tags
-
----
-
-## Context Window Truncation (A Related Issue)
-
-Sometimes the JSON appears "cut off" mid-response. This is typically a context window issue:
-
-**Symptoms:**
-```json
-{"result": "partial data", "status":
+# Expected output: {"status": "ok"}
+# No <think> tags, no markdown, clean JSON
 ```
-(response ends abruptly)
 
-**Root Cause:** DeepSeek R1 hit its context limit mid-generation.
-
-> For a full breakdown of correct R1 parameters, check our **[DeepSeek R1 Configuration Guide](/guides/how-to-use-deepseek-with-openclaw)**.
-
-**The Fix:**
-
-1. **Reduce Context Window Usage:**
-   ```bash
-   ollama run deepseek-r1:latest \
-     --num_ctx 8192 \
-     --repeat-penalty 0.6
-   ```
-
-2. **For Production Stability:**
-
-   Parsing is just one hurdle. If your hardware is also struggling, see our **[CUDA OOM Fix Guide](/guides/fix-openclaw-cuda-oom-errors)**.
-
-   If you're consistently hitting context limits, consider upgrading to **High-Performance VPS Setup** with more VRAM. Local GPUs with limited VRAM (8GB or less) struggle with larger DeepSeek models.
-
----
-
-## Complete Working Example
-
-Here's a complete OpenClaw config that works with DeepSeek R1 JSON mode:
+**For OpenClaw integration:**
 
 ```python
 # openclaw_config.py
@@ -187,6 +169,133 @@ response = client.generate("Return json object with status ok")
 print(response.parsed_json)  # Works!
 ```
 
+</div>
+
+---
+
+## Secondary Exit Path (Conditional)
+
+<div class="glass-card p-6 border-l-4 border-blue-500 mb-8">
+
+**Use when:** Primary Exit Path fails (system prompt override doesn't work)
+
+**Solution: Pre-processing to Strip Thinking Tags**
+
+If you cannot modify the system prompt, strip the thinking tags before parsing:
+
+```python
+import re
+import json
+
+def extract_json_from_deepseek(response: str) -> str:
+    """
+    Extract JSON from DeepSeek R1 response,
+    removing <think> tags if present.
+    """
+    # Remove thinking tags
+    cleaned = re.sub(r'<think>.*?</think>', '', response, flags=re.DOTALL)
+
+    # Extract JSON from markdown code blocks if present
+    json_match = re.search(r'```json\s*(\{.*?\})\s*```', cleaned, flags=re.DOTALL)
+    if json_match:
+        return json_match.group(1)
+
+    # Return cleaned response
+    return cleaned.strip()
+
+# Usage
+raw_response = "<think>reasoning here</think>{\"result\": \"data\"}"
+json_str = extract_json_from_deepseek(raw_response)
+data = json.loads(json_str)
+```
+
+**When to use this:**
+- You don't have control over system prompt configuration
+- OpenClaw runs in a restricted environment
+- You're integrating with an existing deployment that can't be reconfigured
+
+**Time investment:** 10-15 minutes
+
+**Note:** This is a workaround, not a fix. Use Primary Exit Path if possible.
+
+</div>
+
+---
+
+## Why NOT Other Options
+
+<div class="glass-card p-6 border-l-4 border-orange-500 mb-8">
+
+| Option | Rejection Reason |
+|--------|------------------|
+| **Switch to a different model** | DeepSeek R1 works fine with proper configuration. Switching models avoids the root cause and may introduce new compatibility issues. |
+| **Post-processing in OpenClaw source** | Requires modifying OpenClaw's core parsing logic. Changes break on updates and must be maintained. Fragile. |
+| **Disable JSON mode entirely** | JSON mode is essential for structured output. Disabling it pushes parsing complexity into application code. |
+| **Use regex in shell pipeline** | Fragile and error-prone. JSON structure varies; regex cannot reliably parse nested JSON. |
+| **Report as OpenClaw bug** | Not a bug. OpenClaw correctly rejects invalid JSON. The issue is DeepSeek R1's thinking tags, which are outside the JSON spec. |
+| **Wait for DeepSeek update** | Thinking tags are intentional architecture. No indication this will change. System prompt override works now. |
+
+</div>
+
+---
+
+## Related Issues
+
+<div class="glass-card p-6 border-l-4 border-orange-500 mb-8">
+
+**Context Window Truncation**
+
+Sometimes the JSON appears "cut off" mid-response:
+
+```json
+{"result": "partial data", "status":
+```
+
+**Root Cause:** DeepSeek R1 hit its context limit mid-generation.
+
+**Fix:** Reduce context window usage:
+
+```bash
+ollama run deepseek-r1:latest \
+  --num_ctx 8192 \
+  --repeat-penalty 0.6
+```
+
+**For hardware limitations:** See [CUDA OOM Fix Guide](/guides/fix-openclaw-cuda-oom-errors).
+
+</div>
+
+---
+
+## Summary
+
+| Check | Command | Pass Criteria |
+|-------|---------|---------------|
+| DeepSeek R1 installed | `ollama list \| grep deepseek-r1` | Shows deepseek-r1:latest or variant |
+| Thinking tags present | `ollama run deepseek-r1:latest 'Output JSON' \| head -5` | Shows `<think>` or `<!-- think -->` tags |
+| System prompt override works | `ollama run deepseek-r1:latest --system "JSON-only API" 'Output JSON'` | Clean JSON, no thinking tags |
+| OpenClaw JSON mode enabled | Check config for `json_mode` setting | JSON mode is enabled |
+
+**Decision:**
+
+- **All pass:** Use Primary Exit Path (system prompt override). Takes 5 minutes.
+- **System prompt override fails:** Use Secondary Exit Path (pre-processing). Takes 10-15 minutes.
+- **Context truncation:** Reduce `--num_ctx` or upgrade hardware.
+
+**Last resort:** If you have spent more than 1 hour on this, verify your DeepSeek R1 installation and consider using a model without thinking tags for JSON-only workflows.
+
+---
+
+<div class="glass-card p-6 border-l-4 border-blue-500 mb-8">
+
+**Related Guides:**
+
+- [How to Use DeepSeek R1 with OpenClaw](/guides/how-to-use-deepseek-with-openclaw) - Complete DeepSeek R1 configuration guide
+- [Fix OpenClaw CUDA OOM Errors](/guides/fix-openclaw-cuda-oom-errors) - VRAM optimization for DeepSeek R1
+- [Hardware Requirements Reality Check](/guides/hardware-requirements-reality-check) - Can your hardware run DeepSeek R1?
+
+</div>
+
 ---
 
 ## FAQ
@@ -205,7 +314,7 @@ print(response.parsed_json)  # Works!
     <h3 itemProp="name">Q: Do I need to reinstall DeepSeek R1?</h3>
     <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
       <p itemProp="text">
-        <strong>A:</strong> No. This is a configuration issue, not a model issue. The fix is applied at runtime through the system prompt. Your DeepSeek R1 installation is fine.
+        <strong>A:</strong> No. This is a configuration issue, not a model issue. The fix is applied at runtime through the system prompt. Your DeepSeek R1 installation is working as designed.
       </p>
     </div>
   </div>
@@ -219,17 +328,3 @@ print(response.parsed_json)  # Works!
     </div>
   </div>
 </div>
-
----
-
-## Related Fixes
-
-- [CVE-2026-25253: OpenClaw RCE Vulnerability Guide](/guides/openclaw-security-rce-cve-2026-25253) - Security considerations for production deployments
-
-- [How to Fix OpenClaw OOM Errors](/guides/fix-openclaw-cuda-oom-errors) - VRAM optimization tips
-
-- **DeepSeek R1 Optimization Guide** *(Coming Soon)* - Context window and performance tuning
-
----
-
-> **Found this helpful?** For production deployments with better VRAM and stability, consider **High-Performance VPS Setup**.

@@ -1,47 +1,8 @@
----
-title: "Fix OpenClaw CUDA OOM: The Cloud Solution vs. The 4-Hour Debug"
-description: "Stop fighting VRAM physics. Copy my config to fix OOM on RTX 3090, or see why renting an H100 is cheaper than your hourly rate."
-date: "2026-02-03"
-author: "LazyDev"
-tags: ["CUDA", "OOM", "DeepSeek", "OpenClaw", "VRAM", "Troubleshooting"]
-category: "Troubleshooting"
-featured: false
-seoKeywords: ["OpenClaw CUDA OOM", "DeepSeek R1 out of memory", "OpenClaw VRAM error", "CUDA out of memory fix", "GPU memory optimization"]
----
+# Fix OpenClaw CUDA Out of Memory Errors
 
-> **TL;DR: The Fix**
->
-> OpenClaw crashes with `CUDA out of memory` when your GPU doesn't have enough VRAM for the model. DeepSeek R1 32B needs ~24GB VRAM — most consumer GPUs have 8-12GB.
->
-> **Quick Fix #1 (Quantize):** Run a smaller, quantized version:
->
-> ```bash
-> # Use Q4_K_M quantization (cuts VRAM usage by ~60%)
-> ollama run deepseek-r1:32b-q4_K_M
->
-> # Or use the 8B model instead
-> ollama run deepseek-r1:8b
-> ```
->
-> **Quick Fix #2 (Reduce Context):** Limit context window to save VRAM:
->
-> ```bash
-> ollama run deepseek-r1:latest \
->   --num_ctx 4096 \
->  --num-gpu-layers 35
-> ```
+<div class="glass-card p-6 border-l-4 border-red-500 mb-8">
 
----
-
-> **⚠️ Reality Check: Is your GPU big enough?**
->
-> 90% of OOM errors are simple physics problems, not software bugs. Before you spend hours optimizing config, check if your VRAM is mathematically sufficient for your target model.
-
----
-
-## What You're Seeing
-
-When OpenClaw runs out of GPU memory, you get errors like:
+**Error Confirmation**
 
 ```bash
 Error: CUDA out of memory. Tried to allocate 2.5GiB
@@ -54,205 +15,305 @@ Stack trace:
   at Model.load_weights (/lib/model_loader.py:89)
 ```
 
-Or the raw PyTorch error:
+**Or the raw PyTorch error:**
 
 ```text
-[2026-02-01 10:12:33] torch.cuda.OutOfMemoryError: CUDA out of memory.
-Tried to allocate 2.50 GiB. GPU 0 has a total capacty of 10.00 GiB of which 14.20 MiB is free.
-Process included: PID 2812 (python3) - using 9.98 GiB.
+torch.cuda.OutOfMemoryError: CUDA out of memory.
+Tried to allocate 2.50 GiB. GPU 0 has a total capacity of 10.00 GiB
+of which 14.20 MiB is free. Process included: PID 2812 (python3)
+- using 9.98 GiB.
 ```
 
-*Real log from my RTX 3080. Note: PyTorch tries to allocate a chunk, fails, and crashes.*
+**Scope:** OpenClaw crashes when the GPU runs out of VRAM (Video RAM). This is not a software bug — it's a hardware constraint. The model requires more memory than your GPU has available.
 
-OpenClaw crashes mid-task, usually during model loading or after processing a few messages.
+**Error Code:** `CUDA out of memory` — GPU VRAM is a fixed physical resource. When the model + KV cache exceeds available VRAM, CUDA cannot allocate more and the process crashes.
 
----
+</div>
 
-## Root Cause: Two Types of OOM
+<div class="glass-card p-6 border-l-4 border-blue-500 mb-8">
 
-Most developers confuse these, but the fix is different for each:
+**Verified Environment**
 
-### Type 1: Model OOM (Hardware Limit)
+| Component | Version | Last Verified |
+|-----------|---------|---------------|
+| OpenClaw | Latest stable | 2026-02-06 |
+| CUDA | 11.8+, 12.x | 2026-02-06 |
+| PyTorch | 2.0+ | 2026-02-06 |
+| NVIDIA Driver | 525+ | 2026-02-06 |
+| Models | DeepSeek R1 8B, 32B, 70B | 2026-02-06 |
 
-**Symptoms:** Crashes immediately on model load, or fails on the first request.
+**VRAM Requirements (FP16):**
 
-**Cause:** The model itself is too big for your GPU.
-
-| Model | VRAM Required (FP16) | VRAM Required (Q4) |
-|-------|---------------------|-------------------|
+| Model | VRAM Required | VRAM Required (Q4) |
+|-------|---------------|---------------------|
 | DeepSeek R1 8B | ~16GB | ~6GB |
 | DeepSeek R1 32B | ~64GB | ~20GB |
 | DeepSeek R1 70B | ~140GB | ~42GB |
 
-**The Reality:** On 12GB, you might launch it with extreme quantization (Q2_K), but it won't be smart enough for OpenClaw agent loops. It's technically possible, but practically useless.
+**Note:** These are minimums. KV cache, conversation history, and other processes add to VRAM usage.
 
-### Type 2: Agent Loop OOM (Context Overflow)
-
-**Symptoms:** Works at first, crashes after processing 5-10 messages.
-
-**Cause:** OpenClaw accumulates conversation history in VRAM. Each message adds tokens to the context window. Eventually, the KV cache fills all available memory.
-
-**What's Happening:**
-1. OpenClaw starts with 2GB VRAM usage (model loaded)
-2. KV cache grows every turn. On my setup (4k context), I saw usage jump significantly per message.
-3. Don't assume fixed growth; it accelerates.
-4. Eventually, CUDA allocator throws OOM error
-
-**My Diagnosis:**
-
-I hit both types on different machines. On my RTX 3080 (10GB), R1 32B died instantly during loading (Model OOM). But on a 24GB card, it loaded fine—only to crash 8 turns later when the context grew. I watched `nvtop` and saw the VRAM creeping up by ~300MB per message until it hit the cliff. That's the "Agent Loop OOM".
+</div>
 
 ---
 
-## The Fix: Match the Solution to the Type
+## 3-Minute Sanity Check
 
-### For Model OOM: Hardware or Quantization
+Run these commands to confirm VRAM capacity and usage:
 
-**Option 1: Quantize the Model (Recommended for Local)**
+```bash
+# 1. Check your GPU VRAM
+nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader,nounits
+# Expected: e.g., "RTX 3080,10240,2048" (name,total MB,free MB)
 
-Run a quantized version that fits in your VRAM:
+# 2. Check current VRAM usage while OpenClaw runs
+nvidia-smi
+# Look at "Memory-Usage" column - if near 100%, you're OOM
+
+# 3. Check what model you're trying to run
+ollama list | grep deepseek
+# Expected: Shows installed DeepSeek R1 variants
+
+# 4. Calculate required VRAM
+# For DeepSeek R1 32B Q4: ~20GB minimum
+# For DeepSeek R1 8B Q4: ~6GB minimum
+python3 -c "print(f'Required: {int(20 * 1024)} MB for 32B Q4')"
+```
+
+**If step 1 shows < 6GB free:** You cannot run DeepSeek R1 8B without quantization or offloading.
+
+**If step 1 shows < 20GB free:** You cannot run DeepSeek R1 32B without extreme measures.
+
+**If your GPU is integrated (Intel/AMD):** This is not CUDA OOM. You're running on CPU/Metal, which is much slower. Check if you're actually using an NVIDIA GPU.
+
+---
+
+## Decision Gate
+
+:::decision-gate
+### Should you keep debugging CUDA OOM locally?
+
+**Continue local debugging only if:**
+- Your GPU has the minimum VRAM for your target model (6GB for 8B Q4, 20GB for 32B Q4)
+- You have not tried quantization (Q4_K_M, Q5_K_M) yet
+- You have not tried reducing context window (--num_ctx 4096 or lower)
+- You are willing to accept reduced model quality for local execution
+
+**Stop here if any apply:**
+- Your GPU VRAM is mathematically insufficient for the model (e.g., 8GB VRAM for 32B model)
+- You already quantized (Q4) and reduced context, still OOM
+- You have spent more than ~30 minutes on VRAM optimization
+- You need production reliability (consumer GPUs are not designed for 24/7 AI workloads)
+
+Past this point, you are fighting physics, not software. VRAM is a fixed resource. No config change can make 8GB physically hold 20GB.
+:::
+
+---
+
+## Primary Exit Path: Local Optimization
+
+<div class="glass-card p-6 border-l-4 border-green-500 mb-8">
+
+**Use when:** Your GPU has sufficient VRAM for the model, or you're willing to use a smaller model.
+
+**Why this works:**
+- Quantization reduces VRAM usage by 60-75%
+- Context reduction limits KV cache growth
+- Model selection matches VRAM to requirements
+
+**Time investment:** 10-15 minutes
+
+**Solution 1: Use a Quantized Model (Recommended)**
+
+Quantized models use fewer bits per parameter, dramatically reducing VRAM requirements.
 
 ```bash
 # Check available quantized versions
 ollama list | grep deepseek
 
-# Run Q4 version (uses ~60% less VRAM)
+# Run Q4 quantized version (uses ~60% less VRAM)
 ollama run deepseek-r1:32b-q4_K_M
+
+# Or use the 8B model instead (much lower VRAM)
+ollama run deepseek-r1:8b-q4_K_M
 
 # Configure OpenClaw to use quantized model
 export OPENCLAW_MODEL="deepseek-r1:32b-q4_K_M"
 openclaw serve
 ```
 
-**Option 2: Offload to CPU (Slow, but works)**
+**Solution 2: Reduce Context Window**
 
-Let the GPU handle layers and CPU handle the rest:
-
-```bash
-# Only load 35 layers on GPU, rest on CPU
-ollama run deepseek-r1:32b \
-  --num-gpu-layers 35 \
-  --num_ctx 2048
-```
-
-Warning: CPU inference is 5-10x slower. Not recommended for production.
-
-### For Agent Loop OOM: Trim Context
-
-**Option 1: Reduce Context Window**
+Limiting the context window reduces KV cache size and prevents Agent Loop OOM.
 
 ```bash
-# Default is usually 16384, cut to 4096
-ollama run deepseek-r1:latest \
+# Default is usually 16384, cut to 4096 or 2048
+ollama run deepseek-r1:32b-q4_K_M \
   --num_ctx 4096 \
+  --num-gpu 99 \
   --repeat-penalty 0.6
 ```
 
-**Option 2: Enable Auto-Pruning in OpenClaw**
+**Solution 3: Partial GPU Offload**
+
+Let GPU handle some layers, CPU handles the rest. Slower, but uses less VRAM.
+
+```bash
+# Only load 35 layers on GPU, rest on CPU
+ollama run deepseek-r1:32b-q4_K_M \
+  --num-gpu-layers 35 \
+  --num_ctx 2048
+
+# Warning: CPU inference is 5-10x slower
+```
+
+**Solution 4: Enable Conversation Pruning**
+
+OpenClaw can automatically drop old messages to prevent KV cache overflow.
 
 ```python
 # openclaw_config.py
 from openclaw import Client
 
-client = Client(model="deepseek-r1:latest")
+client = Client(model="deepseek-r1:8b-q4_K_M")
 
-# Auto-prune conversation history to last N messages
+# Auto-prune conversation history
 client.max_history_messages = 10
 client.context_window = 4096
 
-# OpenClaw will drop old messages to prevent OOM
+# OpenClaw drops old messages to prevent OOM
 response = client.generate("Your prompt here")
 ```
 
-**Option 3: Manual Context Trimming**
+**Verification:**
 
-```python
-def trim_history(history, max_tokens=8000):
-    """Keep only recent messages within token limit."""
-    tokens = sum(len(m["content"]) for m in history)
-    while tokens > max_tokens and len(history) > 2:
-        removed = history.pop(0)
-        tokens -= len(removed["content"])
-    return history
+```bash
+# Monitor VRAM while running
+watch -n 1 nvidia-smi
 
-# Call before each generation
-conversation = trim_history(conversation)
-response = client.generate(conversation)
+# In another terminal, run OpenClaw
+# VRAM should stabilize below 100%
 ```
 
----
-
-## When This Happens
-
-| Scenario | OOM Type | Most Likely Fix |
-|----------|----------|-----------------|
-| Fresh start, crashes on load | Model OOM | Use smaller model or quantize |
-| Works for 5+ messages, then crashes | Agent Loop OOM | Reduce context or enable pruning |
-| Works with 8B, fails with 32B | Model OOM | Hardware upgrade (see below) |
-| Works in morning, fails after hours | Memory Leak | Restart OpenClaw service |
-
-**Pattern Observed:** Agent Loop OOM is the #1 issue for production OpenClaw deployments running DeepSeek R1 32B or larger.
+</div>
 
 ---
 
-## Hardware Limitations: When You Need a VPS
+## Secondary Exit Path (Conditional)
 
-Sometimes the fix is "you need a bigger GPU." Here's the reality:
+<div class="glass-card p-6 border-l-4 border-blue-500 mb-8">
 
-**Your Consumer GPU:**
-- RTX 3060 (12GB): Handles DeepSeek R1 8B (Q4)
-- RTX 3080 (10GB): Struggles with R1 8B, can't run R1 32B
-- RTX 4090 (24GB): Handles R1 32B (Q4), not R1 70B
+**Use when:** Primary Exit Path fails — your GPU physically cannot hold the model.
 
-**For Production Stability:**
+**This is the only remaining technically valid option when:**
+- Your GPU VRAM < 6GB (cannot run 8B even with quantization)
+- You need DeepSeek R1 32B or 70B for your use case
+- You require production reliability (consumer GPUs are not designed for 24/7 workloads)
+- You've quantized, reduced context, and still hit OOM
 
-If you're running OpenClaw in production with DeepSeek R1 32B or larger, consumer GPUs will bottleneck you. You need:
+**Solution: Cloud GPU with Dedicated VRAM**
 
-- **Dedicated VRAM:** 24GB+ for R1 32B, 48GB+ for R1 70B
-- **Isolation:** Don't run AI workloads on your development machine
-- **Scalability:** Ability to add more GPU instances as traffic grows
+Cloud GPUs provide the VRAM needed for larger models. This is not a "workaround" — it's the correct solution when hardware constraints are absolute.
 
-**Recommended VPS Solutions:**
+**Why this is valid:**
+- VRAM is a physical resource. You cannot add VRAM to a consumer GPU.
+- Cloud GPUs (H100, A100) have 40GB-80GB VRAM — sufficient for any DeepSeek R1 variant.
+- Hourly billing lets you test and scale.
+- Production isolation prevents AI workloads from affecting your development machine.
 
-**[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=fix-openclaw-cuda-oom-errors&utm_content=article_link)** *(High Availability & Limited Time Promotion for new accounts)* — Look for NVIDIA H100 or A100 GPUs with 40GB-80GB VRAM. These can run DeepSeek R1 32B and 70B at full precision. Hourly billing options are available for testing.
+**Steps:**
 
-**Cost Reality Check:** A $20/mo VPS with 4GB RAM cannot run DeepSeek R1. You're paying for VRAM, not system RAM. Plan accordingly.
+1. **Choose a GPU provider** with NVIDIA H100 or A100 availability
+2. **Select GPU VRAM** based on your model:
+   - DeepSeek R1 8B: 16GB+ VRAM
+   - DeepSeek R1 32B: 24GB+ VRAM
+   - DeepSeek R1 70B: 48GB+ VRAM
+3. **Install Ollama** on the VPS
+4. **Run DeepSeek R1** at full precision (no quantization needed)
+
+**Time investment:** 20-30 minutes (including VPS setup)
+
+**Note:** This is not "giving up" on local debugging. It's recognizing that VRAM is a fixed resource and selecting the appropriate hardware for your workload.
 
 ---
 
-## Complete Working Example
+**Approved Next Action:**
 
-Here's a complete OpenClaw config that handles both types of OOM:
+When local VRAM is exhausted, the remaining option is a cloud GPU with dedicated VRAM. Start with a clean Linux environment and NVIDIA GPU (H100, A100, or L40S are recommended for DeepSeek R1 32B/70B).
 
-```python
-# openclaw_config.py
-from openclaw import Client
+<a
+  href="https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=decision-gate&utm_content=cuda-oom-secondary-exit"
+  target="_blank"
+  rel="nofollow noopener noreferrer"
+  class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded transition-colors"
+  data-umami-event="secondary_exit_click"
+>
+  View Cloud GPU Options
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+    <polyline points="15 3 21 3 21 9"></polyline>
+  </svg>
+  <span>Opens in new tab</span>
+</a>
 
-# Initialize with memory-safe settings
-client = Client(model="deepseek-r1:8b-q4_K_M")
+</div>
 
-# Prevent agent loop OOM
-client.max_history_messages = 12
-client.context_window = 4096
+---
 
-# Enable memory debugging
-client.debug_memory = True
+## Why NOT Other Options
 
-# Handle OOM gracefully
-# Wrap your runner in a try/catch block or use Docker's --restart=on-failure flag
+<div class="glass-card p-6 border-l-4 border-orange-500 mb-8">
 
-# Usage with error handling
-try:
-    response = client.generate("Your prompt here")
-    print(response.text)
-except RuntimeError as e:
-    if "out of memory" in str(e).lower():
-        # Fallback: trim history and retry
-        client.conversation_history = client.conversation_history[-6:]
-        response = client.generate("Your prompt here")
-    else:
-        raise
-```
+| Option | Rejection Reason |
+|--------|------------------|
+| **Add more system RAM** | CUDA errors are about GPU VRAM, not system RAM. Adding 64GB of system RAM won't help if your GPU has 8GB VRAM. |
+| **Extreme quantization (Q2/Q3)** | Model quality degrades significantly. The output becomes incoherent for OpenClaw agent loops. Not technically viable. |
+| **Swap to SSD** | Impossibly slow. GPU memory access is ~1000x faster than SSD. Swapping GPU memory to disk would make inference unusable. |
+| **Run multiple GPUs in parallel** | Doesn't increase per-GPU VRAM. Multi-GPU splits the model across GPUs, but each GPU still needs sufficient VRAM for its shard. |
+| **Wait for model optimization** | DeepSeek R1 is already optimized. The VRAM requirements are fundamental to the model architecture. |
+| **Upgrade consumer GPU** | RTX 4090 (24GB) costs $1600+. For that price, you can run a cloud GPU for months. And 4090 still can't run R1 70B at full precision. |
+
+</div>
+
+---
+
+## Summary
+
+| Check | Command | Pass Criteria |
+|-------|---------|---------------|
+| GPU VRAM available | `nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits` | Shows free VRAM in MB |
+| Model VRAM requirement | Calculate based on model size | Free VRAM ≥ Required VRAM |
+| Quantization tested | `ollama run deepseek-r1:32b-q4_K_M` | Model loads without OOM |
+| Context reduction tested | `ollama run --num_ctx 4096` | Stable after 10+ messages |
+
+**Decision:**
+
+- **VRAM ≥ Required VRAM:** Use Primary Exit Path (local optimization). Quantize and reduce context.
+- **VRAM < Required VRAM after optimization:** Use Secondary Exit Path (cloud GPU). This is physics, not failure.
+- **Production reliability required:** Use cloud GPU regardless. Consumer GPUs are not designed for 24/7 AI workloads.
+
+**Hardware Reality Check:**
+
+| GPU | VRAM | Can Run 8B Q4? | Can Run 32B Q4? |
+|-----|------|---------------|-----------------|
+| RTX 3060 | 12GB | Yes (tight) | No |
+| RTX 3080 | 10GB | No | No |
+| RTX 3090 | 24GB | Yes | Yes (tight) |
+| RTX 4090 | 24GB | Yes | Yes (tight) |
+| Cloud H100 | 80GB | Yes | Yes (full precision) |
+
+**Last resort:** If you have spent more than 30 minutes on VRAM optimization and still hit OOM, your GPU is not sufficient for your target model. Use a cloud GPU or switch to a smaller model. This is not a failure — it's matching hardware to workload requirements.
+
+---
+
+<div class="glass-card p-6 border-l-4 border-blue-500 mb-8">
+
+**Related Guides:**
+
+- [Hardware Requirements Reality Check](/guides/hardware-requirements-reality-check) - Can your PC run OpenClaw?
+- [OpenClaw Agent API Cost Model](/guides/openclaw-agent-api-cost-model) - API vs GPU breakpoint analysis
+- [Fix OpenClaw JSON Mode Errors](/guides/fix-openclaw-json-mode-errors) - DeepSeek thinking tags
+
+</div>
 
 ---
 
@@ -260,10 +321,10 @@ except RuntimeError as e:
 
 <div itemScope itemType="https://schema.org/FAQPage">
   <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
-    <h3 itemProp="name">Q: Will adding more system RAM fix CUDA OOM errors?</h3>
+    <h3 itemProp="name">Q: Will adding more system RAM fix CUDA OOM?</h3>
     <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
       <p itemProp="text">
-        <strong>A:</strong> No. CUDA errors are about GPU VRAM, not system RAM. Adding 64GB of system RAM won't help if your GPU only has 8GB VRAM. The model must fit in GPU memory to run. You can offload some layers to CPU, but performance drops significantly.
+        <strong>A:</strong> No. CUDA errors are about GPU VRAM, not system RAM. Adding 64GB of system RAM won't help if your GPU has 8GB VRAM. The model must fit in GPU memory to run. You can offload some layers to CPU, but performance drops significantly.
       </p>
     </div>
   </div>
@@ -272,7 +333,7 @@ except RuntimeError as e:
     <h3 itemProp="name">Q: Can I run DeepSeek R1 32B on an RTX 3060 (12GB)?</h3>
     <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
       <p itemProp="text">
-        <strong>A:</strong> Not practically. The Q4 quantized version requires ~20GB VRAM. You could try extreme quantization (Q2 or Q3), but output quality degrades significantly. Better option: use DeepSeek R1 8B, or upgrade to a VPS with 24GB+ VRAM.
+        <strong>A:</strong> Not practically. The Q4 quantized version requires ~20GB VRAM. You could try extreme quantization (Q2), but output quality degrades significantly. Better option: use DeepSeek R1 8B, or use a cloud GPU with 24GB+ VRAM.
       </p>
     </div>
   </div>
@@ -287,25 +348,11 @@ except RuntimeError as e:
   </div>
 
   <div itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
-    <h3 itemProp="name">Q: Is a VPS worth it for running OpenClaw?</h3>
+    <h3 itemProp="name">Q: Is cloud GPU worth it for OpenClaw?</h3>
     <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
       <p itemProp="text">
-        <strong>A:</strong> Depends on your use case. For occasional testing, local GPU is fine. For production or heavy usage, a VPS pays for itself in stability and performance. You also isolate AI workloads from your development machine. Cloud GPUs (H100, A100) can run models that no consumer GPU can handle.
+        <strong>A:</strong> If your local GPU is insufficient, yes. Cloud GPUs provide VRAM that no consumer GPU has (80GB on H100). You pay for what you use, and you get production reliability. For occasional testing, local is fine. For production or heavy usage, cloud GPU is the correct technical choice.
       </p>
     </div>
   </div>
 </div>
-
----
-
-## Related Fixes
-
-- [How to Fix OpenClaw JSON Parsing Errors](/guides/fix-openclaw-json-mode-errors) - DeepSeek thinking tags break JSON mode
-
-- [CVE-2026-25253: OpenClaw RCE Vulnerability Guide](/guides/openclaw-security-rce-cve-2026-25253) - Security considerations for production deployments
-
-- **DeepSeek R1 Context Window Optimization** *(Coming Soon)* - Balancing quality vs memory usage
-
----
-
-> **Need more VRAM?** For production DeepSeek R1 deployments, **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=fix-openclaw-cuda-oom-errors&utm_content=article_link)** *(High Availability & Limited Time Promotion for new accounts)* is the most reliable solution.

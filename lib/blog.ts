@@ -25,7 +25,7 @@ function createCanonicalPath(slug: string): string {
   return `${BLOG_ROUTE_PREFIX}/${slug}`;
 }
 
-// Blog post metadata (extracted from frontmatter)
+// Blog post metadata (SSOT - do not use MDX frontmatter)
 export const blogPosts: BlogPost[] = [
   {
     slug: "openclaw-security-rce-cve-2026-25253",
@@ -103,7 +103,7 @@ export const blogPosts: BlogPost[] = [
     slug: "fix-openclaw-spawn-npm-enoent-windows",
     canonicalPath: createCanonicalPath("fix-openclaw-spawn-npm-enoent-windows"),
     title: "Fix 'Failed to start CLI: Error: spawn npm ENOENT' on Windows",
-    description: "Can't install plugins on Windows? Here is the manual fix (xcopy) and the Node LTS solution.",
+    description: "Can't install plugins on Windows? Here is the manual fix and the Node LTS solution.",
     date: "2026-02-04",
     author: "LazyDev",
     tags: ["Troubleshooting", "Windows", "Node.js", "Environment"],
@@ -271,9 +271,8 @@ export function getFeaturedPostPath(): string {
   return featured.canonicalPath;
 }
 
-// HARDCODED PATH - Nuclear fix for redirect loop
-// Updated to point to new security article
-export const FEATURED_POST_PATH = "/guides/openclaw-security-rce-cve-2026-25253";
+// Single source of truth: featured post path
+export const FEATURED_POST_PATH = getFeaturedPostPath();
 
 // ============================================================================
 // Export for convenience

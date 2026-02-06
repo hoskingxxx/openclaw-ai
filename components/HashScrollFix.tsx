@@ -1,24 +1,42 @@
 "use client";
 
-import { useEffect } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+
+const HEADER_OFFSET = 80;
 
 /**
- * HashScrollFix - Fixes anchor link scrolling on guide pages
+ * HashScrollFix - Handles anchor scroll on page load / route change
  *
- * Uses Next.js navigation hooks to detect route changes and scroll to hash.
- * Runs on pathname/searchParams changes to handle client-side navigation.
+ * Only runs on pathname change with delay to avoid race with browser default jump.
+ * Uses window.scrollTo with fixed 80px offset.
+ * Does not interfere with TOC click behavior.
  */
 export function HashScrollFix() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const hasScrolledRef = useRef(false);
 
   useEffect(() => {
+    // Reset flag on pathname change
+    hasScrolledRef.current = false;
+
     const hash = window.location.hash?.slice(1);
     if (!hash) return;
-    const el = document.getElementById(hash);
-    if (el) el.scrollIntoView({ block: "start" });
-  }, [pathname, searchParams]);
+
+    // Wait for browser default jump + layout to settle
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (hasScrolledRef.current) return;
+        hasScrolledRef.current = true;
+
+        const el = document.getElementById(hash);
+        if (!el) return;
+
+        const top = window.scrollY + el.getBoundingClientRect().top - HEADER_OFFSET;
+        window.scrollTo({ top });
+      });
+    });
+  }, [pathname]);
 
   return null;
 }
