@@ -234,7 +234,7 @@ export default function RealityCheck() {
   }, [handleImpression]);
 
   return (
-    <div className="my-8 p-6 rounded-xl border border-border bg-card shadow-sm text-card-foreground">
+    <div className="my-8 w-full p-6 rounded-xl border border-border bg-card shadow-sm text-card-foreground">
       <div className="flex items-center gap-2 mb-6">
         <Zap className="w-5 h-5 text-primary fill-primary" />
         <h3 className="text-xl font-bold tracking-tight">AI Deployment Reality Check</h3>

@@ -168,27 +168,26 @@ export default async function BlogPostPage({
         <HashScrollFix />
       </Suspense>
       <main className="min-h-screen">
-        {/* Breadcrumbs */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-8">
-          <Breadcrumbs
-            items={[
-              { label: "Guides", href: "/guides" },
-              { label: post.title, href: post.canonicalPath },
-            ]}
-          />
-        </div>
-
         {/* Article Content + TOC */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <div className="mx-auto px-4 sm:px-6 py-8" style={{ maxWidth: 'fit-content' }}>
+          {/* Breadcrumbs */}
+          <div className="w-full max-w-[960px] mb-4">
+            <Breadcrumbs
+              items={[
+                { label: "Guides", href: "/guides" },
+                { label: post.title, href: post.canonicalPath },
+              ]}
+            />
+          </div>
           {/* Mobile TOC */}
           <div className="lg:hidden mb-6">
             <MobileTableOfContents items={postContent.toc} />
           </div>
 
           {/* Two-column grid: article + TOC */}
-          <div className="grid grid-cols-1 lg:grid-cols-[max-content_256px] gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(960px,1fr)_256px] gap-12">
             {/* Left: Article */}
-            <article className="mx-auto w-full max-w-[960px]">
+            <article className="w-full max-w-[960px]">
               {/* Article Header */}
               <header className="mb-8">
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
@@ -221,7 +220,7 @@ export default async function BlogPostPage({
 
               {/* Article Body */}
               <div
-                className="glass-card p-4 sm:p-6 md:p-8 prose prose-invert prose-sm md:prose-base prose-max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-blockquote:border-brand-primary prose-blockquote:bg-brand-muted/20 prose-blockquote:text-muted-foreground prose-img:rounded-lg prose-hr:border-border break-words"
+                className="glass-card w-full p-4 sm:p-6 md:p-8 prose prose-invert prose-sm md:prose-base prose-max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-blockquote:border-brand-primary prose-blockquote:bg-brand-muted/20 prose-blockquote:text-muted-foreground prose-img:rounded-lg prose-hr:border-border break-words"
                 dangerouslySetInnerHTML={{ __html: postContent.content }}
               />
 
