@@ -168,7 +168,7 @@ export default async function BlogPostPage({
       <Suspense fallback={null}>
         <HashScrollFix />
       </Suspense>
-      <main className="min-h-screen">
+      <main className="min-h-screen" data-section="guides">
         {/* UI CONSTITUTION: ONE Rail (960px), NO padding on rail */}
         <ContentRail className="py-4">
           {/* Breadcrumbs - with padding */}
