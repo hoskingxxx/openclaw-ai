@@ -214,8 +214,10 @@ a {
   word-break: break-word;
 }
 
+/* CRITICAL: Remove prose max-width to fill rail */
 .prose {
   font-size: 1.125rem;
+  max-width: none !important;  /* Override Tailwind Typography default */
 }
 
 /* Blockquote / Callout / Warning Boxes */

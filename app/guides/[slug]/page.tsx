@@ -215,10 +215,11 @@ export default async function BlogPostPage({
             </section>
           )}
 
-          {/* Article Body - CONSTITUTION COMPLIANT structure */}
-          <section className="px-4 sm:px-6">
+          {/* Article Body - glass-card directly under rail, no padding wrapper */}
+          <section>
             <div
               className="glass-card w-full p-6 prose prose-invert prose-sm md:prose-base prose-max-w-none break-words"
+              style={{ maxWidth: 'unset' }}
               dangerouslySetInnerHTML={{ __html: postContent.content }}
             />
           </section>
