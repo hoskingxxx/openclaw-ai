@@ -221,7 +221,7 @@ export default async function BlogPostPage({
               </span>
               <span className="text-xs sm:text-sm text-text-tertiary break-words">{post.date}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary mb-4 break-words leading-tight">
+            <h1 className="heading-page text-text-primary mb-4 break-words leading-tight">
               {post.title}
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-text-secondary mb-6 break-words">

@@ -36,7 +36,7 @@ export default function BlogPage() {
         <ContentRail>
           <ContentEdge>
           <section className="py-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
+            <h1 className="heading-page text-text-primary mb-4">
               OpenClaw Survival Guides
             </h1>
             <p className="text-xl text-text-secondary">
@@ -51,7 +51,7 @@ export default function BlogPage() {
           <ContentRail>
           <ContentEdge>
             <section className="pb-12">
-              <h2 className="text-2xl font-bold text-text-primary mb-6">Featured Posts</h2>
+              <h2 className="heading-section text-text-primary mb-6">Featured Posts</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {blogPosts.filter((post) => post.featured).map((post) => (
                 <Link
@@ -93,7 +93,7 @@ export default function BlogPage() {
         <ContentRail>
           <ContentEdge>
           <section className="pb-12">
-            <h2 className="text-2xl font-bold text-text-primary mb-6">All Posts</h2>
+            <h2 className="heading-section text-text-primary mb-6">All Posts</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {blogPosts.map((post) => (
               <Link

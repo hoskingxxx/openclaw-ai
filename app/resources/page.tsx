@@ -35,7 +35,7 @@ export default function ResourcesPage() {
         <ContentRail>
           <ContentEdge>
           <section className="py-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4 font-mono">
+            <h1 className="heading-page-mono text-text-primary mb-4">
               Hardware Reality Check
             </h1>
             <p className="text-xl text-text-secondary mb-2">

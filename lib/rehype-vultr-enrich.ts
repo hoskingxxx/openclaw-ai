@@ -47,9 +47,9 @@ export function rehypeVultrEnrich(options: Options) {
         "text-sm",
         "font-bold",
         "text-white",
-        "bg-orange-600",
+        "bg-brand-primary",
         "rounded-md",
-        "hover:bg-orange-700",
+        "hover:bg-brand-hover",
         "transition-colors",
         "no-underline",
         "my-2"

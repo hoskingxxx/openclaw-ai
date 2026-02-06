@@ -4,6 +4,7 @@ import { ContentRail } from "@/components/features/ContentRail";
 import { ContentEdge } from "@/components/features/ContentEdge";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { Button } from "@/components/ui/Button";
+import { Alert, AlertTitle } from "@/components/ui/Alert";
 import Link from "next/link";
 import { FEATURED_POST_PATH } from "@/lib/blog";
 import type { Metadata } from "next";
@@ -23,7 +24,7 @@ export default function QuickStartPage() {
 
           {/* Header */}
           <div className="mb-12 border-b border-white/10 pb-8">
-            <h1 className="text-4xl font-bold text-text-primary mb-4 font-mono">
+            <h1 className="heading-page-mono text-text-primary mb-4">
               Documentation
             </h1>
             <p className="text-xl text-text-secondary">
@@ -32,10 +33,11 @@ export default function QuickStartPage() {
           </div>
 
           {/* Compatibility Matrix (What I Did NOT Test) */}
-          <section className="mb-12 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-6">
-            <h2 className="text-lg font-mono text-yellow-400 mb-4 flex items-center gap-2">
-              <span>⚠️</span> Compatibility Matrix (What I Did NOT Test)
-            </h2>
+          <section className="mb-12">
+            <Alert variant="warning" className="p-6">
+              <h2 className="text-lg font-mono text-yellow-400 mb-4 flex items-center gap-2">
+                <span>⚠️</span> Compatibility Matrix (What I Did NOT Test)
+              </h2>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -77,6 +79,7 @@ export default function QuickStartPage() {
             <p className="text-xs text-text-tertiary mt-4">
               <strong>If your setup is not listed here:</strong> Proceed at your own risk. Do NOT report bugs for untested configurations.
             </p>
+            </Alert>
           </section>
 
           {/* Decision Matrix (Reality Check) */}
@@ -114,11 +117,11 @@ export default function QuickStartPage() {
             </div>
 
             {/* Value Proposition */}
-            <div className="mb-8 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+            <Alert variant="success" className="mb-8">
               <p className="text-sm text-green-200">
                 <strong>💡 Why I switched:</strong> I tried Path B first and wasted a whole weekend fighting drivers. This costs billable hourly rates, which is cheaper than my hourly rate for debugging CUDA errors.
               </p>
-            </div>
+            </Alert>
 
             <div className="space-y-8 border-l-2 border-green-500/20 pl-6 ml-2">
               {/* Step 0: Node.js Prerequisite */}
@@ -291,12 +294,9 @@ LLM_MODEL="deepseek-reasoner"`}
                 <p className="text-sm text-text-secondary mb-4">
                   Wasted 4 hours and still OOM? The pro choice is <strong>Path A</strong>. Rent the metal and start shipping.
                 </p>
-                <a
-                  href="#cloud"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
-                >
+                <Button variant="info" size="md" href="#cloud" className="font-mono">
                   <span>→</span> Switch to Cloud API (DeepSeek)
-                </a>
+                </Button>
               </div>
             </div>
 

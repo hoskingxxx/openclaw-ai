@@ -1,8 +1,8 @@
 "use client"
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { trackVultrClick } from "@/lib/tracking";
+import { Button } from "@/components/ui/Button";
 
 export function StopDebuggingCTA() {
   const pathname = usePathname();
@@ -11,7 +11,7 @@ export function StopDebuggingCTA() {
   const affLink = `https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=${postSlug}&utm_content=${utmContent}`;
 
   return (
-    <div className="my-12 p-6 border-l-4 border-[#FF4500] bg-slate-50 dark:bg-slate-900/50 rounded-r-lg shadow-sm">
+    <div className="my-12 p-6 border-l-4 border-brand-primary bg-slate-50 dark:bg-slate-900/50 rounded-r-lg shadow-sm">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-2">
           <h3 className="text-xl font-bold text-slate-900 dark:text-white">
@@ -26,10 +26,11 @@ export function StopDebuggingCTA() {
           </p>
         </div>
         <div className="flex flex-col items-end gap-2 shrink-0">
-          <a
+          <Button
+            variant="brand"
+            size="md"
             href={affLink}
-            target="_blank"
-            rel="noopener noreferrer"
+            external
             onClick={() => trackVultrClick({ placement: "stop_debugging_box", ctaId: "stop_debugging_button", postSlug, utmContent })}
             data-umami-event="vultr_click"
             data-umami-event-post={postSlug}
@@ -37,10 +38,9 @@ export function StopDebuggingCTA() {
             data-umami-event-cta-id="stop_debugging_button"
             data-umami-event-ref="9863490"
             data-umami-event-utm_content={utmContent}
-            className="inline-flex items-center px-6 py-3 text-sm font-bold text-white transition-all bg-[#FF4500] rounded hover:bg-[#FF4500]/90 hover:scale-105 shadow-md"
           >
             Deploy on Vultr (Cloud GPU) →
-          </a>
+          </Button>
           <span className="text-[10px] text-slate-400">
             Disclosure: Affiliate link. No extra cost to you.
           </span>

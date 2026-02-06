@@ -41,7 +41,7 @@ export default function OOMPage() {
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
+          <h1 className="heading-page text-text-primary mb-4">
             Hardware Reality Check
           </h1>
 
@@ -225,12 +225,9 @@ export default function OOMPage() {
                   <code>$0.80/hr (Cloud) &lt; 4 hours of debugging hardware (Your Rate)</code>
                 </pre>
               </div>
-              <Link
-                href="/quick-start#cloud"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
-              >
+              <Button variant="info" size="md" href="/quick-start#cloud" className="font-mono">
                 Stop Debugging & Start Shipping (Path A) →
-              </Link>
+              </Button>
             </div>
           </section>
 
@@ -292,12 +289,9 @@ user@macbook ~$ # Response takes 40+ seconds to complete
                   <code>$0.80/hr (Cloud) &lt; Time value of waiting for slow inference</code>
                 </pre>
               </div>
-              <Link
-                href="/quick-start#cloud"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
-              >
+              <Button variant="info" size="md" href="/quick-start#cloud" className="font-mono">
                 Stop Debugging & Start Shipping (Path A) →
-              </Link>
+              </Button>
             </div>
           </section>
 
@@ -361,12 +355,9 @@ PID    COMMAND        %CPU  %MEM
                   <code>$0.80/hr (Cloud) &lt; Dealing with frozen systems & lost work</code>
                 </pre>
               </div>
-              <Link
-                href="/quick-start#cloud"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
-              >
+              <Button variant="info" size="md" href="/quick-start#cloud" className="font-mono">
                 Stop Debugging & Start Shipping (Path A) →
-              </Link>
+              </Button>
             </div>
           </section>
 

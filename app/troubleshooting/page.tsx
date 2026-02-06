@@ -115,7 +115,7 @@ export default function TroubleshootingPage() {
 
           {/* Hero */}
           <div className="mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
+            <h1 className="heading-page text-text-primary mb-4">
               Troubleshooting & Known Crashes
             </h1>
             <p className="text-xl text-text-secondary">
@@ -364,20 +364,20 @@ export default function TroubleshootingPage() {
               <p className="text-text-secondary mb-6 text-lg">
                 Stop debugging environment issues. Rent a clean Linux box and deploy in minutes.
               </p>
-              <a
+              <Button
+                variant="brand"
+                size="md"
                 href="https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=troubleshooting&utm_content=page_cta"
-                target="_blank"
-                rel="noopener noreferrer"
+                external
                 data-umami-event="vultr_click"
                 data-umami-event-post="troubleshooting"
                 data-umami-event-placement="page_cta"
                 data-umami-event-cta-id="page_deploy_button"
                 data-umami-event-ref="9863490"
                 data-umami-event-utm_content="page_cta"
-                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium transition-all rounded-lg bg-[#FF4500] text-white hover:bg-[#FF4500]/90 hover:scale-105 shadow-lg shadow-orange-500/20"
               >
                 Deploy on Vultr (Limited Time Promotion) →
-              </a>
+              </Button>
               <p className="mt-4 text-xs text-text-tertiary">
                 *Save 4+ hours of debugging for less than $0.10/hour.
               </p>

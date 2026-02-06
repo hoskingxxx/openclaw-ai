@@ -42,7 +42,7 @@ export default function FAQPage() {
         <ContentRail>
           <ContentEdge>
           <section className="py-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
+            <h1 className="heading-page text-text-primary mb-4">
               Frequently Asked Questions
             </h1>
             <p className="text-xl text-text-secondary mb-2">

@@ -237,6 +237,21 @@ main[data-section="guides"] .prose a[data-link="cluster"]:hover {
   text-decoration: underline;
 }
 
+/* IMPORTANT: Cluster links in blockquotes specifically (overrides orange/white inheritance) */
+main[data-section="guides"] .prose blockquote a[data-link="cluster"] {
+  color: #60a5fa !important;
+}
+
+main[data-section="guides"] .prose blockquote a[data-link="cluster"]:hover {
+  color: #93c5fd !important;
+  text-decoration: underline;
+}
+
+/* CRITICAL: Ensure strong elements inside cluster links also use blue color */
+main[data-section="guides"] .prose blockquote a[data-link="cluster"] strong {
+  color: #60a5fa !important;
+}
+
 /* Article body text readability */
 .prose p, .prose ul, .prose ol {
   line-height: 1.75;

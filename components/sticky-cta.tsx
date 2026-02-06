@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { trackVultrClick } from "@/lib/tracking"
+import { Button } from "@/components/ui/Button"
 
 export function StickyCTA() {
   const [isVisible, setIsVisible] = useState(false)
@@ -47,10 +48,11 @@ export function StickyCTA() {
           </p>
         </div>
 
-        <a
+        <Button
+          variant="brand"
+          size="sm"
           href={affLink}
-          target="_blank"
-          rel="noopener noreferrer"
+          external
           onClick={() => trackVultrClick({ placement: "sticky_banner", ctaId: "sticky_deploy_button", postSlug, utmContent })}
           data-cta="true"
           data-umami-event="vultr_click"
@@ -59,10 +61,9 @@ export function StickyCTA() {
           data-umami-event-cta-id="sticky_deploy_button"
           data-umami-event-ref="9863490"
           data-umami-event-utm_content={utmContent}
-          className="px-4 py-2 bg-[#FF4500] hover:bg-[#FF4500]/90 text-white text-sm font-bold rounded shadow-lg transition-transform hover:scale-105"
         >
           Deploy Now →
-        </a>
+        </Button>
       </div>
     </div>
   )

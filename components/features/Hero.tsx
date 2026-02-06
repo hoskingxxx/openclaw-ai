@@ -22,7 +22,7 @@ export function Hero() {
           </div>
 
           {/* Main Title */}
-          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6 leading-tight break-words">
+          <h1 className="heading-hero text-text-primary mb-6 break-words">
             The OpenClaw<br />Survival Guide
           </h1>
 

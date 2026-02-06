@@ -5,6 +5,8 @@
  * This component handles the Vultr affiliate link with all necessary tracking.
  */
 
+import { Button } from "@/components/ui/Button";
+
 interface SecondaryExitButtonProps {
   href: string;
   umamiEventPlacement?: string;
@@ -23,11 +25,11 @@ export function SecondaryExitButton({
   children,
 }: SecondaryExitButtonProps) {
   return (
-    <a
+    <Button
+      variant="info"
+      size="sm"
       href={href}
-      target="_blank"
-      rel="nofollow noopener noreferrer"
-      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded transition-colors"
+      external
       data-cta="true"
       data-umami-event="secondary_exit_click"
       data-umami-event-post={umamiEventPost}
@@ -36,6 +38,6 @@ export function SecondaryExitButton({
       data-umami-event-ref={umamiEventRef}
     >
       {children}
-    </a>
+    </Button>
   );
 }
