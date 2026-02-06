@@ -131,13 +131,17 @@ export default function BlogPage() {
         </ContentRail>
 
         {/* Next Step */}
-        <NextStepCard
-          icon="🚀"
-          title="Get Started with OpenClaw"
-          description="Follow the quick start guide to set up OpenClaw on your system."
-          href="/quick-start"
-          linkText="View Quick Start Guide"
-        />
+        <ContentRail>
+          <ContentEdge>
+            <NextStepCard
+              icon="🚀"
+              title="Get Started with OpenClaw"
+              description="Follow the quick start guide to set up OpenClaw on your system."
+              href="/quick-start"
+              linkText="View Quick Start Guide"
+            />
+          </ContentEdge>
+        </ContentRail>
       </main>
       <Footer />
     </>
