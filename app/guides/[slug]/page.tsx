@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
 import { Breadcrumbs } from "@/components/features/Breadcrumbs";
+import { ContentRail } from "@/components/features/ContentRail";
 import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
 import { Button } from "@/components/ui/Button";
@@ -167,10 +168,10 @@ export default async function BlogPostPage({
         <HashScrollFix />
       </Suspense>
       <main className="min-h-screen">
-        {/* Single 960px Rail - NO padding on rail wrapper */}
-        <div className="mx-auto w-full max-w-[960px] py-4">
+        {/* ContentRail is the ONLY width authority */}
+        <ContentRail>
           {/* Breadcrumbs - with padding */}
-          <div className="px-4 sm:px-6 py-8 pb-4">
+          <div className="px-4 sm:px-6 py-8 pb-4 pt-4">
             <Breadcrumbs
               items={[
                 { label: "Guides", href: "/guides" },
@@ -239,7 +240,7 @@ export default async function BlogPostPage({
               </div>
             )}
           </article>
-        </div>
+        </ContentRail>
       </main>
 
       <Footer />
