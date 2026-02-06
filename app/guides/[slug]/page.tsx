@@ -169,7 +169,13 @@ export default async function BlogPostPage({
         <HashScrollFix />
       </Suspense>
       <main className="min-h-screen">
-        {/* Breadcrumbs */}
+        {/* ====================================================================
+            SINGLE RAIL LAYOUT (960px max-width)
+            GUARDRAIL: Do NOT modify to multi-column grid or add max-w-[1248px]
+            All content must flow through ContentRail component
+        ==================================================================== */}
+
+        {/* Breadcrumbs - Single Rail */}
         <ContentRail>
           <div className="py-8 pb-4">
             <Breadcrumbs
@@ -181,77 +187,80 @@ export default async function BlogPostPage({
           </div>
         </ContentRail>
 
-        {/* Article Content + TOC */}
-        <div className="mx-auto px-4 sm:px-6 py-4" style={{ maxWidth: '1248px' }}>
-          {/* Mobile TOC */}
-          <div className="lg:hidden mb-6">
+        {/* Mobile TOC - Single Rail (hidden on xl+, floating TOC used instead) */}
+        <ContentRail>
+          <div className="xl:hidden mb-6">
             <MobileTableOfContents items={postContent.toc} />
           </div>
+        </ContentRail>
 
-          {/* Two-column grid: article + TOC */}
-          <div className="grid grid-cols-1 lg:grid-cols-[960px_256px] gap-12">
-            {/* Left: Article */}
-            <article>
-              {/* Article Header */}
-              <header className="mb-8">
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
-                  <span className="px-3 py-1 text-sm font-medium bg-brand-primary/20 text-brand-primary rounded flex-shrink-0">
-                    {post.category}
-                  </span>
-                  <span className="text-xs sm:text-sm text-text-tertiary break-words">{post.date}</span>
+        {/* Article Content - Single 960px Rail */}
+        <ContentRail>
+          <article>
+            {/* Article Header */}
+            <header className="mb-8">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
+                <span className="px-3 py-1 text-sm font-medium bg-brand-primary/20 text-brand-primary rounded flex-shrink-0">
+                  {post.category}
+                </span>
+                <span className="text-xs sm:text-sm text-text-tertiary break-words">{post.date}</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary mb-4 break-words leading-tight">
+                {post.title}
+              </h1>
+              <p className="text-base sm:text-lg md:text-xl text-text-secondary mb-6 break-words">
+                {post.description}
+              </p>
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-text-tertiary">
+                <span>By: {post.author}</span>
+                <span>•</span>
+                <div className="flex flex-wrap gap-1 sm:gap-2">
+                  {post.tags.map((tag) => (
+                    <span key={tag} className="text-brand-primary break-words">
+                      #{tag}
+                    </span>
+                  ))}
                 </div>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary mb-4 break-words leading-tight">
-                  {post.title}
-                </h1>
-                <p className="text-base sm:text-lg md:text-xl text-text-secondary mb-6 break-words">
-                  {post.description}
+              </div>
+            </header>
+
+            {/* RealityCheck Calculator - For specific articles */}
+            {(post.slug === "hardware-requirements-reality-check" || post.slug === "fix-openclaw-install-ps1-npm-enoent-windows") && <RealityCheck />}
+
+            {/* Article Body */}
+            <div
+              className="glass-card w-full p-4 sm:p-6 md:p-8 prose prose-invert prose-sm md:prose-base prose-max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-blockquote:border-brand-primary prose-blockquote:bg-brand-muted/20 prose-blockquote:text-muted-foreground prose-img:rounded-lg prose-hr:border-border break-words"
+              dangerouslySetInnerHTML={{ __html: postContent.content }}
+            />
+
+            {/* Article Bottom CTA - Skip on error index page */}
+            {post.slug !== "openclaw-error-index" && (
+              <div className="mt-12 p-6 bg-muted rounded-xl border border-border">
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  Bookmark this site
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  New fixes are added as soon as they appear on GitHub Issues.
                 </p>
-                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-text-tertiary">
-                  <span>By: {post.author}</span>
-                  <span>•</span>
-                  <div className="flex flex-wrap gap-1 sm:gap-2">
-                    {post.tags.map((tag) => (
-                      <span key={tag} className="text-brand-primary break-words">
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </header>
+                <Link
+                  href="/guides/openclaw-error-index"
+                  className="text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
+                >
+                  Browse Error Index &rarr;
+                </Link>
+              </div>
+            )}
+          </article>
+        </ContentRail>
 
-              {/* RealityCheck Calculator - For specific articles */}
-              {(post.slug === "hardware-requirements-reality-check" || post.slug === "fix-openclaw-install-ps1-npm-enoent-windows") && <RealityCheck />}
-
-              {/* Article Body */}
-              <div
-                className="glass-card w-full p-4 sm:p-6 md:p-8 prose prose-invert prose-sm md:prose-base prose-max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-blockquote:border-brand-primary prose-blockquote:bg-brand-muted/20 prose-blockquote:text-muted-foreground prose-img:rounded-lg prose-hr:border-border break-words"
-                dangerouslySetInnerHTML={{ __html: postContent.content }}
-              />
-
-              {/* Article Bottom CTA - Skip on error index page */}
-              {post.slug !== "openclaw-error-index" && (
-                <div className="mt-12 p-6 bg-muted rounded-xl border border-border">
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
-                    Bookmark this site
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    New fixes are added as soon as they appear on GitHub Issues.
-                  </p>
-                  <Link
-                    href="/guides/openclaw-error-index"
-                    className="text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
-                  >
-                    Browse Error Index &rarr;
-                  </Link>
-                </div>
-              )}
-            </article>
-
-            {/* Right: Desktop TOC */}
-            <div className="hidden lg:block">
-              <TableOfContents items={postContent.toc} />
-            </div>
-          </div>
+        {/* ====================================================================
+            FLOATING TOC OVERLAY (Non-layout-affecting)
+            - Only visible on xl+ screens (1280px+)
+            - Fixed position: does NOT consume content rail width
+            - GUARDRAIL: Do NOT move inline with article or add to grid layout
+        ==================================================================== */}
+        <div className="hidden xl:block fixed right-0 top-1/2 -translate-y-1/2 pr-4 max-h-[70vh] overflow-y-auto w-[220px] bg-background/95 backdrop-blur-sm border-l border-white/10">
+          <TableOfContents items={postContent.toc} />
         </div>
       </main>
 
