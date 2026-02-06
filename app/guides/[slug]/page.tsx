@@ -2,10 +2,8 @@ import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
 import { Breadcrumbs } from "@/components/features/Breadcrumbs";
 import { ContentRail } from "@/components/features/ContentRail";
-import { ContentEdge } from "@/components/features/ContentEdge";
 import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
-import { Button } from "@/components/ui/Button";
 import RealityCheck from "@/components/RealityCheck";
 import { HashScrollFix } from "@/components/HashScrollFix";
 import Link from "next/link";
@@ -83,15 +81,12 @@ async function getPostContent(slug: string): Promise<{
   const tocItems: TocItem[] = [];
 
   // Sanitize schema - allow Vultr affiliate links with security
-  // Merge with defaultSchema to preserve table support
-  // NOTE: rehype-sanitize uses HTML attribute names (class), not React (className)
   const classAttribute = "class";
   const schema = {
     ...defaultSchema,
-    clobberPrefix: "",  // Preserve original IDs (e.g., group-1) without user-content- prefix
+    clobberPrefix: "",
     attributes: {
       ...(defaultSchema.attributes || {}),
-      // Preserve default table attributes and add class
       table: [...((defaultSchema.attributes || {}).table || []), classAttribute],
       thead: [...((defaultSchema.attributes || {}).thead || []), classAttribute],
       tbody: [...((defaultSchema.attributes || {}).tbody || []), classAttribute],
@@ -104,7 +99,6 @@ async function getPostContent(slug: string): Promise<{
         "target",
         "rel",
         classAttribute,
-        // Umami tracking attributes
         "data-umami-event",
         "data-umami-event-post",
         "data-umami-event-placement",
@@ -112,8 +106,9 @@ async function getPostContent(slug: string): Promise<{
         "data-umami-event-ref",
         "data-umami-event-utm_content",
         "data-umami-event-verdict",
+        "data-link",
+        "data-cta",
       ],
-      // Add class to all elements
       "*": [...((defaultSchema.attributes || {})["*"] || []), classAttribute, "id"],
     },
     protocols: {
@@ -125,9 +120,9 @@ async function getPostContent(slug: string): Promise<{
   const processedContent = await remark()
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: false })
-    .use(rehypeGroupIds)           // Assign clean IDs to Group headings
-    .use(rehypeSlug)               // Generate slugs for other headings
-    .use(rehypeCollectHeadings, { collector: tocItems })  // Collect h2/h3 for TOC (after rehypeSlug)
+    .use(rehypeGroupIds)
+    .use(rehypeSlug)
+    .use(rehypeCollectHeadings, { collector: tocItems })
     .use(rehypeVultrEnrich, { postSlug: slug, placementDefault: "mdx_auto" })
     .use(rehypeSanitize, schema)
     .use(rehypeExternalLinks, {
@@ -169,9 +164,7 @@ export default async function BlogPostPage({
         <HashScrollFix />
       </Suspense>
       <main className="min-h-screen" data-section="guides">
-        {/* UI CONSTITUTION: ONE Rail (960px), NO padding on rail */}
         <ContentRail className="py-4">
-          {/* Breadcrumbs - with padding */}
           <header className="px-4 sm:px-6 py-8 pb-4">
             <Breadcrumbs
               items={[
@@ -181,7 +174,6 @@ export default async function BlogPostPage({
             />
           </header>
 
-          {/* Article Header - with padding */}
           <header className="px-4 sm:px-6 mb-8">
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
               <span className="px-3 py-1 text-sm font-medium bg-brand-primary/20 text-brand-primary rounded flex-shrink-0">
@@ -208,14 +200,12 @@ export default async function BlogPostPage({
             </div>
           </header>
 
-          {/* RealityCheck Calculator - with padding */}
           {(post.slug === "hardware-requirements-reality-check" || post.slug === "fix-openclaw-install-ps1-npm-enoent-windows") && (
             <section className="px-4 sm:px-6 mb-8">
               <RealityCheck />
             </section>
           )}
 
-          {/* Article Body - glass-card directly under rail, no padding wrapper */}
           <section>
             <div
               className="glass-card w-full p-6 prose prose-invert prose-sm md:prose-base prose-max-w-none break-words"
@@ -224,7 +214,6 @@ export default async function BlogPostPage({
             />
           </section>
 
-          {/* Article Bottom CTA - with padding */}
           {post.slug !== "openclaw-error-index" && (
             <section className="px-4 sm:px-6 mt-12 pt-8 border-t border-white/10">
               <h3 className="text-xl font-semibold text-text-primary mb-2">
@@ -247,7 +236,6 @@ export default async function BlogPostPage({
 
       <Footer />
 
-      {/* Article Structured Data */}
       <ArticleStructuredData
         title={post.title}
         description={post.description}
@@ -256,7 +244,6 @@ export default async function BlogPostPage({
         url={`https://openclaw-ai.org${post.canonicalPath}`}
       />
 
-      {/* Breadcrumb Structured Data */}
       <BreadcrumbStructuredData
         items={[
           { name: "Home", url: "https://openclaw-ai.org" },
