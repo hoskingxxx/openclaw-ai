@@ -222,6 +222,17 @@ main[data-section="guides"] .prose a[data-link="brand"]:hover {
   text-decoration: underline;
 }
 
+/* Affiliate links in guides - force blue color */
+main[data-section="guides"] a[data-link="affiliate"] {
+  color: #60a5fa !important;
+  text-decoration: none;
+}
+
+main[data-section="guides"] a[data-link="affiliate"]:hover {
+  color: #93c5fd !important;
+  text-decoration: underline;
+}
+
 /* Article body text readability */
 .prose p, .prose ul, .prose ol {
   line-height: 1.75;
