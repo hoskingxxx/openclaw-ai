@@ -64,13 +64,11 @@ h1, h2, h3, h4, h5, h6,
   overflow-wrap: anywhere;
   word-break: break-word;
   hyphens: auto;
-  max-width: 100%;
 }
 
-p, span, div, a, li, td, th, label, button {
+p, span, a, li, td, th, label, button {
   overflow-wrap: anywhere;
   word-break: break-word;
-  max-width: 100%;
 }
 
 /* Code blocks need special handling */
@@ -210,6 +208,12 @@ a {
   line-height: 1.75;
 }
 
+/* Prose-specific text safety - scoped to content only */
+.prose p, .prose li, .prose td, .prose th, .prose a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .prose {
   font-size: 1.125rem;
 }
@@ -284,14 +288,4 @@ a {
   border-bottom: none;
 }
 
-/* Table wrapper for overflow on very wide tables */
-.prose .table-wrap {
-  width: 100%;
-  overflow-x: auto;
-  margin: 1.5rem 0;
-  border-radius: 8px;
-}
-
-.prose .table-wrap table {
-  margin: 0;
-}
+/* Removed: .table-wrap rules - not implemented in MDX output */
