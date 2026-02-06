@@ -128,7 +128,7 @@ async function getPostContent(slug: string): Promise<{
 
   const processedContent = await remark()
     .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: false })
+    .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeGroupIds)
     .use(rehypeSlug)
     .use(rehypeCollectHeadings, { collector: tocItems })

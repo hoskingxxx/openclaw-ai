@@ -67,6 +67,9 @@ export function rehypeVultrEnrich(options: Options) {
       node.properties["data-umami-event-placement"] = placement;
 
       node.properties["data-umami-event-cta-id"] = "mdx_auto_link";
+
+      // Affiliate link styling
+      node.properties["data-link"] = "affiliate";
     });
   };
 }
