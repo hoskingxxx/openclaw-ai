@@ -179,16 +179,16 @@ export default async function BlogPostPage({
         </div>
 
         {/* Article Content + TOC */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           {/* Mobile TOC */}
           <div className="lg:hidden mb-6">
             <MobileTableOfContents items={postContent.toc} />
           </div>
 
           {/* Two-column grid: article + TOC */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_256px] gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[max-content_256px] gap-12">
             {/* Left: Article */}
-            <article>
+            <article className="max-w-[880px]">
               {/* Article Header */}
               <header className="mb-8">
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
@@ -221,7 +221,7 @@ export default async function BlogPostPage({
 
               {/* Article Body */}
               <div
-                className="glass-card p-4 sm:p-6 md:p-8 prose prose-invert prose-sm md:prose-base prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-blockquote:border-brand-primary prose-blockquote:bg-brand-muted/20 prose-blockquote:text-muted-foreground prose-img:rounded-lg prose-hr:border-border break-words"
+                className="glass-card p-4 sm:p-6 md:p-8 prose prose-invert prose-sm md:prose-base prose-max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-blockquote:border-brand-primary prose-blockquote:bg-brand-muted/20 prose-blockquote:text-muted-foreground prose-img:rounded-lg prose-hr:border-border break-words"
                 dangerouslySetInnerHTML={{ __html: postContent.content }}
               />
 
