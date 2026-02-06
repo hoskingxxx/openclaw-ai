@@ -186,28 +186,26 @@ body {
   font-size: 0.875em;
 }
 
-/* Article Link Style - scoped to /guides pages only */
-main[data-section="guides"] .prose a {
+/* Article Link Style - scoped to /guides pages only, excludes CTA buttons */
+main[data-section="guides"] .prose a:not([data-cta="true"]) {
   color: #60a5fa !important;
   text-decoration: none;
   transition: color 0.2s;
 }
 
-main[data-section="guides"] .prose a:hover {
+main[data-section="guides"] .prose a:not([data-cta="true"]):hover {
   color: #93c5fd !important;
   text-decoration: underline;
 }
 
-/* IMPORTANT: Prevent color inheritance in styled containers (scoped to guides) */
-main[data-section="guides"] .glass-card a,
-main[data-section="guides"] .prose blockquote a,
-main[data-section="guides"] [class*="border-"] a {
+/* IMPORTANT: Prevent color inheritance in styled containers (scoped to guides, excludes CTA) */
+main[data-section="guides"] .glass-card a:not([data-cta="true"]),
+main[data-section="guides"] .prose blockquote a:not([data-cta="true"]) {
   color: #60a5fa !important;
 }
 
-main[data-section="guides"] .glass-card a:hover,
-main[data-section="guides"] .prose blockquote a:hover,
-main[data-section="guides"] [class*="border-"] a:hover {
+main[data-section="guides"] .glass-card a:not([data-cta="true"]):hover,
+main[data-section="guides"] .prose blockquote a:not([data-cta="true"]):hover {
   color: #93c5fd !important;
   text-decoration: underline;
 }

@@ -28,6 +28,7 @@ export function SecondaryExitButton({
       target="_blank"
       rel="nofollow noopener noreferrer"
       className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded transition-colors"
+      data-cta="true"
       data-umami-event="secondary_exit_click"
       data-umami-event-post={umamiEventPost}
       data-umami-event-placement={umamiEventPlacement}

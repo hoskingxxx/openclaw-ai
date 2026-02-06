@@ -52,6 +52,7 @@ export function StickyCTA() {
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => trackVultrClick({ placement: "sticky_banner", ctaId: "sticky_deploy_button", postSlug, utmContent })}
+          data-cta="true"
           data-umami-event="vultr_click"
           data-umami-event-post={postSlug}
           data-umami-event-placement="sticky_banner"

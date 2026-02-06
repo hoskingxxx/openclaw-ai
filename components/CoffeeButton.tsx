@@ -16,6 +16,7 @@ export function CoffeeButton({ href, children }: CoffeeButtonProps) {
       target="_blank"
       rel="nofollow noopener noreferrer"
       className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded transition-colors"
+      data-cta="true"
     >
       {children}
     </a>
