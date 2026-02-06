@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-02-06T08:17:02.255Z",
+  "generated_at": "2026-02-06T08:44:29.858Z",
   "project_info": {
     "id": "openclaw-ai-org",
     "name": "OpenClaw AI Survival Guide",
@@ -28,7 +28,7 @@
     "/not-found",
     "/"
   ],
-  "content_count": 15,
+  "content_count": 16,
   "rules": [
     "Static content only",
     "No SaaS features (yet)",

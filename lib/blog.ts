@@ -208,6 +208,18 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     seoKeywords: ["openclaw agent cost","openclaw api cost","agent token usage","api vs gpu cost","deepseek agent tokens"],
   },
+  {
+    slug: "fix-openclaw-spawn-einval",
+    canonicalPath: createCanonicalPath("fix-openclaw-spawn-einval"),
+    title: "Fix OpenClaw spawn EINVAL Errors",
+    description: "A decision system for spawn EINVAL. Not a bug hunt. A reality check.",
+    date: "2026-02-06",
+    author: "LazyDev",
+    tags: ["Troubleshooting", "Windows", "Node.js", "Environment"],
+    category: "Troubleshooting",
+    featured: false,
+    seoKeywords: ["openclaw einval", "spawn einval", "environment rot", "windows subprocess", "node spawn error"],
+  },
 
 ];
 
