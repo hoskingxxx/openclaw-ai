@@ -212,10 +212,10 @@ main[data-section="guides"] .prose blockquote a[data-link="affiliate"] strong {
   color: #60a5fa !important;
 }
 
-/* Brand links in guides - preserve original color */
+/* Brand links in guides - preserve brand-primary color */
 main[data-section="guides"] a[data-link="brand"],
 main[data-section="guides"] .prose a[data-link="brand"] {
-  color: inherit !important;
+  /* Don't override color, let text-brand-primary class apply */
   text-decoration: none;
 }
 
