@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
+import { ContentRail } from "@/components/features/ContentRail";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { FEATURED_POST_PATH } from "@/lib/blog";
@@ -20,9 +21,10 @@ export default function OOMPage() {
     <>
       <Navigation />
       <main className="min-h-screen">
-        <div className="max-w-4xl mx-auto px-6 py-16">
-          {/* Breadcrumb */}
-          <div className="mb-8">
+        <ContentRail>
+          <div className="py-16">
+            {/* Breadcrumb */}
+            <div className="mb-8">
             <Link href="/" className="text-sm text-text-tertiary hover:text-text-primary transition-colors">
               ← Back Home
             </Link>
@@ -374,18 +376,18 @@ PID    COMMAND        %CPU  %MEM
               <h2 className="text-2xl font-bold text-text-primary mb-6">
                 Final Calculation
               </h2>
-              <div className="bg-terminal-bg rounded p-6 mb-6 max-w-2xl mx-auto">
+              <div className="bg-terminal-bg rounded p-6 mb-6">
                 <pre className="text-sm text-green-400 font-mono">
                   <code>If you spend 4 hours fixing a CUDA driver to save $2 on hosting,
 you are valuing your time at minimum hourly rates.</code>
                 </pre>
               </div>
-              <p className="text-lg text-text-secondary mb-6 max-w-2xl mx-auto">
+              <p className="text-lg text-text-secondary mb-6">
                 If you are an engineer, your time is worth more.<br />
                 <strong className="text-brand-primary">Stop fighting physics. Rent the compute.</strong>
               </p>
 
-              <div className="grid gap-4 md:grid-cols-2 max-w-2xl mx-auto">
+              <div className="grid gap-4 md:grid-cols-2 justify-center">
                 <Link
                   href="/troubleshooting"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-text-primary font-mono text-sm rounded-lg transition-colors"
@@ -416,7 +418,8 @@ you are valuing your time at minimum hourly rates.</code>
               </Link>
             </div>
           </div>
-        </div>
+          </div>
+        </ContentRail>
       </main>
       <Footer />
     </>

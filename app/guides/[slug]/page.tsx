@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
 import { Breadcrumbs } from "@/components/features/Breadcrumbs";
+import { ContentRail } from "@/components/features/ContentRail";
 import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
 import { Button } from "@/components/ui/Button";
@@ -168,10 +169,9 @@ export default async function BlogPostPage({
         <HashScrollFix />
       </Suspense>
       <main className="min-h-screen">
-        {/* Article Content + TOC */}
-        <div className="mx-auto px-4 sm:px-6 py-8" style={{ maxWidth: 'fit-content' }}>
-          {/* Breadcrumbs */}
-          <div className="w-full max-w-[960px] mb-4">
+        {/* Breadcrumbs */}
+        <ContentRail>
+          <div className="py-8 pb-4">
             <Breadcrumbs
               items={[
                 { label: "Guides", href: "/guides" },
@@ -179,15 +179,19 @@ export default async function BlogPostPage({
               ]}
             />
           </div>
+        </ContentRail>
+
+        {/* Article Content + TOC */}
+        <div className="mx-auto px-4 sm:px-6 py-4" style={{ maxWidth: '1248px' }}>
           {/* Mobile TOC */}
           <div className="lg:hidden mb-6">
             <MobileTableOfContents items={postContent.toc} />
           </div>
 
           {/* Two-column grid: article + TOC */}
-          <div className="grid grid-cols-1 lg:grid-cols-[minmax(960px,1fr)_256px] gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-[960px_256px] gap-12">
             {/* Left: Article */}
-            <article className="w-full max-w-[960px]">
+            <article>
               {/* Article Header */}
               <header className="mb-8">
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">

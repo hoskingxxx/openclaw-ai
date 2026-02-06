@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
 import { Breadcrumbs } from "@/components/features/Breadcrumbs";
+import { ContentRail } from "@/components/features/ContentRail";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -21,25 +22,30 @@ export default function ResourcesPage() {
       <Navigation />
       <main className="min-h-screen">
         {/* Breadcrumbs */}
-        <div className="max-w-7xl mx-auto px-6 pt-8">
-          <Breadcrumbs items={[{ label: "Resources", href: "/resources" }]} />
-        </div>
+        <ContentRail>
+          <div className="pt-8 pb-4">
+            <Breadcrumbs items={[{ label: "Resources", href: "/resources" }]} />
+          </div>
+        </ContentRail>
 
         {/* Page Title */}
-        <section className="max-w-4xl mx-auto px-6 py-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4 font-mono">
-            Hardware Reality Check
-          </h1>
-          <p className="text-xl text-text-secondary mb-2">
-            Choose your path — every wrong choice here costs you hours.
-          </p>
-          <p className="text-sm text-text-tertiary font-mono mt-4">
-            This site exists because the official docs didn't warn us about the hardware reality.
-          </p>
-        </section>
+        <ContentRail>
+          <section className="py-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4 font-mono">
+              Hardware Reality Check
+            </h1>
+            <p className="text-xl text-text-secondary mb-2">
+              Choose your path — every wrong choice here costs you hours.
+            </p>
+            <p className="text-sm text-text-tertiary font-mono mt-4">
+              This site exists because the official docs didn't warn us about the hardware reality.
+            </p>
+          </section>
+        </ContentRail>
 
         {/* Decision Tree */}
-        <section className="max-w-4xl mx-auto px-6 py-12">
+        <ContentRail>
+          <section className="py-12">
           <div className="glass-card p-8">
             <h2 className="text-2xl font-bold text-text-primary mb-6 font-mono">Decision Tree</h2>
             <div className="space-y-4 text-text-secondary">
@@ -63,9 +69,11 @@ export default function ResourcesPage() {
             </div>
           </div>
         </section>
+        </ContentRail>
 
         {/* VPS Options - De-commercialized */}
-        <section className="max-w-4xl mx-auto px-6 py-12">
+        <ContentRail>
+          <section className="py-12">
           <h2 className="text-2xl font-bold text-text-primary mb-6">☁️ Cloud GPU (VPS)</h2>
           <p className="text-text-secondary mb-6">
             The only way to sleep at night if you don't have 24GB+ VRAM.
@@ -110,9 +118,11 @@ export default function ResourcesPage() {
             </div>
           </div>
         </section>
+        </ContentRail>
 
         {/* Hardware Options - Gritty Realism */}
-        <section className="max-w-4xl mx-auto px-6 py-12">
+        <ContentRail>
+          <section className="py-12">
           <h2 className="text-2xl font-bold text-text-primary mb-6">💻 Local Hardware</h2>
           <p className="text-text-secondary mb-6">
             Buy once, cry once. Or buy cheap, cry every day.
@@ -173,9 +183,11 @@ export default function ResourcesPage() {
             </div>
           </div>
         </section>
+        </ContentRail>
 
         {/* API Services */}
-        <section className="max-w-4xl mx-auto px-6 py-12">
+        <ContentRail>
+          <section className="py-12">
           <h2 className="text-2xl font-bold text-text-primary mb-6">🔑 API Services</h2>
           <p className="text-text-secondary mb-6">
             The only way to sleep at night if you want zero hardware drama.
@@ -210,21 +222,24 @@ export default function ResourcesPage() {
             </div>
           </div>
         </section>
+        </ContentRail>
 
         {/* OOM Error Link */}
-        <section className="max-w-4xl mx-auto px-6 py-12">
-          <div className="glass-card p-8 text-center border border-red-500/30">
-            <h3 className="text-xl font-bold text-text-primary mb-4">
-              Not sure if your hardware can handle it?
-            </h3>
-            <p className="text-text-secondary mb-6">
-              Read the crash logs before you buy anything. These are real failures from real hardware.
-            </p>
-            <Button href="/troubleshooting" variant="secondary">
-              Read Crash Logs →
-            </Button>
-          </div>
-        </section>
+        <ContentRail>
+          <section className="py-12">
+            <div className="glass-card p-8 text-center border border-red-500/30">
+              <h3 className="text-xl font-bold text-text-primary mb-4">
+                Not sure if your hardware can handle it?
+              </h3>
+              <p className="text-text-secondary mb-6">
+                Read the crash logs before you buy anything. These are real failures from real hardware.
+              </p>
+              <Button href="/troubleshooting" variant="secondary">
+                Read Crash Logs →
+              </Button>
+            </div>
+          </section>
+        </ContentRail>
       </main>
       <Footer />
     </>

@@ -4,6 +4,7 @@ import { Footer } from "@/components/features/Footer";
 import { Navigation } from "@/components/features/Navigation";
 import { Button } from "@/components/ui/Button";
 import { StopDebuggingCTA } from "@/components/stop-debugging-cta";
+import { ContentRail } from "@/components/features/ContentRail";
 
 // HARDCODED PATH - Nuclear fix for redirect loop
 // Updated to point to new security article
@@ -36,8 +37,9 @@ export default function HomePage() {
         <Hero />
 
         {/* Triage CTA */}
-        <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
-          <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+        <ContentRail>
+          <section className="py-12">
+            <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
             {/* Action A: Diagnosis */}
             <Link
               href="/guides/openclaw-error-index"
@@ -65,57 +67,61 @@ export default function HomePage() {
             </a>
           </div>
         </section>
+        </ContentRail>
 
         {/* The Fix You Probably Needed */}
-        <section id="quick-fix" className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
-          <div className="text-center mb-8">
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-mono text-brand-primary mb-4 break-words">
-              The Fix You Probably Needed
-            </h2>
-            <p className="text-text-secondary text-sm md:text-base mb-2 break-words">
-              Stop trying to run full-size R1 (67B) — or even unquantized 32B — on a laptop. It won't happen.
-            </p>
-            <p className="text-text-tertiary text-sm font-mono">
-              You're debugging physics. VRAM is not negotiable.
-            </p>
-          </div>
+        <ContentRail>
+          <section id="quick-fix" className="py-16">
+            <div className="text-center mb-8">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-mono text-brand-primary mb-4 break-words">
+                The Fix You Probably Needed
+              </h2>
+              <p className="text-text-secondary text-sm md:text-base mb-2 break-words">
+                Stop trying to run full-size R1 (67B) — or even unquantized 32B — on a laptop. It won't happen.
+              </p>
+              <p className="text-text-tertiary text-sm font-mono">
+                You're debugging physics. VRAM is not negotiable.
+              </p>
+            </div>
 
-          <div className="glass-card p-4 sm:p-6 mb-6">
-            <div className="bg-terminal-bg rounded-lg overflow-hidden border border-brand-primary/30">
-              <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
-                <div className="w-3 h-3 rounded-full bg-red-500" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-                <span className="ml-2 text-xs text-gray-400 font-mono">terminal</span>
-              </div>
-              <pre className="p-4 overflow-x-auto text-xs sm:text-sm">
-                <code className="text-green-400 font-mono leading-relaxed break-all">
+            <div className="glass-card p-4 sm:p-6 mb-6">
+              <div className="bg-terminal-bg rounded-lg overflow-hidden border border-brand-primary/30">
+                <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
+                  <div className="w-3 h-3 rounded-full bg-red-500" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <span className="ml-2 text-xs text-gray-400 font-mono">terminal</span>
+                </div>
+                <pre className="p-4 overflow-x-auto text-xs sm:text-sm">
+                  <code className="text-green-400 font-mono leading-relaxed break-all">
 {`# The "Poor Man's Fix" (Fits in 8GB VRAM)
 ollama run deepseek-r1:8b`}
-                </code>
-              </pre>
+                  </code>
+                </pre>
+              </div>
+              <p className="text-sm text-text-secondary mt-4 break-words">
+                This downloads the 8B Distilled version. It's dumber, but it runs.
+              </p>
+              <p className="text-xs text-text-tertiary mt-2 break-words">
+                It runs, but at a cost. See <Link href="/guides/how-to-use-deepseek-with-openclaw" className="text-brand-primary hover:text-brand-hover underline">Optimization Trade-offs →</Link>
+              </p>
             </div>
-            <p className="text-sm text-text-secondary mt-4 break-words">
-              This downloads the 8B Distilled version. It's dumber, but it runs.
-            </p>
-            <p className="text-xs text-text-tertiary mt-2 break-words">
-              It runs, but at a cost. See <Link href="/guides/how-to-use-deepseek-with-openclaw" className="text-brand-primary hover:text-brand-hover underline">Optimization Trade-offs →</Link>
-            </p>
-          </div>
 
-          <div className="text-center">
-            <Link
-              href={FEATURED_POST_PATH}
-              className="text-sm text-brand-primary hover:text-brand-hover underline font-mono"
-            >
-              Hardware Reality Check →
-            </Link>
-          </div>
-        </section>
+            <div className="text-center">
+              <Link
+                href={FEATURED_POST_PATH}
+                className="text-sm text-brand-primary hover:text-brand-hover underline font-mono"
+              >
+                Hardware Reality Check →
+              </Link>
+            </div>
+          </section>
+        </ContentRail>
 
         {/* Final CTA - Survivor Style */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 py-20">
-          <div className="glass-card p-6 sm:p-8 text-center">
+        <ContentRail>
+          <section className="py-20">
+            <div className="glass-card p-6 sm:p-8 text-center">
             <h2 className="text-xl md:text-2xl font-mono text-text-primary mb-4 break-words">
               If you are here, you probably already broke things.
             </h2>
@@ -130,6 +136,7 @@ ollama run deepseek-r1:8b`}
             </p>
           </div>
         </section>
+        </ContentRail>
       </main>
 
       <Footer />

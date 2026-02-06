@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { ContentRail } from "./ContentRail";
 
 export function Hero() {
   return (
@@ -10,7 +11,8 @@ export function Hero() {
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main Content */}
-      <div className="hero-content relative z-10 max-w-4xl mx-auto text-center px-4">
+      <div className="hero-content relative z-10 mx-auto w-full px-4">
+        <ContentRail>
         {/* Badge: Unofficial Community Docs */}
         <div className="flex justify-center mb-6">
           <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-text-tertiary font-mono break-words">
@@ -24,7 +26,7 @@ export function Hero() {
         </h1>
 
         {/* Viral Slogan */}
-        <div className="mb-8 p-4 bg-brand-primary/10 border border-brand-primary/30 rounded-lg max-w-2xl mx-auto">
+        <div className="mb-8 p-4 bg-brand-primary/10 border border-brand-primary/30 rounded-lg">
           <p className="text-base md:text-lg lg:text-xl font-mono text-brand-primary font-bold break-words">
             "If your model crashes silently, it's not a bug. It's physics."
           </p>
@@ -34,7 +36,7 @@ export function Hero() {
         </div>
 
         {/* Subtitle / Lead Text */}
-        <p className="text-base md:text-lg lg:text-xl text-text-secondary mb-10 max-w-3xl mx-auto leading-relaxed break-words">
+        <p className="text-base md:text-lg lg:text-xl text-text-secondary mb-10 leading-relaxed break-words">
           Battle-tested guides for running DeepSeek R1 locally.<br />
           <span className="text-text-tertiary">Real crash logs. Real fixes. No hype.</span><br />
           <span className="text-text-tertiary">Written by developers who broke their hardware so you don't have to.</span>
@@ -52,7 +54,7 @@ export function Hero() {
         </div>
 
         {/* Crash Log Preview */}
-        <div className="mt-8 max-w-2xl mx-auto">
+        <div className="mt-8">
           <div className="bg-terminal-bg rounded-lg overflow-hidden border border-red-500/30 shadow-xl opacity-60 hover:opacity-100 transition-opacity">
             <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
               <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -79,6 +81,7 @@ export function Hero() {
             Stuck on <code className="text-brand-primary bg-transparent px-0">spawn EINVAL</code>? <Link href="/guides/fix-openclaw-spawn-einval?from=3060-banner-einval" className="text-brand-primary hover:text-brand-hover underline" data-umami-event="banner_einval_click" data-umami-event-post="homepage" data-umami-event-placement="hero_crash_log">Don't waste another hour fighting a broken environment.</Link>
           </p>
         </div>
+        </ContentRail>
       </div>
     </section>
   );

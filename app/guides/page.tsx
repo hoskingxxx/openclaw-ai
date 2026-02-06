@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
 import { Breadcrumbs } from "@/components/features/Breadcrumbs";
+import { ContentRail } from "@/components/features/ContentRail";
 import { NextStepCard } from "@/components/features/NextSteps";
 import { blogPosts } from "@/lib/blog";
 import Link from "next/link";
@@ -22,25 +23,30 @@ export default function BlogPage() {
       <Navigation />
       <main className="min-h-screen">
         {/* Breadcrumbs */}
-        <div className="max-w-7xl mx-auto px-6 pt-8">
-          <Breadcrumbs items={[{ label: "Guides", href: "/guides" }]} />
-        </div>
+        <ContentRail>
+          <div className="pt-8 pb-4">
+            <Breadcrumbs items={[{ label: "Guides", href: "/guides" }]} />
+          </div>
+        </ContentRail>
 
         {/* Page Title */}
-        <section className="max-w-7xl mx-auto px-6 py-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-            OpenClaw Survival Guides
-          </h1>
-          <p className="text-xl text-text-secondary">
-            Battle-Tested Tutorials & Fixes
-          </p>
-        </section>
+        <ContentRail>
+          <section className="py-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
+              OpenClaw Survival Guides
+            </h1>
+            <p className="text-xl text-text-secondary">
+              Battle-Tested Tutorials & Fixes
+            </p>
+          </section>
+        </ContentRail>
 
         {/* Featured Posts */}
         {blogPosts.filter((post) => post.featured).length > 0 && (
-          <section className="max-w-7xl mx-auto px-6 pb-12">
-            <h2 className="text-2xl font-bold text-text-primary mb-6">Featured Posts</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ContentRail>
+            <section className="pb-12">
+              <h2 className="text-2xl font-bold text-text-primary mb-6">Featured Posts</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {blogPosts.filter((post) => post.featured).map((post) => (
                 <Link
                   key={post.slug}
@@ -73,12 +79,14 @@ export default function BlogPage() {
               ))}
             </div>
           </section>
+          </ContentRail>
         )}
 
         {/* All Posts */}
-        <section className="max-w-7xl mx-auto px-6 pb-12">
-          <h2 className="text-2xl font-bold text-text-primary mb-6">All Posts</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <ContentRail>
+          <section className="pb-12">
+            <h2 className="text-2xl font-bold text-text-primary mb-6">All Posts</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {blogPosts.map((post) => (
               <Link
                 key={post.slug}
@@ -110,7 +118,8 @@ export default function BlogPage() {
               </Link>
             ))}
           </div>
-        </section>
+          </section>
+        </ContentRail>
 
         {/* Next Step */}
         <NextStepCard

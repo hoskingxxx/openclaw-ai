@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
 import { Breadcrumbs } from "@/components/features/Breadcrumbs";
+import { ContentRail } from "@/components/features/ContentRail";
 import { FEATURED_POST_PATH } from "@/lib/blog";
 import type { Metadata } from "next";
 import { Cpu, Server, Zap } from "lucide-react";
@@ -56,25 +57,30 @@ export default function RecommendedSetupPage() {
       <Navigation />
       <main className="min-h-screen">
         {/* Breadcrumbs */}
-        <div className="max-w-4xl mx-auto px-6 pt-8">
-          <Breadcrumbs items={[
-            { label: "Tools", href: "/tools" },
-            { label: "Recommended Setup", href: "/tools/recommended-setup" }
-          ]} />
-        </div>
+        <ContentRail>
+          <div className="pt-8 pb-4">
+            <Breadcrumbs items={[
+              { label: "Tools", href: "/tools" },
+              { label: "Recommended Setup", href: "/tools/recommended-setup" }
+            ]} />
+          </div>
+        </ContentRail>
 
         {/* Page Title */}
-        <section className="max-w-4xl mx-auto px-6 py-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-            Recommended VPS Setup
-          </h1>
-          <p className="text-xl text-text-secondary">
-            GPU cloud providers tested with OpenClaw + DeepSeek R1
-          </p>
-        </section>
+        <ContentRail>
+          <section className="py-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
+              Recommended VPS Setup
+            </h1>
+            <p className="text-xl text-text-secondary">
+              GPU cloud providers tested with OpenClaw + DeepSeek R1
+            </p>
+          </section>
+        </ContentRail>
 
         {/* Coming Soon Banner */}
-        <section className="max-w-4xl mx-auto px-6 pb-8">
+        <ContentRail>
+          <section className="pb-8">
           <div className="glass-card border-l-4 border-orange-500 p-6">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0">
@@ -94,9 +100,11 @@ export default function RecommendedSetupPage() {
             </div>
           </div>
         </section>
+        </ContentRail>
 
         {/* Provider Cards */}
-        <section className="max-w-4xl mx-auto px-6 pb-12">
+        <ContentRail>
+          <section className="pb-12">
           <div className="space-y-6">
             {providers.map((provider) => {
               const Icon = provider.icon;
@@ -143,9 +151,11 @@ export default function RecommendedSetupPage() {
             })}
           </div>
         </section>
+        </ContentRail>
 
         {/* Quick Recommendations */}
-        <section className="max-w-4xl mx-auto px-6 pb-12">
+        <ContentRail>
+          <section className="pb-12">
           <h2 className="text-2xl font-bold text-text-primary mb-6">Quick Recommendations</h2>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="glass-card p-6">
@@ -162,47 +172,50 @@ export default function RecommendedSetupPage() {
             </div>
           </div>
         </section>
+        </ContentRail>
 
         {/* Hardware Requirements Reference */}
-        <section className="max-w-4xl mx-auto px-6 pb-12">
-          <div className="glass-card p-6">
-            <h2 className="text-xl font-bold text-text-primary mb-4">
-              VRAM Requirements for DeepSeek R1
-            </h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-white/10">
-                    <th className="text-left py-2 text-text-secondary">Model</th>
-                    <th className="text-left py-2 text-text-secondary">FP16 VRAM</th>
-                    <th className="text-left py-2 text-text-secondary">Q4 VRAM</th>
-                    <th className="text-left py-2 text-text-secondary">Recommended GPU</th>
-                  </tr>
-                </thead>
-                <tbody className="text-text-secondary">
-                  <tr className="border-b border-white/5">
-                    <td className="py-2">DeepSeek R1 8B</td>
-                    <td className="py-2">~16GB</td>
-                    <td className="py-2">~6GB</td>
-                    <td className="py-2">RTX 3060 (12GB)+</td>
-                  </tr>
-                  <tr className="border-b border-white/5">
-                    <td className="py-2">DeepSeek R1 32B</td>
-                    <td className="py-2">~64GB</td>
-                    <td className="py-2">~20GB</td>
-                    <td className="py-2">RTX 4090 (24GB) or H100</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2">DeepSeek R1 70B</td>
-                    <td className="py-2">~140GB</td>
-                    <td className="py-2">~42GB</td>
-                    <td className="py-2">H100 (80GB) or 2x A100</td>
-                  </tr>
-                </tbody>
-              </table>
+        <ContentRail>
+          <section className="pb-12">
+            <div className="glass-card p-6">
+              <h2 className="text-xl font-bold text-text-primary mb-4">
+                VRAM Requirements for DeepSeek R1
+              </h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 text-text-secondary">Model</th>
+                      <th className="text-left py-2 text-text-secondary">FP16 VRAM</th>
+                      <th className="text-left py-2 text-text-secondary">Q4 VRAM</th>
+                      <th className="text-left py-2 text-text-secondary">Recommended GPU</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-text-secondary">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2">DeepSeek R1 8B</td>
+                      <td className="py-2">~16GB</td>
+                      <td className="py-2">~6GB</td>
+                      <td className="py-2">RTX 3060 (12GB)+</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2">DeepSeek R1 32B</td>
+                      <td className="py-2">~64GB</td>
+                      <td className="py-2">~20GB</td>
+                      <td className="py-2">RTX 4090 (24GB) or H100</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2">DeepSeek R1 70B</td>
+                      <td className="py-2">~140GB</td>
+                      <td className="py-2">~42GB</td>
+                      <td className="py-2">H100 (80GB) or 2x A100</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </ContentRail>
       </main>
       <Footer />
     </>

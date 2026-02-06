@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
 import { Breadcrumbs } from "@/components/features/Breadcrumbs";
+import { ContentRail } from "@/components/features/ContentRail";
 import { NextStepCard } from "@/components/features/NextSteps";
 import { faqs } from "@/lib/content";
 import { FEATURED_POST_PATH } from "@/lib/blog";
@@ -28,25 +29,30 @@ export default function FAQPage() {
       <Navigation />
       <main className="min-h-screen">
         {/* Breadcrumbs */}
-        <div className="max-w-4xl mx-auto px-6 pt-8">
-          <Breadcrumbs items={[{ label: "FAQ", href: "/faq" }]} />
-        </div>
+        <ContentRail>
+          <div className="pt-8 pb-4">
+            <Breadcrumbs items={[{ label: "FAQ", href: "/faq" }]} />
+          </div>
+        </ContentRail>
 
         {/* Page Title */}
-        <section className="max-w-4xl mx-auto px-6 py-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-            Frequently Asked Questions
-          </h1>
-          <p className="text-xl text-text-secondary mb-2">
-            Answers to common questions about OpenClaw
-          </p>
-          <p className="text-sm text-text-tertiary">
-            Formerly known as Clawdbot / Moltbot —— you may have seen these names elsewhere
-          </p>
-        </section>
+        <ContentRail>
+          <section className="py-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
+              Frequently Asked Questions
+            </h1>
+            <p className="text-xl text-text-secondary mb-2">
+              Answers to common questions about OpenClaw
+            </p>
+            <p className="text-sm text-text-tertiary">
+              Formerly known as Clawdbot / Moltbot —— you may have seen these names elsewhere
+            </p>
+          </section>
+        </ContentRail>
 
         {/* FAQ List */}
-        <section className="max-w-4xl mx-auto px-6 pb-12">
+        <ContentRail>
+          <section className="pb-12">
           <div className="space-y-8">
             {faqs.map((category) => (
               <div
@@ -92,7 +98,8 @@ export default function FAQPage() {
               </div>
             ))}
           </div>
-        </section>
+          </section>
+        </ContentRail>
 
         {/* Next Step */}
         <NextStepCard

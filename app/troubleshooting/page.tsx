@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
+import { ContentRail } from "@/components/features/ContentRail";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -100,7 +101,8 @@ export default function TroubleshootingPage() {
     <>
       <Navigation />
       <main className="min-h-screen">
-        <div className="max-w-4xl mx-auto px-6 py-16">
+        <ContentRail>
+          <div className="py-16">
 
           {/* Breadcrumb */}
           <div className="mb-8">
@@ -354,10 +356,9 @@ export default function TroubleshootingPage() {
 
           {/* Bottom CTA for Frustrated Debuggers */}
           <div className="mt-16 mb-8 p-8 border border-orange-500/20 bg-orange-500/5 rounded-2xl text-center">
-            <div className="mx-auto max-w-2xl">
-              <h3 className="text-2xl font-bold tracking-tight text-text-primary mb-3">
-                Still broken?
-              </h3>
+            <h3 className="text-2xl font-bold tracking-tight text-text-primary mb-3">
+              Still broken?
+            </h3>
               <p className="text-text-secondary mb-6 text-lg">
                 Stop debugging environment issues. Rent a clean Linux box and deploy in minutes.
               </p>
@@ -378,10 +379,10 @@ export default function TroubleshootingPage() {
               <p className="mt-4 text-xs text-text-tertiary">
                 *Save 4+ hours of debugging for less than $0.10/hour.
               </p>
-            </div>
           </div>
 
         </div>
+        </ContentRail>
       </main>
       <Footer />
     </>

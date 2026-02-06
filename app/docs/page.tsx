@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
+import { ContentRail } from "@/components/features/ContentRail";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -19,7 +20,7 @@ export default function DocsPage() {
     <>
       <Navigation />
       <main className="min-h-screen bg-background-primary">
-        <div className="max-w-4xl mx-auto px-6 py-16">
+        <ContentRail>
 
           {/* Survivor Warning Banner */}
           <div className="mb-8 p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
@@ -176,7 +177,7 @@ export default function DocsPage() {
             </Link>
           </div>
 
-        </div>
+        </ContentRail>
       </main>
       <Footer />
     </>
