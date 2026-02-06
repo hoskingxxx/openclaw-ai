@@ -1,7 +1,6 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
 import { Breadcrumbs } from "@/components/features/Breadcrumbs";
-import { ContentRail } from "@/components/features/ContentRail";
 import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
 import { Button } from "@/components/ui/Button";
@@ -25,7 +24,6 @@ import { rehypeVultrEnrich } from "@/lib/rehype-vultr-enrich";
 import { rehypeGroupIds } from "@/lib/rehype-group-ids";
 import { rehypeCollectHeadings, type TocItem } from "@/lib/rehype-collect-headings";
 import { rehypeDecisionGate, preprocessDecisionGates } from "@/lib/rehype-decision-gate";
-import { TableOfContents, MobileTableOfContents } from "@/components/features/TableOfContents";
 
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
@@ -169,14 +167,9 @@ export default async function BlogPostPage({
         <HashScrollFix />
       </Suspense>
       <main className="min-h-screen">
-        {/* ====================================================================
-            SINGLE RAIL LAYOUT (960px max-width)
-            GUARDRAIL: Do NOT modify to multi-column grid or add max-w-[1248px]
-            All content must flow through ContentRail component
-        ==================================================================== */}
-
-        {/* Breadcrumbs - Single Rail */}
-        <ContentRail>
+        {/* Single 960px Rail */}
+        <div className="mx-auto w-full max-w-[960px] px-4 sm:px-6 py-4">
+          {/* Breadcrumbs */}
           <div className="py-8 pb-4">
             <Breadcrumbs
               items={[
@@ -185,17 +178,8 @@ export default async function BlogPostPage({
               ]}
             />
           </div>
-        </ContentRail>
 
-        {/* Mobile TOC - Single Rail (hidden on xl+, floating TOC used instead) */}
-        <ContentRail>
-          <div className="xl:hidden mb-6">
-            <MobileTableOfContents items={postContent.toc} />
-          </div>
-        </ContentRail>
-
-        {/* Article Content - Single 960px Rail */}
-        <ContentRail>
+          {/* Article */}
           <article>
             {/* Article Header */}
             <header className="mb-8">
@@ -229,7 +213,7 @@ export default async function BlogPostPage({
 
             {/* Article Body */}
             <div
-              className="glass-card w-full p-4 sm:p-6 md:p-8 prose prose-invert prose-sm md:prose-base prose-max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-blockquote:border-brand-primary prose-blockquote:bg-brand-muted/20 prose-blockquote:text-muted-foreground prose-img:rounded-lg prose-hr:border-border break-words"
+              className="glass-card w-full p-6 prose prose-invert prose-sm md:prose-base prose-max-w-none break-words"
               dangerouslySetInnerHTML={{ __html: postContent.content }}
             />
 
@@ -251,16 +235,6 @@ export default async function BlogPostPage({
               </div>
             )}
           </article>
-        </ContentRail>
-
-        {/* ====================================================================
-            FLOATING TOC OVERLAY (Non-layout-affecting)
-            - Only visible on xl+ screens (1280px+)
-            - Fixed position: does NOT consume content rail width
-            - GUARDRAIL: Do NOT move inline with article or add to grid layout
-        ==================================================================== */}
-        <div className="hidden xl:block fixed right-0 top-1/2 -translate-y-1/2 pr-4 max-h-[70vh] overflow-y-auto w-[220px] bg-background/95 backdrop-blur-sm border-l border-white/10">
-          <TableOfContents items={postContent.toc} />
         </div>
       </main>
 
