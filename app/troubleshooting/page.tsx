@@ -318,7 +318,7 @@ export default function TroubleshootingPage() {
                           href="https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=troubleshooting&utm_content=low_vram_trap"
                           target="_blank"
                           rel="noopener noreferrer"
-                          data-umami-event="affiliate_click"
+                          data-umami-event="marketing_affiliate_click"
                           data-umami-partner="vultr"
                           data-umami-placement="low_vram_trap"
                           className="inline-flex items-center gap-2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
@@ -366,7 +366,7 @@ export default function TroubleshootingPage() {
                 size="md"
                 href="https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=troubleshooting&utm_content=page_cta"
                 external
-                data-umami-event="affiliate_click"
+                data-umami-event="marketing_affiliate_click"
                 data-umami-partner="vultr"
                 data-umami-placement="page_cta"
               >

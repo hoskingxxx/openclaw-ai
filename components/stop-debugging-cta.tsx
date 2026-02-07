@@ -31,8 +31,7 @@ export function StopDebuggingCTA() {
             size="md"
             href={affLink}
             external
-            onClick={() => trackAffiliateClick({ source: "vultr_stop_debugging_box", postSlug })}
-            data-umami-event="affiliate_click"
+            data-umami-event="marketing_affiliate_click"
             data-umami-partner="vultr"
             data-umami-placement="stop_debugging_box"
           >

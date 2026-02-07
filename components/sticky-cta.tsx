@@ -53,9 +53,7 @@ export function StickyCTA() {
           size="sm"
           href={affLink}
           external
-          onClick={() => trackAffiliateClick({ source: "vultr_sticky_banner", postSlug })}
-          data-cta="true"
-          data-umami-event="affiliate_click"
+          data-umami-event="marketing_affiliate_click"
           data-umami-partner="vultr"
           data-umami-placement="sticky_banner"
         >
