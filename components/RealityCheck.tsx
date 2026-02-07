@@ -32,8 +32,8 @@ const optionStyle: React.CSSProperties = {
 // ============================================================================
 
 type Environment = "vps" | "local_win" | "local_mac"
-type ModelId = "14b" | "32b" | "70b" | "671b"
-type VRAMId = "8gb" | "12gb" | "16gb" | "24gb" | "48gb"
+type ModelId = "1.5b" | "8b" | "14b" | "32b" | "70b" | "671b"
+type VRAMId = "4-6gb" | "8gb" | "12gb" | "16gb" | "24gb" | "48gb"
 type Status = "red" | "yellow" | "green"
 
 interface ModelOption {
@@ -58,13 +58,16 @@ interface EnvironmentOption {
 // ============================================================================
 
 const MODELS: Record<ModelId, ModelOption> = {
-  "14b": { id: "14b", label: "DeepSeek R1 Distill (14B)", requiredVRAM: 10 },
-  "32b": { id: "32b", label: "DeepSeek R1 Distill (32B)", requiredVRAM: 20 },
-  "70b": { id: "70b", label: "DeepSeek R1 Distill (70B)", requiredVRAM: 42 },
-  "671b": { id: "671b", label: "DeepSeek V3 (671B Full)", requiredVRAM: 300 },
+  "1.5b": { id: "1.5b", label: "DeepSeek-R1-Distill-Qwen-1.5B", requiredVRAM: 2 },
+  "8b": { id: "8b", label: "DeepSeek-R1-Distill-Llama-8B", requiredVRAM: 6 },
+  "14b": { id: "14b", label: "DeepSeek-R1-Distill-Llama-14B", requiredVRAM: 10 },
+  "32b": { id: "32b", label: "DeepSeek-R1-Distill-Qwen-32B", requiredVRAM: 20 },
+  "70b": { id: "70b", label: "DeepSeek-R1-Distill-Llama-70B", requiredVRAM: 42 },
+  "671b": { id: "671b", label: "DeepSeek-V3 (671B Full)", requiredVRAM: 300 },
 }
 
 const VRAM_OPTIONS: VRAMOption[] = [
+  { id: "4-6gb", label: "4GB–6GB (Entry Level)", gb: 5 },
   { id: "8gb", label: "8GB", gb: 8 },
   { id: "12gb", label: "12GB", gb: 12 },
   { id: "16gb", label: "16GB", gb: 16 },
@@ -75,12 +78,12 @@ const VRAM_OPTIONS: VRAMOption[] = [
 const ENVIRONMENT_OPTIONS: EnvironmentOption[] = [
   { id: "vps", label: "☁️ Cloud VPS / Docker (Isolated)" },
   { id: "local_win", label: "🪟 Local Windows (Personal PC)" },
-  { id: "local_mac", label: "🍎 Local macOS (Daily Driver)" },
+  { id: "local_mac", label: "🍎 Local macOS (Daily Driver / Apple Silicon)" },
 ]
 
-const MODEL_IDS: ModelId[] = ["14b", "32b", "70b", "671b"]
-const SMALLEST_MODEL: ModelId = "14b"
-const ENTRY_MODEL: ModelId = "14b"
+const MODEL_IDS: ModelId[] = ["1.5b", "8b", "14b", "32b", "70b", "671b"]
+const SMALLEST_MODEL: ModelId = "1.5b"
+const ENTRY_MODEL: ModelId = "8b"
 
 // ============================================================================
 // CALCULATION ENGINE (4-bit Quantization Only)
@@ -96,6 +99,26 @@ function calculateStatus(requiredVRAM: number, userVRAM: number): Status {
 
   // GREEN: Comfortable fit
   return "green"
+}
+
+/**
+ * Find the next smaller model that can fit in user's VRAM
+ * Returns null if current model is already the smallest or no smaller model fits
+ */
+function findNextSmallerFittingModel(currentModel: ModelId, userVRAM: number): ModelId | null {
+  const currentIndex = MODEL_IDS.indexOf(currentModel)
+  if (currentIndex <= 0) return null // Already at smallest
+
+  // Check smaller models in reverse order
+  for (let i = currentIndex - 1; i >= 0; i--) {
+    const modelId = MODEL_IDS[i]
+    if (MODELS[modelId].requiredVRAM <= userVRAM) {
+      return modelId
+    }
+  }
+
+  // No smaller model fits, return the absolute smallest
+  return SMALLEST_MODEL
 }
 
 // ============================================================================
@@ -124,8 +147,8 @@ function trackAffiliateClickStrict(params: AffiliateTrackParams) {
 // ============================================================================
 
 export default function RealityCheck() {
-  const [model, setModel] = useState<ModelId>("32b")
-  const [vram, setVram] = useState<VRAMId>("12gb")
+  const [model, setModel] = useState<ModelId>("8b")
+  const [vram, setVram] = useState<VRAMId>("8gb")
   const [environment, setEnvironment] = useState<Environment>("local_win")
   const [isMobile, setIsMobile] = useState(false)
 
@@ -145,8 +168,9 @@ export default function RealityCheck() {
   const requiredVRAM = MODELS[model].requiredVRAM
   const status = calculateStatus(requiredVRAM, userVRAM)
 
-  // Can show downgrade?
-  const canDowngrade = model !== SMALLEST_MODEL
+  // Find next smaller model for downgrade button
+  const nextSmallerModel = findNextSmallerFittingModel(model, userVRAM)
+  const canDowngrade = nextSmallerModel !== null
 
   // Show security banner? (Independent layer, does NOT affect status)
   const showSecurityBanner = environment === "local_win" || environment === "local_mac"
@@ -165,8 +189,9 @@ export default function RealityCheck() {
   }
 
   const handleDowngrade = () => {
-    trackToolDowngrade({ fromModel: model, toModel: ENTRY_MODEL, postSlug })
-    setModel(ENTRY_MODEL)
+    const targetModel = nextSmallerModel || SMALLEST_MODEL
+    trackToolDowngrade({ fromModel: model, toModel: targetModel, postSlug })
+    setModel(targetModel)
   }
 
   return (
@@ -394,12 +419,12 @@ export default function RealityCheck() {
           </a>
 
           {/* Fallback: Try Smaller Model */}
-          {canDowngrade && (
+          {canDowngrade && nextSmallerModel && (
             <button
               onClick={handleDowngrade}
               data-umami-event="tool_downgrade_click"
               data-umami-from={model}
-              data-umami-to={ENTRY_MODEL}
+              data-umami-to={nextSmallerModel}
               className="w-full p-4 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
             >
               <div className="flex items-start gap-3">
@@ -408,10 +433,10 @@ export default function RealityCheck() {
                 </div>
                 <div className="flex-1">
                   <div className="font-bold text-orange-900 dark:text-orange-100">
-                    Try Smaller Model (14B)
+                    Try Smaller Model ({MODELS[nextSmallerModel].label})
                   </div>
                   <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
-                    Your GPU cannot handle {MODELS[model].label}. Try {MODELS[ENTRY_MODEL].label}.
+                    Your GPU cannot handle {MODELS[model].label}. Try {MODELS[nextSmallerModel].label}.
                   </p>
                 </div>
               </div>
@@ -487,20 +512,22 @@ export default function RealityCheck() {
           </div>
 
           {/* Fallback: Try Smaller Model */}
-          <button
-            onClick={handleDowngrade}
-            data-umami-event="tool_downgrade_click"
-            data-umami-from={model}
-            data-umami-to={ENTRY_MODEL}
-            className="w-full p-3 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
-          >
-            <div className="flex items-center gap-2 text-sm">
-              <Zap className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-              <span className="text-orange-900 dark:text-amber-100 font-medium">
-                Try Smaller Model
-              </span>
-            </div>
-          </button>
+          {canDowngrade && nextSmallerModel && (
+            <button
+              onClick={handleDowngrade}
+              data-umami-event="tool_downgrade_click"
+              data-umami-from={model}
+              data-umami-to={nextSmallerModel}
+              className="w-full p-3 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
+            >
+              <div className="flex items-center gap-2 text-sm">
+                <Zap className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                <span className="text-orange-900 dark:text-amber-100 font-medium">
+                  Try Smaller Model ({MODELS[nextSmallerModel].label})
+                </span>
+              </div>
+            </button>
+          )}
         </div>
       )}
 
