@@ -97,6 +97,7 @@ async function getPostContent(slug: string): Promise<{
       tr: [...((defaultSchema.attributes || {}).tr || []), classAttribute],
       td: [...((defaultSchema.attributes || {}).td || []), classAttribute, "rowSpan", "colSpan"],
       th: [...((defaultSchema.attributes || {}).th || []), classAttribute, "rowSpan", "colSpan", "scope"],
+      img: ["src", "alt", "title", "width", "height", classAttribute, "loading"],
       a: [
         "href",
         "title",
@@ -247,7 +248,7 @@ export default async function BlogPostPage({
           )}
 
           <section>
-            <div
+            <article
               className="glass-card w-full p-6 prose prose-invert prose-sm md:prose-base prose-max-w-none break-words"
               style={{ maxWidth: 'unset' }}
               dangerouslySetInnerHTML={{ __html: postContent.content }}
@@ -256,9 +257,9 @@ export default async function BlogPostPage({
 
           {post.slug !== "openclaw-error-index" && (
             <section className="px-4 sm:px-6 mt-12 pt-8 border-t border-white/10">
-              <h3 className="text-xl font-semibold text-text-primary mb-2">
+              <p className="text-xl font-semibold text-text-primary mb-2">
                 Bookmark this site
-              </h3>
+              </p>
               <p className="text-text-secondary mb-4">
                 New fixes are added as soon as they appear on GitHub Issues.
               </p>
