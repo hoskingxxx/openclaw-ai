@@ -1,328 +1,595 @@
-"use client";
+"use client"
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, XCircle, CheckCircle2, ShieldAlert, Zap } from "lucide-react";
-import { trackVultrClick } from "@/lib/tracking";
+import { useState, useCallback, useEffect, useRef } from "react"
+import { usePathname } from "next/navigation"
+import { AlertTriangle, ExternalLink, Cloud, Settings, Package, Shield, Cpu, Zap } from "lucide-react"
+import { trackAffiliateClick, trackToolDowngrade } from "@/lib/tracking"
+import { ConversionButton } from "@/components/monetization/ConversionButton"
 
-declare global {
-  interface Window {
-    umami?:
-      | ((eventName: string, eventData?: Record<string, unknown>) => unknown)
-      | {
-          track?: (eventName: string, eventData?: Record<string, unknown>) => unknown;
-        };
-  }
+// ============================================================================
+// GLOBAL AFFILIATE LINKS (HARDCODED)
+// ============================================================================
+
+const LINK_KIT = "https://hoskington6.gumroad.com/l/ymwwgm"
+const LINK_API = "https://deepinfra.com/"
+const LINK_CLOUD = "https://www.vultr.com/?ref=9864821-9J"
+
+// ============================================================================
+// TYPES & DATA STRUCTURES (Strict Enum - Do Not Modify)
+// ============================================================================
+
+type Environment = "vps" | "local_win" | "local_mac"
+type ModelId = "14b" | "32b" | "70b" | "671b"
+type VRAMId = "8gb" | "12gb" | "16gb" | "24gb" | "48gb"
+type Status = "red" | "yellow" | "green"
+
+interface ModelOption {
+  id: ModelId
+  label: string
+  requiredVRAM: number // in GB, for 4-bit quantization ONLY
 }
 
-function sleep(ms: number) {
-  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+interface VRAMOption {
+  id: VRAMId
+  label: string
+  gb: number
 }
 
-async function trackEvent(
-  eventName: string,
-  eventData?: Record<string, unknown>,
-  opts?: { retryDelayMs?: number; maxRetries?: number }
-): Promise<boolean> {
-  if (typeof window === "undefined") return false;
-
-  const retryDelayMs = opts?.retryDelayMs ?? 500;
-  const maxRetries = opts?.maxRetries ?? 5;
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    const umami = window.umami;
-
-    if (umami) {
-      try {
-        if (typeof umami === "function") {
-          umami(eventName, eventData);
-        } else if (typeof umami === "object" && typeof umami.track === "function") {
-          umami.track(eventName, eventData);
-        } else {
-          throw new Error("window.umami has unsupported shape");
-        }
-
-        if (process.env.NODE_ENV === "development") {
-          // eslint-disable-next-line no-console
-          console.log(`[umami] tracked: ${eventName}`, eventData ?? {});
-        }
-
-        return true;
-      } catch {
-        // Fall through to retry
-      }
-    }
-
-    if (attempt < maxRetries) {
-      await sleep(retryDelayMs);
-    }
-  }
-
-  return false;
+interface EnvironmentOption {
+  id: Environment
+  label: string
 }
 
-const MODEL_OPTIONS = [
-  { id: "deepseek-r1-distill-14b", label: "DeepSeek R1 Distill (14B)" },
-  { id: "deepseek-r1-distill-32b", label: "DeepSeek R1 Distill (32B)" },
-  { id: "deepseek-r1-distill-70b", label: "DeepSeek R1 Distill (70B)" },
-  { id: "deepseek-v3-671b", label: "DeepSeek-V3 (671B Full)" },
-];
+// ============================================================================
+// DATA (Single Source of Truth)
+// ============================================================================
 
-const VRAM_OPTIONS = [
-  { id: "8gb", label: "8GB (RTX 3060/4060 class)", value: 8 },
-  { id: "12gb", label: "12GB (RTX 3060/4070 class)", value: 12 },
-  { id: "16gb", label: "16GB (RTX 4080 class)", value: 16 },
-  { id: "24gb", label: "24GB (RTX 3090/4090 class)", value: 24 },
-  { id: "48gb", label: "48GB+ (Multi-GPU / A6000)", value: 48 },
-];
+const MODELS: Record<ModelId, ModelOption> = {
+  "14b": { id: "14b", label: "DeepSeek R1 Distill (14B)", requiredVRAM: 10 },
+  "32b": { id: "32b", label: "DeepSeek R1 Distill (32B)", requiredVRAM: 20 },
+  "70b": { id: "70b", label: "DeepSeek R1 Distill (70B)", requiredVRAM: 42 },
+  "671b": { id: "671b", label: "DeepSeek V3 (671B Full)", requiredVRAM: 300 },
+}
 
-const ENV_OPTIONS = [
-  { id: "vps", label: "Cloud VPS / Docker (Isolated)" },
-  { id: "local_win", label: "Local Windows (Personal PC)" },
-  { id: "local_mac", label: "Local macOS (Daily Driver)" },
-];
+const VRAM_OPTIONS: VRAMOption[] = [
+  { id: "8gb", label: "8GB", gb: 8 },
+  { id: "12gb", label: "12GB", gb: 12 },
+  { id: "16gb", label: "16GB", gb: 16 },
+  { id: "24gb", label: "24GB", gb: 24 },
+  { id: "48gb", label: "48GB+", gb: 48 },
+]
 
-const DECISION_MATRIX: Record<string, Record<string, "green" | "yellow" | "red">> = {
-  "deepseek-r1-distill-14b": { "8gb": "yellow", "12gb": "yellow", "16gb": "green", "24gb": "green", "48gb": "green" },
-  "deepseek-r1-distill-32b": { "8gb": "red", "12gb": "yellow", "16gb": "yellow", "24gb": "green", "48gb": "green" },
-  "deepseek-r1-distill-70b": { "8gb": "red", "12gb": "red", "16gb": "red", "24gb": "red", "48gb": "yellow" },
-  "deepseek-v3-671b": { "8gb": "red", "12gb": "red", "16gb": "red", "24gb": "red", "48gb": "red" },
-};
+const ENVIRONMENT_OPTIONS: EnvironmentOption[] = [
+  { id: "vps", label: "☁️ Cloud VPS / Docker (Isolated)" },
+  { id: "local_win", label: "🪟 Local Windows (Personal PC)" },
+  { id: "local_mac", label: "🍎 Local macOS (Daily Driver)" },
+]
+
+const MODEL_IDS: ModelId[] = ["14b", "32b", "70b", "671b"]
+const SMALLEST_MODEL: ModelId = "14b"
+const ENTRY_MODEL: ModelId = "14b"
+
+// ============================================================================
+// CALCULATION ENGINE (4-bit Quantization Only)
+// ============================================================================
+
+function calculateStatus(requiredVRAM: number, userVRAM: number): Status {
+  // RED: Impossible
+  if (requiredVRAM > userVRAM) return "red"
+
+  // YELLOW: Tight fit (within 5% margin)
+  const threshold = userVRAM * 0.95
+  if (requiredVRAM > threshold) return "yellow"
+
+  // GREEN: Comfortable fit
+  return "green"
+}
+
+// ============================================================================
+// TRACKING HANDLERS (Strict Schema)
+// ============================================================================
+
+interface AffiliateTrackParams {
+  partner: 'gumroad' | 'deepinfra' | 'vultr'
+  location: 'red_card' | 'yellow_card' | 'green_card' | 'mobile_override'
+  model: ModelId
+  vram: VRAMId
+  status: Status
+  postSlug: string
+}
+
+function trackAffiliateClickStrict(params: AffiliateTrackParams) {
+  trackAffiliateClick({
+    source: `tool_${params.partner}_${params.location}`,
+    verdict: params.status,
+    postSlug: params.postSlug,
+  })
+}
+
+// ============================================================================
+// COMPONENT
+// ============================================================================
 
 export default function RealityCheck() {
-  const [model, setModel] = useState(MODEL_OPTIONS[1].id);
-  const [vram, setVram] = useState(VRAM_OPTIONS[1].id);
-  const [env, setEnv] = useState(ENV_OPTIONS[1].id);
+  const [model, setModel] = useState<ModelId>("32b")
+  const [vram, setVram] = useState<VRAMId>("12gb")
+  const [environment, setEnvironment] = useState<Environment>("local_win")
+  const [isMobile, setIsMobile] = useState(false)
 
-  const impressionTimerRef = useRef<number | null>(null);
-  const impressionSentRef = useRef(false);
+  const pathname = usePathname()
+  const postSlug = pathname?.split("/").filter(Boolean).pop() || ""
 
-  const hwStatus = DECISION_MATRIX[model]?.[vram] || "red";
-  const isLocal = env.includes("local");
-  const securityRisk = isLocal;
-
-  // Inline styles to override macOS Chrome UA stylesheet for select/options
-  const selectStyle: React.CSSProperties = {
-    backgroundColor: "#0f172a", // slate-900
-    color: "#e5e7eb",
-  };
-
-  const optionStyle: React.CSSProperties = {
-    backgroundColor: "#0f172a",
-    color: "#e5e7eb",
-  };
-
-  const getContent = () => {
-    const baseBtn = "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20";
-
-    if (securityRisk) {
-      return {
-        icon: <ShieldAlert className="w-5 h-5 text-orange-500" />,
-        title: "Reality: Security Risk",
-        badge: "UNSAFE",
-        badgeColor: "bg-orange-500/20 text-orange-500 border-orange-500/30",
-        reason: "If your agent runtime can reach your filesystem and localhost services, a single malicious plugin or prompt can turn into data exposure. Isolation is the lowest-effort mitigation.",
-        btn: baseBtn,
-        btnText: "Switch to Secure Cloud Sandbox",
-        bg: "bg-orange-500/5 border-orange-500/20",
-        event: "Conversion-Security-Risk"
-      };
-    }
-
-    switch (hwStatus) {
-      case "green":
-        return {
-          icon: <CheckCircle2 className="w-5 h-5 text-green-500" />,
-          title: "Reality: Optimal",
-          badge: "SMOOTH",
-          badgeColor: "bg-green-500/20 text-green-500 border-green-500/30",
-          reason: "Your hardware meets the requirements. Isolated environment confirmed.",
-          btn: baseBtn,
-          btnText: "Deploy High-Performance Cloud GPU",
-          bg: "bg-green-500/5 border-green-500/20",
-          event: "Conversion-Hardware-Optimal"
-        };
-      case "yellow":
-        return {
-          icon: <AlertTriangle className="w-5 h-5 text-yellow-500" />,
-          title: "Reality: Painful",
-          badge: "LAGGY",
-          badgeColor: "bg-yellow-500/20 text-yellow-500 border-yellow-500/30",
-          reason: "Even in the cloud, this model might be slow on smaller instances. Expect pauses.",
-          btn: baseBtn,
-          btnText: "Upgrade to Faster Instance",
-          bg: "bg-yellow-500/5 border-yellow-500/20",
-          event: "Conversion-Hardware-Painful"
-        };
-      default:
-        return {
-          icon: <XCircle className="w-5 h-5 text-red-500" />,
-          title: "Reality: Crash",
-          badge: "IMPOSSIBLE",
-          badgeColor: "bg-red-500/20 text-red-500 border-red-500/30",
-          reason: "Hardware insufficient for this model size. Instant OOM expected.",
-          btn: baseBtn,
-          btnText: "Get Enterprise-Grade VRAM",
-          bg: "bg-red-500/5 border-red-500/20",
-          event: "Conversion-Hardware-Crash"
-        };
-    }
-  };
-
-  const content = getContent();
-
-  // Determine verdict for tracking
-  const verdict = securityRisk ? ("unsafe" as const) : hwStatus;
-
-  // UTM content based on verdict
-  const utmContent = `realitycheck_${verdict}`;
-
-  // Affiliate link with standardized UTM parameters
-  const affLink = `https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=${verdict}&utm_content=${utmContent}`;
-
-  const handleImpression = useCallback(async () => {
-    if (impressionSentRef.current) return;
-    impressionSentRef.current = true;
-
-    const path =
-      typeof window !== "undefined"
-        ? `${window.location.pathname}${window.location.search}${window.location.hash}`
-        : "";
-
-    await trackEvent(
-      "reality_check_impression",
-      {
-        path,
-        model,
-        env,
-        vram,
-        status: securityRisk ? "security_risk" : hwStatus,
-      },
-      { retryDelayMs: 500, maxRetries: 5 }
-    );
-  }, [model, env, vram, hwStatus, securityRisk]);
-
-  const handleClick = useCallback(() => {
-    const slug = typeof window !== "undefined"
-      ? window.location.pathname.split("/").filter(Boolean).pop() || ""
-      : "";
-
-    trackVultrClick({
-      placement: "reality_check",
-      ctaId: verdict === "unsafe" ? "rc_security_button" : `rc_${verdict}_button`,
-      verdict,
-      postSlug: slug,
-      utmContent: utmContent,
-    });
-  }, [verdict, utmContent]);
-
+  // Mobile detection
   useEffect(() => {
-    // 1s debounce for impression to avoid spam + allow analytics script to load.
-    if (impressionTimerRef.current) {
-      window.clearTimeout(impressionTimerRef.current);
-    }
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
-    impressionTimerRef.current = window.setTimeout(() => {
-      void handleImpression();
-    }, 1000);
+  // Calculate status (OS does NOT affect status)
+  const userVRAM = VRAM_OPTIONS.find(o => o.id === vram)!.gb
+  const requiredVRAM = MODELS[model].requiredVRAM
+  const status = calculateStatus(requiredVRAM, userVRAM)
 
-    return () => {
-      if (impressionTimerRef.current) {
-        window.clearTimeout(impressionTimerRef.current);
-        impressionTimerRef.current = null;
-      }
-    };
-  }, [handleImpression]);
+  // Can show downgrade?
+  const canDowngrade = model !== SMALLEST_MODEL
+
+  // Show security banner? (Independent layer, does NOT affect status)
+  const showSecurityBanner = environment === "local_win" || environment === "local_mac"
+
+  // Tracking helpers
+  const trackGumroad = (location: AffiliateTrackParams['location']) => {
+    trackAffiliateClickStrict({ partner: 'gumroad', location, model, vram, status, postSlug })
+  }
+
+  const trackDeepInfra = (location: AffiliateTrackParams['location']) => {
+    trackAffiliateClickStrict({ partner: 'deepinfra', location, model, vram, status, postSlug })
+  }
+
+  const trackVultr = (location: AffiliateTrackParams['location']) => {
+    trackAffiliateClickStrict({ partner: 'vultr', location, model, vram, status, postSlug })
+  }
+
+  const handleDowngrade = () => {
+    trackToolDowngrade({ fromModel: model, toModel: ENTRY_MODEL, postSlug })
+    setModel(ENTRY_MODEL)
+  }
 
   return (
-    <div className="my-8 w-full p-6 rounded-xl border border-border bg-card shadow-sm text-card-foreground">
+    <div className="my-8 p-6 border border-border rounded-xl bg-card shadow-sm">
+      {/* Header */}
       <div className="flex items-center gap-2 mb-6">
-        <Zap className="w-5 h-5 text-primary fill-primary" />
-        <h3 className="text-xl font-bold tracking-tight">AI Deployment Reality Check</h3>
+        <Zap className="w-5 h-5 text-primary" />
+        <h3 className="text-xl font-bold">AI Deployment Reality Check</h3>
       </div>
 
+      {/* Security Banner (Independent Layer - Does NOT affect status) */}
+      {showSecurityBanner && (
+        <div className="mb-6 p-4 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/20">
+          <div className="flex items-start gap-3">
+            <Shield className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <div className="font-semibold text-amber-900 dark:text-amber-100 text-sm">
+                ⚠️ Security Note
+              </div>
+              <p className="text-sm text-amber-800 dark:text-amber-200 mt-1">
+                Local environments have limited isolation.
+                {" "}For long-term safety, use our <strong>Safe Config</strong> or a{" "}
+                <a
+                  href={LINK_CLOUD}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackVultr('red_card')}
+                  className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
+                >
+                  Cloud VPS
+                </a>
+                .
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Input Controls */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
-        {/* Environment Select */}
         <div className="space-y-2">
-          <label className="text-sm font-medium leading-none text-muted-foreground">Environment</label>
-          <div className="relative">
-            <select
-              value={env}
-              onChange={(e) => setEnv(e.target.value)}
-              className="w-full h-10 appearance-none rounded-md border border-input bg-card px-3 pr-10 text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-ring/30"
-              style={selectStyle}
-            >
-              {ENV_OPTIONS.map(opt => <option key={opt.id} value={opt.id} style={optionStyle}>{opt.label}</option>)}
-            </select>
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">▾</span>
-          </div>
+          <label className="text-sm font-medium">Environment</label>
+          <select
+            value={environment}
+            onChange={(e) => setEnvironment(e.target.value as Environment)}
+            className="w-full h-10 rounded-md border border-input bg-background px-3"
+          >
+            {ENVIRONMENT_OPTIONS.map(opt => (
+              <option key={opt.id} value={opt.id}>{opt.label}</option>
+            ))}
+          </select>
         </div>
-        {/* Model Select */}
+
         <div className="space-y-2">
-          <label className="text-sm font-medium leading-none text-muted-foreground">Target Model</label>
-          <div className="relative">
-            <select
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              className="w-full h-10 appearance-none rounded-md border border-input bg-card px-3 pr-10 text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-ring/30"
-              style={selectStyle}
-            >
-              {MODEL_OPTIONS.map(opt => <option key={opt.id} value={opt.id} style={optionStyle}>{opt.label}</option>)}
-            </select>
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">▾</span>
-          </div>
+          <label className="text-sm font-medium">Your VRAM</label>
+          <select
+            value={vram}
+            onChange={(e) => setVram(e.target.value as VRAMId)}
+            className="w-full h-10 rounded-md border border-input bg-background px-3"
+          >
+            {VRAM_OPTIONS.map(opt => (
+              <option key={opt.id} value={opt.id}>{opt.label}</option>
+            ))}
+          </select>
         </div>
-        {/* VRAM Select */}
+
         <div className="space-y-2">
-          <label className="text-sm font-medium leading-none text-muted-foreground">Local VRAM</label>
-          <div className="relative">
-            <select
-              value={vram}
-              onChange={(e) => setVram(e.target.value)}
-              className="w-full h-10 appearance-none rounded-md border border-input bg-card px-3 pr-10 text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-ring/30"
-              style={selectStyle}
-            >
-              {VRAM_OPTIONS.map(opt => <option key={opt.id} value={opt.id} style={optionStyle}>{opt.label}</option>)}
-            </select>
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">▾</span>
-          </div>
+          <label className="text-sm font-medium">Target Model</label>
+          <select
+            value={model}
+            onChange={(e) => setModel(e.target.value as ModelId)}
+            className="w-full h-10 rounded-md border border-input bg-background px-3"
+          >
+            {MODEL_IDS.map(id => (
+              <option key={id} value={id}>{MODELS[id].label}</option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {/* Result Card */}
-      <div className={`p-5 rounded-lg border ${content.bg} transition-all duration-300 relative overflow-hidden`}>
-        <div className="flex items-center gap-3 mb-2 relative z-10">
-          {content.icon}
-          <span className="font-bold uppercase text-sm tracking-wide">{content.title}</span>
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${content.badgeColor}`}>
-            {content.badge}
-          </span>
+      {/* ====================================================================
+          MOBILE OVERRIDE (< 768px) - Priority #1
+          ==================================================================== */}
+      {isMobile && (
+        <div className="space-y-3">
+          <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
+            <div className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+              📱 Mobile Detected
+            </div>
+            <p className="text-xs text-blue-700 dark:text-blue-300">
+              Local inference is not practical on mobile.
+            </p>
+          </div>
+
+          {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
+          <a
+            href={LINK_API}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackDeepInfra('mobile_override')}
+            data-umami-event="affiliate_click"
+            data-umami-partner="deepinfra"
+            data-umami-location="mobile_override"
+            data-umami-model={model}
+            data-umami-vram={vram}
+            data-umami-status={status}
+            className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <div className="flex-1">
+                <div className="font-bold text-blue-900 dark:text-blue-100">
+                  Try on Phone
+                </div>
+                <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                  Run instantly via API. No setup.
+                </div>
+              </div>
+              <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            </div>
+          </a>
+
+          {/* Secondary: Gumroad */}
+          <a
+            href={LINK_KIT}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackGumroad('mobile_override')}
+            data-umami-event="affiliate_click"
+            data-umami-partner="gumroad"
+            data-umami-location="mobile_override"
+            data-umami-model={model}
+            data-umami-vram={vram}
+            data-umami-status={status}
+            className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
+          >
+            <div className="flex items-center gap-2 text-sm">
+              <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
+            </div>
+          </a>
         </div>
+      )}
 
-        <p className="text-sm text-muted-foreground mb-5 leading-relaxed relative z-10">
-          {content.reason}
-        </p>
+      {/* ====================================================================
+          DESKTOP: RED STATE (Cannot Run)
+          ==================================================================== */}
+      {!isMobile && status === "red" && (
+        <div className="space-y-3">
+          {/* Status Header */}
+          <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
+            <div className="flex items-center gap-2 text-red-900 dark:text-red-100 font-semibold">
+              🔴 Cannot Run
+            </div>
+            <p className="text-sm text-red-700 dark:text-red-300 mt-1">
+              Estimated VRAM requirement exceeds your hardware.
+            </p>
+          </div>
 
-        <a
-          href={affLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => void handleClick()}
-          data-umami-event="vultr_click"
-          data-umami-event-post={typeof window !== "undefined" ? window.location.pathname.split("/").filter(Boolean).pop() : ""}
-          data-umami-event-placement="reality_check"
-          data-umami-event-cta-id={verdict === "unsafe" ? "rc_security_button" : `rc_${verdict}_button`}
-          {...verdict && { "data-umami-event-verdict": verdict }}
-          data-umami-event-ref="9864821-9J"
-          data-umami-event-utm_content={utmContent}
-          className={`inline-flex w-full items-center justify-center rounded-md px-4 py-3 text-sm font-bold transition-transform hover:scale-[1.01] ${content.btn}`}
-        >
-          {content.btnText}
-        </a>
-      </div>
+          {/* Primary CTA: DeepInfra API - ALWAYS priority in RED */}
+          <a
+            href={LINK_API}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackDeepInfra('red_card')}
+            data-umami-event="affiliate_click"
+            data-umami-partner="deepinfra"
+            data-umami-location="red_card"
+            data-umami-model={model}
+            data-umami-vram={vram}
+            data-umami-status={status}
+            className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
+          >
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-blue-500 rounded-lg">
+                <Cloud className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="font-bold text-blue-900 dark:text-blue-100">
+                  Run Instantly for $1
+                </div>
+                <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                  Skip hardware limits. Cloud API access.
+                </p>
+                <div className="flex items-center gap-2 mt-2 text-sm font-medium text-blue-600 dark:text-blue-400">
+                  Get Started <ExternalLink className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+          </a>
 
-      <p className="text-[10px] text-center text-muted-foreground mt-3 uppercase tracking-widest opacity-70">
-        Secure Infrastructure | DeepSeek R1 Ready
+          {/* Secondary CTA: Vultr Cloud GPU */}
+          <a
+            href={LINK_CLOUD}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackVultr('red_card')}
+            data-umami-event="affiliate_click"
+            data-umami-partner="vultr"
+            data-umami-location="red_card"
+            data-umami-model={model}
+            data-umami-vram={vram}
+            data-umami-status={status}
+            className="block p-4 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/20 hover:border-purple-400 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-purple-500 rounded-lg">
+                <Cloud className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="font-bold text-purple-900 dark:text-purple-100">
+                  Rent High-Memory Cloud GPU
+                </div>
+                <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
+                  Get a private H100/A100 with full control.
+                </p>
+                <div className="flex items-center gap-2 mt-2 text-sm font-medium text-purple-600 dark:text-purple-400">
+                  Deploy Vultr <ExternalLink className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          {/* Fallback: Try Smaller Model */}
+          {canDowngrade && (
+            <button
+              onClick={handleDowngrade}
+              data-umami-event="tool_downgrade_click"
+              data-umami-from={model}
+              data-umami-to={ENTRY_MODEL}
+              className="w-full p-4 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
+            >
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-orange-500 rounded-lg">
+                  <Zap className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-orange-900 dark:text-orange-100">
+                    Try Smaller Model (14B)
+                  </div>
+                  <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
+                    Your GPU cannot handle {MODELS[model].label}. Try {MODELS[ENTRY_MODEL].label}.
+                  </p>
+                </div>
+              </div>
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* ====================================================================
+          DESKTOP: YELLOW STATE (Tight Fit - Optimization Needed)
+          ==================================================================== */}
+      {!isMobile && status === "yellow" && (
+        <div className="space-y-3">
+          {/* Status Header */}
+          <div className="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800">
+            <div className="flex items-center gap-2 text-yellow-900 dark:text-yellow-100 font-semibold">
+              ⚠️ Performance Warning
+            </div>
+            <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+              VRAM is very tight. Optimization required.
+            </p>
+          </div>
+
+          {/* Primary CTA: Gumroad - ALWAYS priority in YELLOW */}
+          <a
+            href={LINK_KIT}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackGumroad('yellow_card')}
+            data-umami-event="affiliate_click"
+            data-umami-partner="gumroad"
+            data-umami-location="yellow_card"
+            data-umami-model={model}
+            data-umami-vram={vram}
+            data-umami-status={status}
+            className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
+          >
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl shadow-lg">
+                <Package className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="font-bold text-amber-900 dark:text-amber-100 flex items-center gap-2">
+                  Get Extreme Optimization Config ($9.90)
+                </div>
+                <p className="text-sm text-amber-800 dark:text-amber-200 mt-1 leading-relaxed">
+                  Production-ready templates for tight VRAM scenarios.
+                </p>
+                <div className="flex items-center gap-2 mt-3 text-sm font-bold text-amber-700 dark:text-amber-300">
+                  Download <ExternalLink className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          {/* Secondary CTA: DeepInfra API (Text Link) */}
+          <div className="text-center">
+            <a
+              href={LINK_API}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackDeepInfra('yellow_card')}
+              data-umami-event="affiliate_click"
+              data-umami-partner="deepinfra"
+              data-umami-location="yellow_card"
+              data-umami-model={model}
+              data-umami-vram={vram}
+              data-umami-status={status}
+              className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
+            >
+              Or run smoothly via API <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+
+          {/* Fallback: Try Smaller Model */}
+          <button
+            onClick={handleDowngrade}
+            data-umami-event="tool_downgrade_click"
+            data-umami-from={model}
+            data-umami-to={ENTRY_MODEL}
+            className="w-full p-3 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
+          >
+            <div className="flex items-center gap-2 text-sm">
+              <Zap className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+              <span className="text-orange-900 dark:text-amber-100 font-medium">
+                Try Smaller Model
+              </span>
+            </div>
+          </button>
+        </div>
+      )}
+
+      {/* ====================================================================
+          DESKTOP: GREEN STATE (Ready)
+          ==================================================================== */}
+      {!isMobile && status === "green" && (
+        <div className="space-y-4">
+          {/* Status Header */}
+          <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
+            <div className="flex items-center gap-2 text-green-900 dark:text-green-100 font-semibold">
+              ✅ Ready to Run
+            </div>
+            <p className="text-sm text-green-700 dark:text-green-300 mt-1">
+              Your hardware can handle this model.
+            </p>
+          </div>
+
+          {/* Trust Element: Recommended Settings (Gray background) */}
+          <div className="p-4 rounded-lg border border-border bg-muted/50">
+            <div className="flex items-center gap-2 font-bold text-text-primary mb-3">
+              <Settings className="w-4 h-4" />
+              Recommended Settings
+            </div>
+            <div className="grid grid-cols-3 gap-3 text-sm">
+              <div>
+                <div className="text-text-tertiary text-xs">Quantization</div>
+                <div className="font-mono font-medium">4-bit</div>
+              </div>
+              <div>
+                <div className="text-text-tertiary text-xs">Context</div>
+                <div className="font-mono font-medium">4096</div>
+              </div>
+              <div>
+                <div className="text-text-tertiary text-xs">Batch</div>
+                <div className="font-mono font-medium">1</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Primary CTA: Gumroad - DOMINANT, ALWAYS priority in GREEN */}
+          <a
+            href={LINK_KIT}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackGumroad('green_card')}
+            data-umami-event="affiliate_click"
+            data-umami-partner="gumroad"
+            data-umami-location="green_card"
+            data-umami-model={model}
+            data-umami-vram={vram}
+            data-umami-status={status}
+            className="block p-6 rounded-lg border-2 bg-gradient-to-br from-emerald-500 via-green-500 to-amber-500 hover:from-emerald-600 hover:via-green-600 hover:to-amber-600 text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all"
+          >
+            <div className="flex items-start gap-4">
+              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl shadow-lg">
+                <Package className="w-7 h-7 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="font-bold text-white flex items-center gap-2 text-lg">
+                  🚀 Download 1-Click Survival Kit ($9.90)
+                </div>
+                <p className="text-sm text-white/90 mt-2 leading-relaxed">
+                  Ready-to-use templates, monitoring, and prompts.
+                </p>
+                <div className="flex items-center gap-2 mt-4 text-base font-bold text-white">
+                  <ExternalLink className="w-5 h-5" />
+                  Get Instant Access
+                </div>
+              </div>
+            </div>
+          </a>
+
+          {/* Secondary CTA: DeepInfra API (Weak Text Link ONLY) */}
+          <div className="text-center">
+            <a
+              href={LINK_API}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackDeepInfra('green_card')}
+              data-umami-event="affiliate_click"
+              data-umami-partner="deepinfra"
+              data-umami-location="green_card"
+              data-umami-model={model}
+              data-umami-vram={vram}
+              data-umami-status={status}
+              className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
+            >
+              Just want to test quickly? Try API. <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+
+          {/* Footer: Buy Me a Coffee */}
+          <ConversionButton
+            location="tool_green"
+            copy="Your hardware is ready. If this tool saved you time, support the dev."
+            variant="compact"
+          />
+        </div>
+      )}
+
+      {/* Footer Note */}
+      <p className="text-[10px] text-center text-muted-foreground/60 mt-3 uppercase tracking-widest">
+        *Results are estimates based on common setups. Actual requirements may vary.
       </p>
     </div>
-  );
+  )
 }

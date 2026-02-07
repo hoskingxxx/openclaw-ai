@@ -3,6 +3,14 @@
  * Standardizes tracking across all outbound links (Vultr, DeepInfra, Gumroad, etc.)
  */
 
+declare global {
+  interface Window {
+    umami?: ((eventName: string, data?: Record<string, unknown>) => unknown) | {
+      track?: (eventName: string, data?: Record<string, unknown>) => unknown;
+    };
+  }
+}
+
 export interface VultrClickEvent extends Record<string, unknown> {
   page_path: string;
   post_slug?: string;
