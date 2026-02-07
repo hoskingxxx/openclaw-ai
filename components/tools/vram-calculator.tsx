@@ -51,12 +51,12 @@ interface EnvironmentOption {
 // ============================================================================
 
 const MODELS: Record<ModelId, ModelOption> = {
-  "1.5b": { id: "1.5b", label: "DeepSeek R1 Distill (1.5B)", requiredVRAM: 2 },
-  "8b": { id: "8b", label: "DeepSeek R1 Distill (8B)", requiredVRAM: 6 },
-  "14b": { id: "14b", label: "DeepSeek R1 Distill (14B)", requiredVRAM: 10 },
-  "32b": { id: "32b", label: "DeepSeek R1 Distill (32B)", requiredVRAM: 20 },
-  "70b": { id: "70b", label: "DeepSeek R1 Distill (70B)", requiredVRAM: 42 },
-  "671b": { id: "671b", label: "DeepSeek V3 (671B Full)", requiredVRAM: 300 },
+  "1.5b": { id: "1.5b", label: "DeepSeek-R1-Distill-Qwen-1.5B", requiredVRAM: 2 },
+  "8b": { id: "8b", label: "DeepSeek-R1-Distill-Llama-8B", requiredVRAM: 6 },
+  "14b": { id: "14b", label: "DeepSeek-R1-Distill-Llama-14B", requiredVRAM: 10 },
+  "32b": { id: "32b", label: "DeepSeek-R1-Distill-Qwen-32B", requiredVRAM: 20 },
+  "70b": { id: "70b", label: "DeepSeek-R1-Distill-Llama-70B", requiredVRAM: 42 },
+  "671b": { id: "671b", label: "DeepSeek-V3 (671B Full)", requiredVRAM: 300 },
 }
 
 const VRAM_OPTIONS: VRAMOption[] = [
@@ -100,7 +100,7 @@ function calculateStatus(requiredVRAM: number, userVRAM: number): Status {
 
 interface AffiliateTrackParams {
   partner: 'gumroad' | 'deepinfra' | 'vultr'
-  location: 'red_card' | 'yellow_card' | 'green_card' | 'mobile_override'
+  location: 'red_card' | 'yellow_card' | 'green_card' | 'mobile_override' | 'security_banner'
   model: ModelId
   vram: VRAMId
   status: Status
@@ -121,7 +121,7 @@ function trackAffiliateClickStrict(params: AffiliateTrackParams) {
 // ============================================================================
 
 export function VramCalculator() {
-  const [model, setModel] = useState<ModelId>("14b")
+  const [model, setModel] = useState<ModelId>("8b")
   const [vram, setVram] = useState<VRAMId>("8gb")
   const [environment, setEnvironment] = useState<Environment>("windows")
   const [isMobile, setIsMobile] = useState(false)
@@ -142,8 +142,8 @@ export function VramCalculator() {
   const requiredVRAM = MODELS[model].requiredVRAM
   const status = calculateStatus(requiredVRAM, userVRAM)
 
-  // Can show downgrade?
-  const canDowngrade = model !== SMALLEST_MODEL
+  // Try Smaller Model always goes to 8B (ENTRY_MODEL), unless already at 8B or smaller
+  const canDowngradeTo8B = model !== "8b" && model !== "1.5b"
 
   // Show security banner? (Independent layer, does NOT affect status)
   const showSecurityBanner = environment === "windows" || environment === "macos"
@@ -189,12 +189,22 @@ export function VramCalculator() {
               </div>
               <p className="text-sm text-amber-800 dark:text-amber-200 mt-1">
                 Local environments have limited isolation.
-                {" "}For long-term safety, use our <strong>Safe Config</strong> or a{" "}
+                {" "}For long-term safety, use our{" "}
+                <a
+                  href={LINK_KIT}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackGumroad('security_banner')}
+                  className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
+                >
+                  Safe Config
+                </a>
+                {" "}or a{" "}
                 <a
                   href={LINK_CLOUD}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackVultr('red_card')}
+                  onClick={() => trackVultr('security_banner')}
                   className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
                 >
                   Cloud VPS
@@ -392,8 +402,8 @@ export function VramCalculator() {
             </div>
           </a>
 
-          {/* Fallback: Try Smaller Model */}
-          {canDowngrade && (
+          {/* Fallback: Try Smaller Model (8B) */}
+          {canDowngradeTo8B && (
             <button
               onClick={handleDowngrade}
               data-umami-event="tool_downgrade_click"
@@ -403,7 +413,7 @@ export function VramCalculator() {
             >
               <div className="flex items-start gap-3">
                 <div className="p-2 bg-orange-500 rounded-lg">
-                  <Cpu className="w-5 h-5 text-white" />
+                  <Zap className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
                   <div className="font-bold text-orange-900 dark:text-orange-100">
@@ -412,9 +422,6 @@ export function VramCalculator() {
                   <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
                     Your GPU cannot handle {MODELS[model].label}. Try {MODELS[ENTRY_MODEL].label}.
                   </p>
-                  <div className="flex items-center gap-2 mt-2 text-sm font-medium text-orange-600 dark:text-orange-400">
-                    Switch <Zap className="w-4 h-4" />
-                  </div>
                 </div>
               </div>
             </button>
@@ -489,21 +496,23 @@ export function VramCalculator() {
             </a>
           </div>
 
-          {/* Fallback: Try Smaller Model */}
-          <button
-            onClick={handleDowngrade}
-            data-umami-event="tool_downgrade_click"
-            data-umami-from={model}
-            data-umami-to={ENTRY_MODEL}
-            className="w-full p-3 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
-          >
-            <div className="flex items-center gap-2 text-sm">
-              <Cpu className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-              <span className="text-orange-900 dark:text-amber-100 font-medium">
-                Try Smaller Model
-              </span>
-            </div>
-          </button>
+          {/* Fallback: Try Smaller Model (8B) */}
+          {canDowngradeTo8B && (
+            <button
+              onClick={handleDowngrade}
+              data-umami-event="tool_downgrade_click"
+              data-umami-from={model}
+              data-umami-to={ENTRY_MODEL}
+              className="w-full p-3 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
+            >
+              <div className="flex items-center gap-2 text-sm">
+                <Zap className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                <span className="text-orange-900 dark:text-amber-100 font-medium">
+                  Try Smaller Model (8B)
+                </span>
+              </div>
+            </button>
+          )}
         </div>
       )}
 
