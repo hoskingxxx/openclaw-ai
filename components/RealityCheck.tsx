@@ -265,73 +265,72 @@ export default function RealityCheck() {
       </div>
 
       {/* ====================================================================
-          MOBILE OVERRIDE (< 768px) - Priority #1
+          RED STATE (Cannot Run)
           ==================================================================== */}
-      {isMobile && (
+      {status === "red" && (
         <div className="space-y-3">
-          <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
-            <div className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
-              📱 Mobile Detected
+          {/* Status Header */}
+          <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
+            <div className="flex items-center gap-2 text-red-900 dark:text-red-100 font-semibold">
+              🔴 Cannot Run
             </div>
-            <p className="text-xs text-blue-700 dark:text-blue-300">
-              Local inference is not practical on mobile.
+            <p className="text-sm text-red-700 dark:text-red-300 mt-1">
+              Estimated VRAM requirement exceeds your hardware.
             </p>
           </div>
 
-          {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
-          <a
-            href={LINK_API}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackDeepInfra('mobile_override')}
-            data-umami-event="affiliate_click"
-            data-umami-partner="deepinfra"
-            data-umami-location="mobile_override"
-            data-umami-model={model}
-            data-umami-vram={vram}
-            data-umami-status={status}
-            className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
-          >
-            <div className="flex items-center gap-3">
-              <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              <div className="flex-1">
-                <div className="font-bold text-blue-900 dark:text-blue-100">
-                  Try on Phone
+          {/* Mobile CTA Override or Desktop RED CTA */}
+          {isMobile ? (
+            <>
+              {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
+              <a
+                href={LINK_API}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackDeepInfra('mobile_override')}
+                data-umami-event="affiliate_click"
+                data-umami-partner="deepinfra"
+                data-umami-location="mobile_override"
+                data-umami-model={model}
+                data-umami-vram={vram}
+                data-umami-status={status}
+                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div className="flex-1">
+                    <div className="font-bold text-blue-900 dark:text-blue-100">
+                      Try on Phone
+                    </div>
+                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                      Run instantly via API. No setup.
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                  Run instantly via API. No setup.
+              </a>
+
+              {/* Secondary: Gumroad */}
+              <a
+                href={LINK_KIT}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackGumroad('mobile_override')}
+                data-umami-event="affiliate_click"
+                data-umami-partner="gumroad"
+                data-umami-location="mobile_override"
+                data-umami-model={model}
+                data-umami-vram={vram}
+                data-umami-status={status}
+                className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
+              >
+                <div className="flex items-center gap-2 text-sm">
+                  <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
                 </div>
-              </div>
-              <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            </div>
-          </a>
-
-          {/* Secondary: Gumroad */}
-          <a
-            href={LINK_KIT}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackGumroad('mobile_override')}
-            data-umami-event="affiliate_click"
-            data-umami-partner="gumroad"
-            data-umami-location="mobile_override"
-            data-umami-model={model}
-            data-umami-vram={vram}
-            data-umami-status={status}
-            className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
-          >
-            <div className="flex items-center gap-2 text-sm">
-              <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-              <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
-            </div>
-          </a>
-        </div>
-      )}
-
-      {/* ====================================================================
-          DESKTOP: RED STATE (Cannot Run)
-          ==================================================================== */}
-      {!isMobile && status === "red" && (
+              </a>
+            </>
+          ) : (
         <div className="space-y-3">
           {/* Status Header */}
           <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
@@ -431,13 +430,14 @@ export default function RealityCheck() {
               </div>
             </button>
           )}
+          )}
         </div>
       )}
 
       {/* ====================================================================
-          DESKTOP: YELLOW STATE (Tight Fit - Optimization Needed)
+          YELLOW STATE (Tight Fit - Optimization Needed)
           ==================================================================== */}
-      {!isMobile && status === "yellow" && (
+      {status === "yellow" && (
         <div className="space-y-3">
           {/* Status Header */}
           <div className="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800">
@@ -449,81 +449,136 @@ export default function RealityCheck() {
             </p>
           </div>
 
-          {/* Primary CTA: Gumroad - ALWAYS priority in YELLOW */}
-          <a
-            href={LINK_KIT}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackGumroad('yellow_card')}
-            data-umami-event="affiliate_click"
-            data-umami-partner="gumroad"
-            data-umami-location="yellow_card"
-            data-umami-model={model}
-            data-umami-vram={vram}
-            data-umami-status={status}
-            className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
-          >
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl shadow-lg">
-                <Package className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-amber-900 dark:text-amber-100 flex items-center gap-2">
-                  Get Extreme Optimization Config ($9.90)
+          {/* Mobile CTA Override or Desktop YELLOW CTA */}
+          {isMobile ? (
+            <>
+              {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
+              <a
+                href={LINK_API}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackDeepInfra('mobile_override')}
+                data-umami-event="affiliate_click"
+                data-umami-partner="deepinfra"
+                data-umami-location="mobile_override"
+                data-umami-model={model}
+                data-umami-vram={vram}
+                data-umami-status={status}
+                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div className="flex-1">
+                    <div className="font-bold text-blue-900 dark:text-blue-100">
+                      Try on Phone
+                    </div>
+                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                      Run instantly via API. No setup.
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <p className="text-sm text-amber-800 dark:text-amber-200 mt-1 leading-relaxed">
-                  Production-ready templates for tight VRAM scenarios.
-                </p>
-                <div className="flex items-center gap-2 mt-3 text-sm font-bold text-amber-700 dark:text-amber-300">
-                  Download <ExternalLink className="w-4 h-4" />
+              </a>
+
+              {/* Secondary: Gumroad */}
+              <a
+                href={LINK_KIT}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackGumroad('mobile_override')}
+                data-umami-event="affiliate_click"
+                data-umami-partner="gumroad"
+                data-umami-location="mobile_override"
+                data-umami-model={model}
+                data-umami-vram={vram}
+                data-umami-status={status}
+                className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
+              >
+                <div className="flex items-center gap-2 text-sm">
+                  <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
                 </div>
-              </div>
-            </div>
-          </a>
+              </a>
+            </>
+          ) : (
+            <>
+              {/* Primary CTA: Gumroad - ALWAYS priority in YELLOW */}
+              <a
+                href={LINK_KIT}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackGumroad('yellow_card')}
+                data-umami-event="affiliate_click"
+                data-umami-partner="gumroad"
+                data-umami-location="yellow_card"
+                data-umami-model={model}
+                data-umami-vram={vram}
+                data-umami-status={status}
+                className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl shadow-lg">
+                    <Package className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-bold text-amber-900 dark:text-amber-100 flex items-center gap-2">
+                      Get Extreme Optimization Config ($9.90)
+                    </div>
+                    <p className="text-sm text-amber-800 dark:text-amber-200 mt-1 leading-relaxed">
+                      Production-ready templates for tight VRAM scenarios.
+                    </p>
+                    <div className="flex items-center gap-2 mt-3 text-sm font-bold text-amber-700 dark:text-amber-300">
+                      Download <ExternalLink className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              </a>
 
-          {/* Secondary CTA: DeepInfra API (Text Link) */}
-          <div className="text-center">
-            <a
-              href={LINK_API}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackDeepInfra('yellow_card')}
-              data-umami-event="affiliate_click"
-              data-umami-partner="deepinfra"
-              data-umami-location="yellow_card"
-              data-umami-model={model}
-              data-umami-vram={vram}
-              data-umami-status={status}
-              className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
-            >
-              Or run smoothly via API <ExternalLink className="w-3 h-3" />
-            </a>
-          </div>
-
-          {/* Fallback: Try Smaller Model (8B) */}
-          {canDowngradeTo8B && (
-            <button
-              onClick={handleDowngrade}
-              data-umami-event="tool_downgrade_click"
-              data-umami-from={model}
-              data-umami-to={ENTRY_MODEL}
-              className="w-full p-3 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
-            >
-              <div className="flex items-center gap-2 text-sm">
-                <Zap className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-                <span className="text-orange-900 dark:text-amber-100 font-medium">
-                  Try Smaller Model (8B)
-                </span>
+              {/* Secondary CTA: DeepInfra API (Text Link) */}
+              <div className="text-center">
+                <a
+                  href={LINK_API}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackDeepInfra('yellow_card')}
+                  data-umami-event="affiliate_click"
+                  data-umami-partner="deepinfra"
+                  data-umami-location="yellow_card"
+                  data-umami-model={model}
+                  data-umami-vram={vram}
+                  data-umami-status={status}
+                  className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
+                >
+                  Or run smoothly via API <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
-            </button>
+
+              {/* Fallback: Try Smaller Model (8B) */}
+              {canDowngradeTo8B && (
+                <button
+                  onClick={handleDowngrade}
+                  data-umami-event="tool_downgrade_click"
+                  data-umami-from={model}
+                  data-umami-to={ENTRY_MODEL}
+                  className="w-full p-3 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
+                >
+                  <div className="flex items-center gap-2 text-sm">
+                    <Zap className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                    <span className="text-orange-900 dark:text-amber-100 font-medium">
+                      Try Smaller Model (8B)
+                    </span>
+                  </div>
+                </button>
+              )}
+            </>
           )}
         </div>
       )}
 
       {/* ====================================================================
-          DESKTOP: GREEN STATE (Ready)
+          GREEN STATE (Ready)
           ==================================================================== */}
-      {!isMobile && status === "green" && (
+      {status === "green" && (
         <div className="space-y-4">
           {/* Status Header */}
           <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
@@ -535,86 +590,141 @@ export default function RealityCheck() {
             </p>
           </div>
 
-          {/* Trust Element: Recommended Settings (Gray background) */}
-          <div className="p-4 rounded-lg border border-border bg-muted/50">
-            <div className="flex items-center gap-2 font-bold text-text-primary mb-3">
-              <Settings className="w-4 h-4" />
-              Recommended Settings
-            </div>
-            <div className="grid grid-cols-3 gap-3 text-sm">
-              <div>
-                <div className="text-text-tertiary text-xs">Quantization</div>
-                <div className="font-mono font-medium">4-bit</div>
-              </div>
-              <div>
-                <div className="text-text-tertiary text-xs">Context</div>
-                <div className="font-mono font-medium">4096</div>
-              </div>
-              <div>
-                <div className="text-text-tertiary text-xs">Batch</div>
-                <div className="font-mono font-medium">1</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Primary CTA: Gumroad - DOMINANT, ALWAYS priority in GREEN */}
-          <a
-            href={LINK_KIT}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackGumroad('green_card')}
-            data-umami-event="affiliate_click"
-            data-umami-partner="gumroad"
-            data-umami-location="green_card"
-            data-umami-model={model}
-            data-umami-vram={vram}
-            data-umami-status={status}
-            className="block p-6 rounded-lg border-2 bg-gradient-to-br from-emerald-500 via-green-500 to-amber-500 hover:from-emerald-600 hover:via-green-600 hover:to-amber-600 text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all"
-          >
-            <div className="flex items-start gap-4">
-              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl shadow-lg">
-                <Package className="w-7 h-7 text-white" />
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-white flex items-center gap-2 text-lg">
-                  🚀 Download 1-Click Survival Kit ($9.90)
+          {/* Mobile CTA Override or Desktop GREEN CTA */}
+          {isMobile ? (
+            <>
+              {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
+              <a
+                href={LINK_API}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackDeepInfra('mobile_override')}
+                data-umami-event="affiliate_click"
+                data-umami-partner="deepinfra"
+                data-umami-location="mobile_override"
+                data-umami-model={model}
+                data-umami-vram={vram}
+                data-umami-status={status}
+                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div className="flex-1">
+                    <div className="font-bold text-blue-900 dark:text-blue-100">
+                      Try on Phone
+                    </div>
+                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                      Run instantly via API. No setup.
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <p className="text-sm text-white/90 mt-2 leading-relaxed">
-                  Ready-to-use templates, monitoring, and prompts.
-                </p>
-                <div className="flex items-center gap-2 mt-4 text-base font-bold text-white">
-                  <ExternalLink className="w-5 h-5" />
-                  Get Instant Access
+              </a>
+
+              {/* Secondary: Gumroad */}
+              <a
+                href={LINK_KIT}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackGumroad('mobile_override')}
+                data-umami-event="affiliate_click"
+                data-umami-partner="gumroad"
+                data-umami-location="mobile_override"
+                data-umami-model={model}
+                data-umami-vram={vram}
+                data-umami-status={status}
+                className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
+              >
+                <div className="flex items-center gap-2 text-sm">
+                  <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
+                </div>
+              </a>
+            </>
+          ) : (
+            <>
+              {/* Trust Element: Recommended Settings (Gray background) */}
+              <div className="p-4 rounded-lg border border-border bg-muted/50">
+                <div className="flex items-center gap-2 font-bold text-text-primary mb-3">
+                  <Settings className="w-4 h-4" />
+                  Recommended Settings
+                </div>
+                <div className="grid grid-cols-3 gap-3 text-sm">
+                  <div>
+                    <div className="text-text-tertiary text-xs">Quantization</div>
+                    <div className="font-mono font-medium">4-bit</div>
+                  </div>
+                  <div>
+                    <div className="text-text-tertiary text-xs">Context</div>
+                    <div className="font-mono font-medium">4096</div>
+                  </div>
+                  <div>
+                    <div className="text-text-tertiary text-xs">Batch</div>
+                    <div className="font-mono font-medium">1</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </a>
 
-          {/* Secondary CTA: DeepInfra API (Weak Text Link ONLY) */}
-          <div className="text-center">
-            <a
-              href={LINK_API}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackDeepInfra('green_card')}
-              data-umami-event="affiliate_click"
-              data-umami-partner="deepinfra"
-              data-umami-location="green_card"
-              data-umami-model={model}
-              data-umami-vram={vram}
-              data-umami-status={status}
-              className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
-            >
-              Just want to test quickly? Try API. <ExternalLink className="w-3 h-3" />
-            </a>
-          </div>
+              {/* Primary CTA: Gumroad - DOMINANT, ALWAYS priority in GREEN */}
+              <a
+                href={LINK_KIT}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackGumroad('green_card')}
+                data-umami-event="affiliate_click"
+                data-umami-partner="gumroad"
+                data-umami-location="green_card"
+                data-umami-model={model}
+                data-umami-vram={vram}
+                data-umami-status={status}
+                className="block p-6 rounded-lg border-2 bg-gradient-to-br from-emerald-500 via-green-500 to-amber-500 hover:from-emerald-600 hover:via-green-600 hover:to-amber-600 text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl shadow-lg">
+                    <Package className="w-7 h-7 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-bold text-white flex items-center gap-2 text-lg">
+                      🚀 Download 1-Click Survival Kit ($9.90)
+                    </div>
+                    <p className="text-sm text-white/90 mt-2 leading-relaxed">
+                      Ready-to-use templates, monitoring, and prompts.
+                    </p>
+                    <div className="flex items-center gap-2 mt-4 text-base font-bold text-white">
+                      <ExternalLink className="w-5 h-5" />
+                      Get Instant Access
+                    </div>
+                  </div>
+                </div>
+              </a>
 
-          {/* Footer: Buy Me a Coffee */}
-          <ConversionButton
-            location="tool_green"
-            copy="Your hardware is ready. If this tool saved you time, support the dev."
-            variant="compact"
-          />
+              {/* Secondary CTA: DeepInfra API (Weak Text Link ONLY) */}
+              <div className="text-center">
+                <a
+                  href={LINK_API}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackDeepInfra('green_card')}
+                  data-umami-event="affiliate_click"
+                  data-umami-partner="deepinfra"
+                  data-umami-location="green_card"
+                  data-umami-model={model}
+                  data-umami-vram={vram}
+                  data-umami-status={status}
+                  className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
+                >
+                  Just want to test quickly? Try API. <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              {/* Footer: Buy Me a Coffee */}
+              <ConversionButton
+                location="tool_green"
+                copy="Your hardware is ready. If this tool saved you time, support the dev."
+                variant="compact"
+              />
+            </>
+          )}
         </div>
       )}
 
