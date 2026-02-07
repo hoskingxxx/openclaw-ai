@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { usePathname } from "next/navigation"
 import { trackVultrClick } from "@/lib/tracking"
+import { ConversionButton } from "@/components/monetization/ConversionButton"
 
 // ============================================================================
 // SINGLE SOURCE OF TRUTH: VRAM Calculator Data
@@ -142,6 +143,15 @@ export function VramCalculator() {
           </a>
         )}
       </div>
+
+      {/* BMC Button - Only show when GREEN */}
+      {status === "green" && (
+        <ConversionButton
+          location="tool_green"
+          copy="Your hardware is ready. If this tool saved you time, support the dev."
+          variant="compact"
+        />
+      )}
 
       <p className="text-[10px] text-muted-foreground/60 mt-4 text-center">
         *Advanced configurations may change the outcome, but rarely the conclusion.

@@ -2,6 +2,7 @@ import type { MDXComponents } from 'mdx/types'
 import RealityCheck from '@/components/RealityCheck'
 import { FAQ } from '@/components/FAQ'
 import { AnswerCapsule, CriticalFix, QuickFix } from '@/components/AnswerCapsule'
+import { CodeBlockWithCTA } from '@/components/ui/CodeBlockWithCTA'
 
 // Force MDX <a> to render as real clickable links
 const A = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
@@ -30,6 +31,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     AnswerCapsule,
     CriticalFix,
     QuickFix,
+    CodeBlockWithCTA,
     a: A, // CRITICAL: Force MDX <a> to render as real clickable links
   }
 }
