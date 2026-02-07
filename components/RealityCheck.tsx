@@ -107,7 +107,7 @@ function calculateStatus(requiredVRAM: number, userVRAM: number): Status {
 
 interface AffiliateTrackParams {
   partner: 'gumroad' | 'deepinfra' | 'vultr'
-  location: 'red_card' | 'yellow_card' | 'green_card' | 'mobile_override' | 'security_banner'
+  location: 'red_card' | 'yellow_card' | 'green_card' | 'mobile_override'
   model: ModelId
   vram: VRAMId
   status: Status
@@ -198,6 +198,9 @@ export default function RealityCheck() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackGumroad('security_banner')}
+                  data-umami-event="affiliate_click"
+                  data-umami-partner="gumroad"
+                  data-umami-placement="security_banner"
                   className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
                 >
                   Safe Config
@@ -208,6 +211,9 @@ export default function RealityCheck() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackVultr('security_banner')}
+                  data-umami-event="affiliate_click"
+                  data-umami-partner="vultr"
+                  data-umami-placement="security_banner"
                   className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
                 >
                   Cloud VPS
