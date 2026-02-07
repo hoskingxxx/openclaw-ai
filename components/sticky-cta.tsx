@@ -27,7 +27,7 @@ export function StickyCTA() {
   // Get post slug for UTM
   const postSlug = pathname?.split("/").filter(Boolean).pop() || "";
   const utmContent = "sticky_banner";
-  const affLink = `https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=${postSlug}&utm_content=${utmContent}`;
+  const affLink = `https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=${postSlug}&utm_content=${utmContent}`;
 
   return (
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-[400px] z-50 animate-in slide-in-from-bottom-5">
@@ -59,7 +59,7 @@ export function StickyCTA() {
           data-umami-event-post={postSlug}
           data-umami-event-placement="sticky_banner"
           data-umami-event-cta-id="sticky_deploy_button"
-          data-umami-event-ref="9863490"
+          data-umami-event-ref="9864821-9J"
           data-umami-event-utm_content={utmContent}
         >
           Deploy Now →

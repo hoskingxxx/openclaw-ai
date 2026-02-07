@@ -14,7 +14,7 @@
 
 ## Monetization
 - **Partner:** Vultr
-- **Affiliate ID:** 9863490
+- **Affiliate ID:** 9864821-9J
 - **Status:** Active
 
 ---

@@ -22,7 +22,7 @@ export function rehypeVultrEnrich(options: Options) {
       if (typeof href !== "string") return;
 
       const isVultr =
-        href.includes("vultr.com") && href.includes("ref=9863490");
+        href.includes("vultr.com") && href.includes("ref=9864821-9J");
       if (!isVultr) return;
 
       // normalize className to string[]
@@ -59,7 +59,7 @@ export function rehypeVultrEnrich(options: Options) {
 
       // Umami
       node.properties["data-umami-event"] = "vultr_click";
-      node.properties["data-umami-event-ref"] = "9863490";
+      node.properties["data-umami-event-ref"] = "9864821-9J";
       node.properties["data-umami-event-post"] = postSlug;
 
       const placement =

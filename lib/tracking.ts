@@ -48,7 +48,7 @@ export function trackVultrClick(params: {
     placement,
     cta_id: ctaId,
     ...(verdict && { verdict }),
-    ref: "9863490",
+    ref: "9864821-9J",
     utm_content: utmContent || `${placement}${verdict ? `_${verdict}` : ""}`,
   };
 

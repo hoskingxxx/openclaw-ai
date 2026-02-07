@@ -17,16 +17,16 @@ if [ ! -f "$TARGET_FILE" ]; then
   exit 1
 fi
 
-# Test 1: Affiliate link must exist with data-link="affiliate" and ref=9863490
+# Test 1: Affiliate link must exist with data-link="affiliate" and ref=9864821-9J
 echo ""
 echo "Test 1: Vultr affiliate link..."
-AFFILIATE_COUNT=$(grep -o 'href="https://www.vultr.com/[^"]*ref=9863490[^"]*"[^>]*data-link="affiliate"' "$TARGET_FILE" | wc -l | tr -d ' ')
+AFFILIATE_COUNT=$(grep -o 'href="https://www.vultr.com/[^"]*ref=9864821-9J[^"]*"[^>]*data-link="affiliate"' "$TARGET_FILE" | wc -l | tr -d ' ')
 if [ "$AFFILIATE_COUNT" -ge 1 ]; then
-  echo "✅ PASS: Found $AFFILIATE_COUNT affiliate link(s) with data-link=\"affiliate\" and ref=9863490"
+  echo "✅ PASS: Found $AFFILIATE_COUNT affiliate link(s) with data-link=\"affiliate\" and ref=9864821-9J"
   # Show actual link for verification
-  grep -o 'href="https://www.vultr.com/[^"]*ref=9863490[^"]*"' "$TARGET_FILE" | head -1
+  grep -o 'href="https://www.vultr.com/[^"]*ref=9864821-9J[^"]*"' "$TARGET_FILE" | head -1
 else
-  echo "❌ FAIL: No affiliate link found with data-link=\"affiliate\" and ref=9863490"
+  echo "❌ FAIL: No affiliate link found with data-link=\"affiliate\" and ref=9864821-9J"
   grep 'vultr.com' "$TARGET_FILE" | head -3 || true
   exit 1
 fi

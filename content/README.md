@@ -6,12 +6,12 @@
 
 **❌ FORBIDDEN:**
 ```mdx
-> <a href="https://www.vultr.com/?ref=9863490" data-link="affiliate">**Deploy on Vultr**</a>
+> <a href="https://www.vultr.com/?ref=9864821-9J" data-link="affiliate">**Deploy on Vultr**</a>
 ```
 
 **✅ REQUIRED:**
 ```mdx
-> [**Deploy on Vultr**](https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=slug&utm_content=article_link)
+> [**Deploy on Vultr**](https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=slug&utm_content=article_link)
 ```
 
 ### Why?
@@ -28,13 +28,13 @@ The MDX rendering pipeline (`remark → remarkRehype → rehypeSanitize → rehy
 
 You write plain Markdown:
 ```mdx
-[**Deploy on Vultr (Cloud GPU)**](https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=article_name&utm_content=article_link)
+[**Deploy on Vultr (Cloud GPU)**](https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=article_name&utm_content=article_link)
 ```
 
 The `rehypeVultrEnrich` plugin AUTOMATICALLY adds:
 - `data-link="affiliate"` (for CSS blue color)
 - `data-umami-event="vultr_click"` (analytics)
-- `data-umami-event-ref="9863490"` (tracking)
+- `data-umami-event-ref="9864821-9J"` (tracking)
 - `vultr-cta` CSS classes (button styling)
 
 ### How Cluster Links Work (AUTOMATIC)

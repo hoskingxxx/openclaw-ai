@@ -43,7 +43,7 @@ Gemini proposes → CEO to ChatGPT → ChatGPT verdicts → CEO to CC → CC exe
 - Honest, technical, no exaggerated claims
 
 ### Monetization
-- Vultr affiliate: `https://www.vultr.com/?ref=9863490`
+- Vultr affiliate: `https://www.vultr.com/?ref=9864821-9J`
 - CTA: "Deploy on Vultr (Limited Time Offer)"
 - NO hardcoded amounts ($100, etc.)
 - NO sponsored content without disclosure

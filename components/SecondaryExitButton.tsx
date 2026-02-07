@@ -21,7 +21,7 @@ export function SecondaryExitButton({
   umamiEventPlacement = "article_link",
   umamiEventContent = "article_link",
   umamiEventPost = "",
-  umamiEventRef = "9863490",
+  umamiEventRef = "9864821-9J",
   children,
 }: SecondaryExitButtonProps) {
   return (

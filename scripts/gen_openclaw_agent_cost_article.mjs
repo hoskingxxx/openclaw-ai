@@ -24,7 +24,7 @@ const CATEGORY = "Troubleshooting"; // allowed: "Security", "Tutorial", "Trouble
 const DATE = "2026-02-05";
 
 // Affiliate
-const VULTR_URL = "https://www.vultr.com/?ref=9863490";
+const VULTR_URL = "https://www.vultr.com/?ref=9864821-9J";
 const VULTR_CTA = "Deploy on Vultr (Limited Time Offer)";
 
 // Assumptions (explicitly labeled)

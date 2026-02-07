@@ -8,7 +8,7 @@ export function StopDebuggingCTA() {
   const pathname = usePathname();
   const postSlug = pathname?.split("/").filter(Boolean).pop() || "";
   const utmContent = "stop_debugging_box";
-  const affLink = `https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=${postSlug}&utm_content=${utmContent}`;
+  const affLink = `https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=${postSlug}&utm_content=${utmContent}`;
 
   return (
     <div className="my-12 p-6 border-l-4 border-brand-primary bg-slate-50 dark:bg-slate-900/50 rounded-r-lg shadow-sm">
@@ -36,7 +36,7 @@ export function StopDebuggingCTA() {
             data-umami-event-post={postSlug}
             data-umami-event-placement="stop_debugging_box"
             data-umami-event-cta-id="stop_debugging_button"
-            data-umami-event-ref="9863490"
+            data-umami-event-ref="9864821-9J"
             data-umami-event-utm_content={utmContent}
           >
             Deploy on Vultr (Cloud GPU) →

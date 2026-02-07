@@ -2,7 +2,7 @@
 
 ---
 
-[DECISION] Vultr affiliate partnership (ID: 9863490) — Primary monetization
+[DECISION] Vultr affiliate partnership (ID: 9864821-9J) — Primary monetization
 
 [DECISION] Route prefix `/guides` instead of `/blog` — SEO consolidation
 

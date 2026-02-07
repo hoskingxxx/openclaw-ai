@@ -62,7 +62,7 @@ After proving the math is impossible:
 > - Buy an H100 ($25,000+)
 > - Rent one by the hour ($3.00/hr on Vultr)
 >
-> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
+> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9864821-9J)** *(High Availability & $100 Free Credit for new accounts)*
 >
 > One afternoon of debugging costs more than a month of H100 time.
 
@@ -119,7 +119,7 @@ After instilling appropriate fear:
 > - Keep your main machine clean
 > - Destroy/recreate the VPS in seconds
 >
-> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
+> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9864821-9J)** *(High Availability & $100 Free Credit for new accounts)*
 >
 > Your personal files are worth more than $10/month.
 
@@ -176,7 +176,7 @@ After proving local is more expensive:
 > - No debugging
 > - On-demand scaling
 >
-> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
+> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9864821-9J)** *(High Availability & $100 Free Credit for new accounts)*
 >
 > You are losing money running locally.
 
@@ -229,7 +229,7 @@ After proving localhost can't handle swarms:
 > - Dedicated networking (no shared localhost)
 > - Auto-scaling based on agent count
 >
-> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
+> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9864821-9J)** *(High Availability & $100 Free Credit for new accounts)*
 >
 > Don't fight physics. Swarms need the cloud.
 
@@ -283,7 +283,7 @@ After showing embarrassing local results:
 > - RTX 4090: Can't run the real model
 > - H100: 120 t/s (production-ready)
 >
-> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
+> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9864821-9J)** *(High Availability & $100 Free Credit for new accounts)*
 >
 > $3/hr for the H100. Your time is worth more than that.
 

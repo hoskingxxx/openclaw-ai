@@ -177,7 +177,7 @@ export default function RealityCheck() {
   const utmContent = `realitycheck_${verdict}`;
 
   // Affiliate link with standardized UTM parameters
-  const affLink = `https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium=content&utm_campaign=${verdict}&utm_content=${utmContent}`;
+  const affLink = `https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=${verdict}&utm_content=${utmContent}`;
 
   const handleImpression = useCallback(async () => {
     if (impressionSentRef.current) return;
@@ -312,7 +312,7 @@ export default function RealityCheck() {
           data-umami-event-placement="reality_check"
           data-umami-event-cta-id={verdict === "unsafe" ? "rc_security_button" : `rc_${verdict}_button`}
           {...verdict && { "data-umami-event-verdict": verdict }}
-          data-umami-event-ref="9863490"
+          data-umami-event-ref="9864821-9J"
           data-umami-event-utm_content={utmContent}
           className={`inline-flex w-full items-center justify-center rounded-md px-4 py-3 text-sm font-bold transition-transform hover:scale-[1.01] ${content.btn}`}
         >

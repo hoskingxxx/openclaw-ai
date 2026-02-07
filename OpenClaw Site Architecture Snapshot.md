@@ -248,7 +248,7 @@ data-umami-event="vultr_click"
 data-umami-event-post="{post_slug}"          // or "homepage", "troubleshooting"
 data-umami-event-placement="{location}"       // hero_section, reality_check, sticky_banner, etc.
 data-umami-event-cta-id="{unique_id}"         // hero_rent_gpu_button, rc_unsafe_button, etc.
-data-umami-event-ref="9863490"                // Vultr affiliate ID
+data-umami-event-ref="9864821-9J"                // Vultr affiliate ID
 data-umami-event-utm_content="{context}"      // hero_section, article_link, etc.
 data-umami-event-verdict="{verdict}"          // "safe", "unsafe", etc. (RealityCheck only)
 ```
@@ -266,12 +266,12 @@ data-umami-event-verdict="{verdict}"          // "safe", "unsafe", etc. (Reality
 
 ### Vultr Affiliate Link Format
 ```
-https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium={medium}&utm_campaign={campaign}&utm_content={content}
+https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium={medium}&utm_campaign={campaign}&utm_content={content}
 ```
 
 | Parameter | Value | Notes |
 |-----------|-------|-------|
-| `ref` | `9863490` | **REQUIRED** - affiliate ID |
+| `ref` | `9864821-9J` | **REQUIRED** - affiliate ID |
 | `utm_source` | `openclaw` | Fixed |
 | `utm_medium` | `content`, `error_index`, etc. | Varies by placement |
 | `utm_campaign` | `hardware-requirements-reality-check`, `bottom_intercept`, etc. | Post-specific |
@@ -281,9 +281,9 @@ https://www.vultr.com/?ref=9863490&utm_source=openclaw&utm_medium={medium}&utm_c
 
 ## 7) One-liners for Debug (排查命令)
 
-### Find Vultr affiliate links (ref=9863490)
+### Find Vultr affiliate links (ref=9864821-9J)
 ```bash
-rg "ref=9863490" --type mdx --type tsx
+rg "ref=9864821-9J" --type mdx --type tsx
 ```
 
 ### Find old GitHub Code Search links (should return nothing)
@@ -303,7 +303,7 @@ node -e "const {blogPosts} = require('./lib/blog.ts'); const fs = require('fs');
 
 ### Count Vultr links in production build
 ```bash
-npm run build && rg 'href="https://www.vultr.com/\?ref=9863490' .next/server/app -c | tail -1
+npm run build && rg 'href="https://www.vultr.com/\?ref=9864821-9J' .next/server/app -c | tail -1
 ```
 
 ### Check Umami event attributes

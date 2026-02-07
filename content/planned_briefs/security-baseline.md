@@ -130,7 +130,7 @@ VPS ──> Internet (separate route)
 ```markdown
 > **For production: Use a VPS.** For testing: Use a separate VLAN or an isolated VM.
 >
-> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
+> **[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9864821-9J)** *(High Availability & $100 Free Credit for new accounts)*
 >
 > $6/month buys you physical isolation from your bank passwords.
 ```
@@ -220,7 +220,7 @@ MAX_NETWORK_REQUESTS = 1000
 >
 > **"...OR you can spend $6/month for a DigitalOcean Droplet that is physically isolated from everything you care about."**
 
-**[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
+**[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9864821-9J)** *(High Availability & $100 Free Credit for new accounts)*
 
 ---
 
@@ -304,7 +304,7 @@ After proving local security is expensive and complex:
 > 2. Spend $6/month for a VPS that's isolated by default"
 
 ### Call to Action
-**[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9863490)** *(High Availability & $100 Free Credit for new accounts)*
+**[Deploy on Vultr (H100/A100 Ready)](https://www.vultr.com/?ref=9864821-9J)** *(High Availability & $100 Free Credit for new accounts)*
 
 ---
 
