@@ -116,7 +116,7 @@ function isRelatedHeading(node: Element): boolean {
 
 function isStuckHeading(node: Element): boolean {
   const textContent = getTextContent(node);
-  return /^Still Stuck\?|仍然卡住/i.test(textContent.trim());
+  return /^Still Stuck\?/i.test(textContent.trim());
 }
 
 function getTextContent(node: Element): string {

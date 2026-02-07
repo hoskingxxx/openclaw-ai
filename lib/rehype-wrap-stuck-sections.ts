@@ -1,7 +1,7 @@
 import type { Root, Element } from "hast";
 
 /**
- * rehype plugin to wrap "Still Stuck? / 仍然卡住？" diagnostic sections
+ * rehype plugin to wrap "Still Stuck?" diagnostic sections
  *
  * Finds H3 headings matching "Still Stuck" pattern and wraps them
  * along with their following content until the next heading with:
@@ -60,7 +60,7 @@ export function rehypeWrapStuckSections() {
 
 function isStuckHeading(node: Element): boolean {
   const textContent = getTextContent(node);
-  return /^Still Stuck\?|仍然卡住/i.test(textContent.trim());
+  return /^Still Stuck\?/i.test(textContent.trim());
 }
 
 function getTextContent(node: Element): string {
