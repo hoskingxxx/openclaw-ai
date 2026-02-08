@@ -273,20 +273,22 @@ export default async function BlogPostPage({
           </section>
 
           {post.slug !== "openclaw-error-index" && (
-            <section className="px-4 sm:px-6 mt-12 pt-8 border-t border-white/10">
-              <p className="text-xl font-semibold text-text-primary mb-2">
-                Bookmark this site
-              </p>
-              <p className="text-text-secondary mb-4">
-                New fixes are added as soon as they appear on GitHub Issues.
-              </p>
-              <Link
-                href="/guides/openclaw-error-index"
-                className="text-sm font-medium text-brand-primary hover:underline inline-flex items-center gap-1"
-                data-link="brand"
-              >
-                Browse Error Index &rarr;
-              </Link>
+            <section className="px-4 sm:px-6 mt-12">
+              <div className="pt-8 border-t border-white/10">
+                <p className="text-xl font-semibold text-text-primary mb-2">
+                  Bookmark this site
+                </p>
+                <p className="text-text-secondary mb-4">
+                  New fixes are added as soon as they appear on GitHub Issues.
+                </p>
+                <Link
+                  href="/guides/openclaw-error-index"
+                  className="text-sm font-medium text-brand-primary hover:underline inline-flex items-center gap-1"
+                  data-link="brand"
+                >
+                  Browse Error Index &rarr;
+                </Link>
+              </div>
             </section>
           )}
 
