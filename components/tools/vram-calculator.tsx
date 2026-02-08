@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { usePathname } from "next/navigation"
-import { trackAffiliateClick, trackToolDowngrade } from "@/lib/tracking"
+import { trackAffiliateClick, trackToolDowngrade, trackRevenueOutbound, trackCtaImpression, getPageType } from "@/lib/tracking"
 import { ConversionButton } from "@/components/monetization/ConversionButton"
 import { ExternalLink, Cloud, AlertTriangle, Settings, Package, Shield, Cpu, Zap } from "lucide-react"
 
@@ -95,7 +95,7 @@ function calculateStatus(requiredVRAM: number, userVRAM: number): Status {
 }
 
 // ============================================================================
-// TRACKING HANDLERS (Strict Schema)
+// TRACKING HANDLERS (Revenue Tracking Spec v1.0)
 // ============================================================================
 
 type AffiliateLocation = 'red_card' | 'yellow_card' | 'green_card' | 'mobile_override'
@@ -112,6 +112,16 @@ export function VramCalculator() {
 
   const pathname = usePathname()
   const postSlug = pathname?.split("/").filter(Boolean).pop() || ""
+
+  // Refs for CTA impression tracking
+  const gumroadSecurityRef = useRef<HTMLAnchorElement>(null)
+  const vultrSecurityRef = useRef<HTMLAnchorElement>(null)
+  const deepInfraRedCardRef = useRef<HTMLAnchorElement>(null)
+  const vultrRedCardRef = useRef<HTMLAnchorElement>(null)
+  const gumroadYellowCardRef = useRef<HTMLAnchorElement>(null)
+  const deepInfraYellowCardRef = useRef<HTMLAnchorElement>(null)
+  const gumroadGreenCardRef = useRef<HTMLAnchorElement>(null)
+  const deepInfraGreenCardRef = useRef<HTMLAnchorElement>(null)
 
   // Mobile detection
   useEffect(() => {
@@ -132,18 +142,154 @@ export function VramCalculator() {
   // Show security banner? (Independent layer, does NOT affect status)
   const showSecurityBanner = environment === "windows" || environment === "macos"
 
-  // Tracking helpers - explicitly call trackEvent with all properties
-  const trackGumroad = (location: AffiliateLocation) => {
-    trackAffiliateClick({ partner: 'gumroad', status, model, vram, location, postSlug })
-  }
+  // CTA impression tracking for text links
+  useEffect(() => {
+    const pageType = getPageType(pathname || "")
 
-  const trackDeepInfra = (location: AffiliateLocation) => {
-    trackAffiliateClick({ partner: 'deepinfra', status, model, vram, location, postSlug })
-  }
+    // Security banner Gumroad link impression
+    if (showSecurityBanner && gumroadSecurityRef.current) {
+      trackCtaImpression({
+        dest: "gumroad",
+        offer: "survival_kit",
+        placement: "reality_check_green",
+        pageType,
+        slug: postSlug,
+        verdict: "green",
+      })
+    }
 
-  const trackVultr = (location: AffiliateLocation) => {
-    trackAffiliateClick({ partner: 'vultr', status, model, vram, location, postSlug })
-  }
+    // Security banner Vultr link impression
+    if (showSecurityBanner && vultrSecurityRef.current) {
+      trackCtaImpression({
+        dest: "vultr",
+        offer: "cloud_gpu",
+        placement: "green_card",
+        pageType,
+        slug: postSlug,
+        verdict: "green",
+      })
+    }
+
+    // DeepInfra red card impression
+    if (status === "red" && deepInfraRedCardRef.current) {
+      trackCtaImpression({
+        dest: "deepinfra",
+        offer: "api_fallback",
+        placement: "red_card",
+        pageType,
+        slug: postSlug,
+        verdict: "red",
+      })
+    }
+
+    // Vultr red card impression
+    if (status === "red" && vultrRedCardRef.current) {
+      trackCtaImpression({
+        dest: "vultr",
+        offer: "cloud_gpu",
+        placement: "red_card",
+        pageType,
+        slug: postSlug,
+        verdict: "red",
+      })
+    }
+
+    // Gumroad yellow card impression
+    if (status === "yellow" && gumroadYellowCardRef.current) {
+      trackCtaImpression({
+        dest: "gumroad",
+        offer: "survival_kit",
+        placement: "reality_check_yellow",
+        pageType,
+        slug: postSlug,
+        verdict: "yellow",
+      })
+    }
+
+    // DeepInfra yellow card impression
+    if (status === "yellow" && deepInfraYellowCardRef.current) {
+      trackCtaImpression({
+        dest: "deepinfra",
+        offer: "api_fallback",
+        placement: "yellow_card",
+        pageType,
+        slug: postSlug,
+        verdict: "yellow",
+      })
+    }
+
+    // Gumroad green card impression
+    if (status === "green" && gumroadGreenCardRef.current) {
+      trackCtaImpression({
+        dest: "gumroad",
+        offer: "survival_kit",
+        placement: "reality_check_green",
+        pageType,
+        slug: postSlug,
+        verdict: "green",
+      })
+    }
+
+    // DeepInfra green card impression
+    if (status === "green" && deepInfraGreenCardRef.current) {
+      trackCtaImpression({
+        dest: "deepinfra",
+        offer: "api_fallback",
+        placement: "green_card",
+        pageType,
+        slug: postSlug,
+        verdict: "green",
+      })
+    }
+  }, [pathname, postSlug, showSecurityBanner, status])
+
+  // Tracking helpers - use revenue_outbound for Gumroad and DeepInfra per Spec v1.0
+  const handleGumroadClick = useCallback((location: AffiliateLocation) => {
+    const pageType = getPageType(pathname || "")
+    trackRevenueOutbound({
+      dest: "gumroad",
+      offer: "survival_kit",
+      placement: `reality_check_${status}`,
+      pageType,
+      slug: postSlug,
+      verdict: status,
+    })
+  }, [pathname, postSlug, status])
+
+  const handleDeepInfraClick = useCallback((location: AffiliateLocation) => {
+    const pageType = getPageType(pathname || "")
+    trackRevenueOutbound({
+      dest: "deepinfra",
+      offer: "api_fallback",
+      placement: location,
+      pageType,
+      slug: postSlug,
+      verdict: status,
+    })
+  }, [pathname, postSlug, status])
+
+  const handleVultrClick = useCallback((location: AffiliateLocation) => {
+    const pageType = getPageType(pathname || "")
+
+    // Double-write: fire BOTH revenue_outbound (canonical) and affiliate_click (legacy)
+    trackRevenueOutbound({
+      dest: "vultr",
+      offer: "cloud_gpu",
+      placement: location,
+      pageType,
+      slug: postSlug,
+      verdict: status,
+    })
+
+    trackAffiliateClick({
+      partner: 'vultr',
+      status,
+      model,
+      vram,
+      location,
+      postSlug
+    })
+  }, [status, model, vram, postSlug, pathname])
 
   const handleDowngrade = () => {
     trackToolDowngrade({ fromModel: model, toModel: ENTRY_MODEL, postSlug })
@@ -175,24 +321,22 @@ export function VramCalculator() {
                 Local environments have limited isolation.
                 {" "}For long-term safety, use our{" "}
                 <a
+                  ref={gumroadSecurityRef}
                   href={LINK_KIT}
                   target="_blank"
                   rel="noopener noreferrer"
-                  data-umami-event="marketing_affiliate_click"
-                  data-umami-partner="gumroad"
-                  data-umami-placement="security_banner"
+                  onClick={() => handleGumroadClick('green_card')}
                   className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
                 >
                   Safe Config
                 </a>
                 {" "}or a{" "}
                 <a
+                  ref={vultrSecurityRef}
                   href={LINK_CLOUD}
                   target="_blank"
                   rel="noopener noreferrer"
-                  data-umami-event="marketing_affiliate_click"
-                  data-umami-partner="vultr"
-                  data-umami-placement="security_banner"
+                  onClick={() => handleVultrClick('green_card')}
                   className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
                 >
                   Cloud VPS
@@ -270,7 +414,7 @@ export function VramCalculator() {
                 href={LINK_API}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackDeepInfra('mobile_override')}
+                onClick={() => handleDeepInfraClick('mobile_override')}
                 className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
               >
                 <div className="flex items-center gap-3">
@@ -292,7 +436,7 @@ export function VramCalculator() {
                 href={LINK_KIT}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackGumroad('mobile_override')}
+                onClick={() => handleGumroadClick('mobile_override')}
                 className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
               >
                 <div className="flex items-center gap-2 text-sm">
@@ -303,93 +447,95 @@ export function VramCalculator() {
             </>
           ) : (
             <>
-          {/* Status Header */}
-          <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
-            <div className="flex items-center gap-2 text-red-900 dark:text-red-100 font-semibold">
-              <AlertTriangle className="w-5 h-5" />
-              🔴 Cannot Run
-            </div>
-            <p className="text-sm text-red-700 dark:text-red-300 mt-1">
-              Estimated VRAM requirement exceeds your hardware.
-            </p>
-          </div>
-
-          {/* Primary CTA: DeepInfra API - ALWAYS priority in RED */}
-          <a
-            href={LINK_API}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackDeepInfra('red_card')}
-            className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
-          >
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-blue-500 rounded-lg">
-                <Cloud className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-blue-900 dark:text-blue-100">
-                  Run Instantly for $1
+              {/* Status Header */}
+              <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
+                <div className="flex items-center gap-2 text-red-900 dark:text-red-100 font-semibold">
+                  <AlertTriangle className="w-5 h-5" />
+                  🔴 Cannot Run
                 </div>
-                <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                  Skip hardware limits. Cloud API access.
+                <p className="text-sm text-red-700 dark:text-red-300 mt-1">
+                  Estimated VRAM requirement exceeds your hardware.
                 </p>
-                <div className="flex items-center gap-2 mt-2 text-sm font-medium text-blue-600 dark:text-blue-400">
-                  Get Started <ExternalLink className="w-4 h-4" />
-                </div>
               </div>
-            </div>
-          </a>
 
-          {/* Secondary CTA: Vultr Cloud GPU */}
-          <a
-            href={LINK_CLOUD}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackVultr('red_card')}
-            className="block p-4 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/20 hover:border-purple-400 hover:shadow-sm transition-all"
-          >
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-purple-500 rounded-lg">
-                <Cloud className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-purple-900 dark:text-purple-100">
-                  Rent High-Memory Cloud GPU
-                </div>
-                <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
-                  Get a private H100/A100 with full control.
-                </p>
-                <div className="flex items-center gap-2 mt-2 text-sm font-medium text-purple-600 dark:text-purple-400">
-                  Deploy Vultr <ExternalLink className="w-4 h-4" />
-                </div>
-              </div>
-            </div>
-          </a>
-
-          {/* Fallback: Try Smaller Model (8B) */}
-          {canDowngradeTo8B && (
-            <button
-              onClick={handleDowngrade}
-              data-umami-event="tool_downgrade_click"
-              data-umami-from={model}
-              data-umami-to={ENTRY_MODEL}
-              className="w-full p-4 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
-            >
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-orange-500 rounded-lg">
-                  <Zap className="w-4 h-4 text-white" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-bold text-orange-900 dark:text-orange-100">
-                    Try Smaller Model (8B)
+              {/* Primary CTA: DeepInfra API - ALWAYS priority in RED */}
+              <a
+                ref={deepInfraRedCardRef}
+                href={LINK_API}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => handleDeepInfraClick('red_card')}
+                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-blue-500 rounded-lg">
+                    <Cloud className="w-5 h-5 text-white" />
                   </div>
-                  <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
-                    Your GPU cannot handle {MODELS[model].label}. Try {MODELS[ENTRY_MODEL].label}.
-                  </p>
+                  <div className="flex-1">
+                    <div className="font-bold text-blue-900 dark:text-blue-100">
+                      Run Instantly for $1
+                    </div>
+                    <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                      Skip hardware limits. Cloud API access.
+                    </p>
+                    <div className="flex items-center gap-2 mt-2 text-sm font-medium text-blue-600 dark:text-blue-400">
+                      Get Started <ExternalLink className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </button>
-          )}
+              </a>
+
+              {/* Secondary CTA: Vultr Cloud GPU */}
+              <a
+                ref={vultrRedCardRef}
+                href={LINK_CLOUD}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => handleVultrClick('red_card')}
+                className="block p-4 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/20 hover:border-purple-400 hover:shadow-sm transition-all"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-purple-500 rounded-lg">
+                    <Cloud className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-bold text-purple-900 dark:text-purple-100">
+                      Rent High-Memory Cloud GPU
+                    </div>
+                    <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
+                      Get a private H100/A100 with full control.
+                    </p>
+                    <div className="flex items-center gap-2 mt-2 text-sm font-medium text-purple-600 dark:text-purple-400">
+                      Deploy Vultr <ExternalLink className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              </a>
+
+              {/* Fallback: Try Smaller Model (8B) */}
+              {canDowngradeTo8B && (
+                <button
+                  onClick={handleDowngrade}
+                  data-umami-event="tool_downgrade_click"
+                  data-umami-from={model}
+                  data-umami-to={ENTRY_MODEL}
+                  className="w-full p-4 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-orange-500 rounded-lg">
+                      <Zap className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-bold text-orange-900 dark:text-orange-100">
+                        Try Smaller Model (8B)
+                      </div>
+                      <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
+                        Your GPU cannot handle {MODELS[model].label}. Try {MODELS[ENTRY_MODEL].label}.
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              )}
             </>
           )}
         </div>
@@ -419,7 +565,7 @@ export function VramCalculator() {
                 href={LINK_API}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackDeepInfra('mobile_override')}
+                onClick={() => handleDeepInfraClick('mobile_override')}
                 className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
               >
                 <div className="flex items-center gap-3">
@@ -441,7 +587,7 @@ export function VramCalculator() {
                 href={LINK_KIT}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackGumroad('mobile_override')}
+                onClick={() => handleGumroadClick('mobile_override')}
                 className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
               >
                 <div className="flex items-center gap-2 text-sm">
@@ -454,10 +600,11 @@ export function VramCalculator() {
             <>
               {/* Primary CTA: Gumroad - ALWAYS priority in YELLOW */}
               <a
+                ref={gumroadYellowCardRef}
                 href={LINK_KIT}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackGumroad('yellow_card')}
+                onClick={() => handleGumroadClick('yellow_card')}
                 className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
               >
                 <div className="flex items-start gap-4">
@@ -481,10 +628,11 @@ export function VramCalculator() {
               {/* Secondary CTA: DeepInfra API (Text Link) */}
               <div className="text-center">
                 <a
+                  ref={deepInfraYellowCardRef}
                   href={LINK_API}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackDeepInfra('yellow_card')}
+                  onClick={() => handleDeepInfraClick('yellow_card')}
                   className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
                 >
                   Or run smoothly via API <ExternalLink className="w-3 h-3" />
@@ -536,7 +684,7 @@ export function VramCalculator() {
                 href={LINK_API}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackDeepInfra('mobile_override')}
+                onClick={() => handleDeepInfraClick('mobile_override')}
                 className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
               >
                 <div className="flex items-center gap-3">
@@ -558,7 +706,7 @@ export function VramCalculator() {
                 href={LINK_KIT}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackGumroad('mobile_override')}
+                onClick={() => handleGumroadClick('mobile_override')}
                 className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
               >
                 <div className="flex items-center gap-2 text-sm">
@@ -593,10 +741,11 @@ export function VramCalculator() {
 
               {/* Primary CTA: Gumroad - DOMINANT, ALWAYS priority in GREEN */}
               <a
+                ref={gumroadGreenCardRef}
                 href={LINK_KIT}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackGumroad('green_card')}
+                onClick={() => handleGumroadClick('green_card')}
                 className="block p-6 rounded-lg border-2 bg-gradient-to-br from-emerald-500 via-green-500 to-amber-500 hover:from-emerald-600 hover:via-green-600 hover:to-amber-600 text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all"
               >
                 <div className="flex items-start gap-4">
@@ -621,10 +770,11 @@ export function VramCalculator() {
               {/* Secondary CTA: DeepInfra API (Weak Text Link ONLY) */}
               <div className="text-center">
                 <a
+                  ref={deepInfraGreenCardRef}
                   href={LINK_API}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackDeepInfra('green_card')}
+                  onClick={() => handleDeepInfraClick('green_card')}
                   className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
                 >
                   Just want to test quickly? Try API. <ExternalLink className="w-3 h-3" />

@@ -1,7 +1,8 @@
 "use client"
 
+import { useCallback } from "react"
 import { usePathname } from 'next/navigation';
-import { trackAffiliateClick } from "@/lib/tracking";
+import { trackRevenueOutbound, getPageType } from "@/lib/tracking";
 import { Button } from "@/components/ui/Button";
 
 export function StopDebuggingCTA() {
@@ -9,6 +10,17 @@ export function StopDebuggingCTA() {
   const postSlug = pathname?.split("/").filter(Boolean).pop() || "";
   const utmContent = "stop_debugging_box";
   const affLink = `https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=${postSlug}&utm_content=${utmContent}`;
+
+  const handleClick = useCallback(() => {
+    const pageType = getPageType(pathname || "")
+    trackRevenueOutbound({
+      dest: "vultr",
+      offer: "cloud_gpu",
+      placement: "stop_debugging_box",
+      pageType,
+      slug: postSlug,
+    })
+  }, [pathname, postSlug])
 
   return (
     <div className="my-12 p-6 border-l-4 border-brand-primary bg-slate-50 dark:bg-slate-900/50 rounded-r-lg shadow-sm">
@@ -31,9 +43,7 @@ export function StopDebuggingCTA() {
             size="md"
             href={affLink}
             external
-            data-umami-event="marketing_affiliate_click"
-            data-umami-partner="vultr"
-            data-umami-placement="stop_debugging_box"
+            onClick={handleClick}
           >
             Deploy on Vultr (Cloud GPU) →
           </Button>

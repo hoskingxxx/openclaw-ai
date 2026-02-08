@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
-import { trackAffiliateClick } from "@/lib/tracking"
+import { trackRevenueOutbound, getPageType } from "@/lib/tracking"
 import { Button } from "@/components/ui/Button"
 
 export function StickyCTA() {
@@ -29,6 +29,17 @@ export function StickyCTA() {
   const utmContent = "sticky_banner";
   const affLink = `https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=${postSlug}&utm_content=${utmContent}`;
 
+  const handleClick = useCallback(() => {
+    const pageType = getPageType(pathname || "")
+    trackRevenueOutbound({
+      dest: "vultr",
+      offer: "cloud_gpu",
+      placement: "sticky",
+      pageType,
+      slug: postSlug,
+    })
+  }, [pathname, postSlug])
+
   return (
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-[400px] z-50 animate-in slide-in-from-bottom-5">
       <div className="relative bg-slate-900 border border-orange-500/30 shadow-2xl rounded-lg p-4 flex items-center gap-4">
@@ -53,9 +64,7 @@ export function StickyCTA() {
           size="sm"
           href={affLink}
           external
-          data-umami-event="marketing_affiliate_click"
-          data-umami-partner="vultr"
-          data-umami-placement="sticky_banner"
+          onClick={handleClick}
         >
           Deploy Now →
         </Button>

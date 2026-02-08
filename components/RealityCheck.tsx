@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react"
 import { usePathname } from "next/navigation"
 import { AlertTriangle, ExternalLink, Settings, Shield, Zap } from "lucide-react"
-import { trackAffiliateClick, trackToolDowngrade } from "@/lib/tracking"
+import { trackAffiliateClick, trackToolDowngrade, trackRevenueOutbound, trackCtaImpression, getPageType } from "@/lib/tracking"
 import { SurvivalKitPromo } from "@/components/monetization/SurvivalKitPromo"
 
 // ============================================================================
@@ -102,7 +102,7 @@ function calculateStatus(requiredVRAM: number, userVRAM: number): Status {
 }
 
 // ============================================================================
-// TRACKING HANDLERS (Strict Schema)
+// TRACKING HANDLERS (Revenue Tracking Spec v1.0)
 // ============================================================================
 
 type AffiliateLocation = 'red_card' | 'yellow_card' | 'green_card' | 'mobile_override'
@@ -119,6 +119,11 @@ export default function RealityCheck() {
 
   const pathname = usePathname()
   const postSlug = pathname?.split("/").filter(Boolean).pop() || ""
+
+  // Refs for CTA impression tracking
+  const gumroadSecurityRef = useRef<HTMLAnchorElement>(null)
+  const vultrSecurityRef = useRef<HTMLAnchorElement>(null)
+  const deepInfraRedCardRef = useRef<HTMLAnchorElement>(null)
 
   // Mobile detection
   useEffect(() => {
@@ -139,18 +144,94 @@ export default function RealityCheck() {
   // Show security banner? (Independent layer, does NOT affect status)
   const showSecurityBanner = environment === "local_win" || environment === "local_mac"
 
-  // Tracking helpers - explicitly call trackEvent with all properties
-  const trackGumroad = (location: AffiliateLocation) => {
-    trackAffiliateClick({ partner: 'gumroad', status, model, vram, location, postSlug })
-  }
+  // CTA impression tracking for text links
+  useEffect(() => {
+    const pageType = getPageType(pathname || "")
 
-  const trackDeepInfra = (location: AffiliateLocation) => {
-    trackAffiliateClick({ partner: 'deepinfra', status, model, vram, location, postSlug })
-  }
+    // Security banner Gumroad link impression
+    if (showSecurityBanner && gumroadSecurityRef.current) {
+      trackCtaImpression({
+        dest: "gumroad",
+        offer: "survival_kit",
+        placement: "reality_check_green",
+        pageType,
+        slug: postSlug,
+        verdict: "green",
+      })
+    }
 
-  const trackVultr = (location: AffiliateLocation) => {
-    trackAffiliateClick({ partner: 'vultr', status, model, vram, location, postSlug })
-  }
+    // Security banner Vultr link impression
+    if (showSecurityBanner && vultrSecurityRef.current) {
+      trackCtaImpression({
+        dest: "vultr",
+        offer: "cloud_gpu",
+        placement: "green_card",
+        pageType,
+        slug: postSlug,
+        verdict: "green",
+      })
+    }
+
+    // DeepInfra red card impression
+    if (status === "red" && deepInfraRedCardRef.current) {
+      trackCtaImpression({
+        dest: "deepinfra",
+        offer: "api_fallback",
+        placement: "red_card",
+        pageType,
+        slug: postSlug,
+        verdict: "red",
+      })
+    }
+  }, [pathname, postSlug, showSecurityBanner, status])
+
+  // Tracking helpers - use revenue_outbound for Gumroad and DeepInfra per Spec v1.0
+  const handleGumroadClick = useCallback((location: AffiliateLocation) => {
+    const pageType = getPageType(pathname || "")
+    trackRevenueOutbound({
+      dest: "gumroad",
+      offer: "survival_kit",
+      placement: `reality_check_${status === "yellow" ? "yellow" : "green"}`,
+      pageType,
+      slug: postSlug,
+      verdict: status,
+    })
+  }, [pathname, postSlug, status])
+
+  const handleDeepInfraClick = useCallback((location: AffiliateLocation) => {
+    const pageType = getPageType(pathname || "")
+    trackRevenueOutbound({
+      dest: "deepinfra",
+      offer: "api_fallback",
+      placement: location,
+      pageType,
+      slug: postSlug,
+      verdict: status,
+    })
+  }, [pathname, postSlug, status])
+
+  const handleVultrClick = useCallback((location: string) => {
+    const pageType = getPageType(pathname || "")
+
+    // Double-write: fire BOTH revenue_outbound (canonical) and affiliate_click (legacy)
+    trackRevenueOutbound({
+      dest: "vultr",
+      offer: "cloud_gpu",
+      placement: location as "red_card" | "yellow_card" | "green_card",
+      pageType,
+      slug: postSlug,
+      verdict: status,
+    })
+
+    trackAffiliateClick({
+      partner: 'vultr',
+      status,
+      model,
+      vram,
+      location: location as AffiliateLocation,
+      postSlug
+    })
+  }, [status, model, vram, postSlug, pathname])
 
   const handleDowngrade = () => {
     // Always downgrade to 8B as the entry point
@@ -179,24 +260,22 @@ export default function RealityCheck() {
                 Local environments have limited isolation.
                 {" "}For long-term safety, use our{" "}
                 <a
+                  ref={gumroadSecurityRef}
                   href={LINK_KIT}
                   target="_blank"
                   rel="noopener noreferrer"
-                  data-umami-event="marketing_affiliate_click"
-                  data-umami-partner="gumroad"
-                  data-umami-placement="security_banner"
+                  onClick={() => handleGumroadClick('green_card')}
                   className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
                 >
                   Safe Config
                 </a>
                 {" "}or a{" "}
                 <a
+                  ref={vultrSecurityRef}
                   href={LINK_CLOUD}
                   target="_blank"
                   rel="noopener noreferrer"
-                  data-umami-event="marketing_affiliate_click"
-                  data-umami-partner="vultr"
-                  data-umami-placement="security_banner"
+                  onClick={() => handleVultrClick('green_card')}
                   className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
                 >
                   Cloud VPS
@@ -277,10 +356,11 @@ export default function RealityCheck() {
                   ⚠️ Hardware insufficient. Local deployment will fail.
                 </p>
                 <a
+                  ref={deepInfraRedCardRef}
                   href={LINK_API}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackDeepInfra('red_card')}
+                  onClick={() => handleDeepInfraClick('red_card')}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded transition-colors text-sm"
                 >
                   Get DeepInfra API <ExternalLink className="w-4 h-4" />

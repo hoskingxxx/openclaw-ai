@@ -1,6 +1,8 @@
 "use client"
 
+import { useRef } from "react"
 import { Package, Zap, ExternalLink } from "lucide-react"
+import { useRevenueOutbound, useCtaImpression } from "@/lib/use-tracking"
 
 // Gumroad 产品链接
 const GUMROAD_LINK = "https://hilda666888.gumroad.com/l/ymwwgm"
@@ -13,10 +15,29 @@ interface SurvivalKitPromoProps {
 }
 
 export function SurvivalKitPromo({ variant = "full", placement = "top" }: SurvivalKitPromoProps) {
+  const elementRef = useRef<HTMLDivElement>(null)
+
+  // Map placement to tracking types
+  const trackingPlacement: Placement = placement
+
+  // Track clicks
+  const handleClick = useRevenueOutbound({
+    dest: "gumroad",
+    offer: "survival_kit",
+    placement: trackingPlacement,
+  })
+
+  // Track impressions
+  useCtaImpression(elementRef, {
+    dest: "gumroad",
+    offer: "survival_kit",
+    placement: trackingPlacement,
+  })
+
   // Compact variant: Notice bar style (for article top)
   if (variant === "compact") {
     return (
-      <div className="my-4 border border-border rounded-lg bg-card h-[60px] sm:h-[70px] flex items-center justify-between px-4 gap-3">
+      <div ref={elementRef} className="my-4 border border-border rounded-lg bg-card h-[60px] sm:h-[70px] flex items-center justify-between px-4 gap-3">
         <h4 className="text-sm sm:text-base font-bold text-text-primary font-mono flex-1">
           System Prescription: Pre-configured DeepSeek R1 setup
         </h4>
@@ -24,8 +45,7 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
           href={GUMROAD_LINK}
           target="_blank"
           rel="noopener noreferrer"
-          data-umami-event="gumroad_kit_click"
-          data-umami-placement={placement}
+          onClick={handleClick}
           className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded transition-colors text-xs sm:text-sm flex-shrink-0"
         >
           Download Kit
@@ -36,7 +56,7 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
 
   // Full variant: Complete promo (for article bottom)
   return (
-    <div className="my-8 border border-amber-500/50 rounded-xl bg-gradient-to-br from-amber-50/10 to-orange-50/5 dark:from-amber-950/30 dark:to-orange-950/20 relative overflow-hidden">
+    <div ref={elementRef} className="my-8 border border-amber-500/50 rounded-xl bg-gradient-to-br from-amber-50/10 to-orange-50/5 dark:from-amber-950/30 dark:to-orange-950/20 relative overflow-hidden">
       {/* 左侧强调条 */}
       <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-amber-500 to-orange-500"></div>
 
@@ -67,8 +87,7 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
           href={GUMROAD_LINK}
           target="_blank"
           rel="noopener noreferrer"
-          data-umami-event="gumroad_kit_click"
-          data-umami-placement={placement}
+          onClick={handleClick}
           className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
         >
           <span>Download Survival Kit ($9.90)</span>
