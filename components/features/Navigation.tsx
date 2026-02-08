@@ -14,7 +14,7 @@ export function Navigation() {
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden pointer-events-none"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -62,7 +62,7 @@ export function Navigation() {
 
           {/* Mobile Navigation Menu */}
           {mobileMenuOpen && (
-            <div className="lg:hidden mt-4 pb-4 border-t border-white/10 pt-4 bg-background-primary rounded-lg">
+            <div className="lg:hidden mt-4 pb-4 border-t border-white/10 pt-4 bg-background-primary rounded-lg z-50 relative">
               <div className="flex flex-col gap-1">
                 {navLinks.map((item) => (
                   <Link
