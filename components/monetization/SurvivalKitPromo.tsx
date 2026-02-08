@@ -40,7 +40,7 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
       {/* 左侧强调条 */}
       <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-amber-500 to-orange-500"></div>
 
-      <div className="p-6 pl-8">
+      <div className="p-6">
         {/* 头部标识 */}
         <div className="flex items-center gap-2 mb-4">
           <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/20 dark:bg-amber-500/10 rounded-full border border-amber-500/30">
