@@ -243,11 +243,27 @@ export default async function BlogPostPage({
             </div>
           </header>
 
-          {post.slug === "hardware-requirements-reality-check" && (
-            <section className="px-4 sm:px-6 mb-8">
-              <RealityCheck />
-            </section>
-          )}
+          {/* Reality Check Calculator - Array Whitelist */}
+          {(() => {
+            // 工具页面白名单：只在这些页面显示 VRAM 计算器
+            const CALCULATOR_WHITELIST = [
+              "hardware-requirements-reality-check",  // 硬件需求页面
+              "openclaw-error-index",                  // 错误索引（包含硬件相关错误）
+            ] as const;
+
+            const shouldShow = CALCULATOR_WHITELIST.includes(post.slug as any);
+
+            // 调试日志（生产环境可移除）
+            if (typeof window !== "undefined") {
+              console.log("[RealityCheck] Current slug:", post.slug, "Show:", shouldShow);
+            }
+
+            return shouldShow ? (
+              <section className="px-4 sm:px-6 mb-8">
+                <RealityCheck />
+              </section>
+            ) : null;
+          })()}
 
           <section>
             <article
