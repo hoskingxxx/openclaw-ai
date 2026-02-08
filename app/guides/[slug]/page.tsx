@@ -272,11 +272,6 @@ export default async function BlogPostPage({
             />
           </section>
 
-          {/* Gumroad 推广 - 底部 (full) */}
-          <section className="px-4 sm:px-6 mb-8">
-            <SurvivalKitPromo variant="full" placement="bottom" />
-          </section>
-
           {post.slug !== "openclaw-error-index" && (
             <section className="px-4 sm:px-6 mt-12 pt-8 border-t border-white/10">
               <p className="text-xl font-semibold text-text-primary mb-2">
@@ -294,6 +289,11 @@ export default async function BlogPostPage({
               </Link>
             </section>
           )}
+
+          {/* Gumroad 推广 - 底部 (full) */}
+          <section className="px-4 sm:px-6 mb-8">
+            <SurvivalKitPromo variant="full" placement="bottom" />
+          </section>
         </ContentRail>
       </main>
 
