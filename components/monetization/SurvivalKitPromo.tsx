@@ -5,7 +5,7 @@ import { Package, Zap, ExternalLink } from "lucide-react"
 // Gumroad 产品链接
 const GUMROAD_LINK = "https://hilda666888.gumroad.com/l/ymwwgm"
 
-type Placement = "top" | "bottom" | "reality_check_yellow" | "reality_check_green"
+type Placement = "top" | "bottom" | "reality_check_yellow" | "reality_check_green" | "troubleshooting_bottom"
 
 interface SurvivalKitPromoProps {
   variant?: "full" | "compact"

@@ -3,6 +3,7 @@ import { Footer } from "@/components/features/Footer";
 import { ContentRail } from "@/components/features/ContentRail";
 import { ContentEdge } from "@/components/features/ContentEdge";
 import { Button } from "@/components/ui/Button";
+import { SurvivalKitPromo } from "@/components/monetization/SurvivalKitPromo";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -298,7 +299,7 @@ export default function TroubleshootingPage() {
                       <p className="text-xs text-text-tertiary mb-4 italic">{fix.hardwareContext}</p>
                     )}
 
-                    {/* THE TRAP - Affiliate CTA */}
+                    {/* THE TRAP - Hardware Limit Verdict */}
                     {fix.isTrap && (
                       <div className="mt-6 p-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-lg">
                         <h4 className="text-lg font-bold text-red-400 mb-3">💀 The Verdict: Hardware Limit</h4>
@@ -321,9 +322,9 @@ export default function TroubleshootingPage() {
                           data-umami-event="marketing_affiliate_click"
                           data-umami-partner="vultr"
                           data-umami-placement="low_vram_trap"
-                          className="inline-flex items-center gap-2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
+                          className="text-sm text-text-secondary hover:text-brand-primary transition-colors underline"
                         >
-                          Rent a GPU (~billable hourly rates) →
+                          Rent a GPU (Vultr) →
                         </a>
                       </div>
                     )}
@@ -353,31 +354,38 @@ export default function TroubleshootingPage() {
             </p>
           </section>
 
-          {/* Bottom CTA for Frustrated Debuggers */}
-          <div className="mt-16 mb-8 p-8 border border-orange-500/20 bg-orange-500/5 rounded-2xl text-center">
-            <h3 className="text-2xl font-bold tracking-tight text-text-primary mb-3">
+          {/* Bottom CTA for Frustrated Debuggers - Downgraded */}
+          <div className="mt-16 mb-8 text-center">
+            <h3 className="text-xl font-semibold text-text-primary mb-2">
               Still broken?
             </h3>
-              <p className="text-text-secondary mb-6 text-lg">
-                Stop debugging environment issues. Rent a clean Linux box and deploy in minutes.
-              </p>
-              <Button
-                variant="brand"
-                size="md"
-                href="https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=troubleshooting&utm_content=page_cta"
-                external
-                data-umami-event="marketing_affiliate_click"
-                data-umami-partner="vultr"
-                data-umami-placement="page_cta"
-              >
-                Deploy on Vultr (Limited Time Promotion) →
-              </Button>
-              <p className="mt-4 text-xs text-text-tertiary">
-                *Save 4+ hours of debugging for less than $0.10/hour.
-              </p>
+            <p className="text-text-secondary mb-3 text-sm">
+              Stop debugging environment issues. Rent a clean Linux box and deploy in minutes.
+            </p>
+            <a
+              href="https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=troubleshooting&utm_content=page_cta"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-umami-event="marketing_affiliate_click"
+              data-umami-partner="vultr"
+              data-umami-placement="page_cta"
+              className="text-sm text-text-secondary hover:text-brand-primary transition-colors underline"
+            >
+              Deploy on Vultr →
+            </a>
+            <p className="mt-3 text-xs text-text-tertiary">
+              *Save 4+ hours of debugging for less than $0.10/hour.
+            </p>
           </div>
 
         </div>
+          </ContentEdge>
+        </ContentRail>
+
+        {/* Survival Kit - Primary CTA */}
+        <ContentRail>
+          <ContentEdge>
+            <SurvivalKitPromo variant="full" placement="troubleshooting_bottom" />
           </ContentEdge>
         </ContentRail>
       </main>
