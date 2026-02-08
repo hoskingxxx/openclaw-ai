@@ -2,9 +2,9 @@
 
 import { useState, useCallback, useEffect, useRef } from "react"
 import { usePathname } from "next/navigation"
-import { AlertTriangle, ExternalLink, Cloud, Settings, Package, Shield, Cpu, Zap } from "lucide-react"
+import { AlertTriangle, ExternalLink, Settings, Shield, Zap } from "lucide-react"
 import { trackAffiliateClick, trackToolDowngrade } from "@/lib/tracking"
-import { ConversionButton } from "@/components/monetization/ConversionButton"
+import { SurvivalKitPromo } from "@/components/SurvivalKitPromo"
 
 // ============================================================================
 // GLOBAL AFFILIATE LINKS (HARDCODED)
@@ -268,135 +268,26 @@ export default function RealityCheck() {
             </p>
           </div>
 
-          {/* Mobile CTA Override or Desktop RED CTA */}
-          {isMobile ? (
-            <>
-              {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
-              <a
-                href={LINK_API}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackDeepInfra('mobile_override')}
-                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  <div className="flex-1">
-                    <div className="font-bold text-blue-900 dark:text-blue-100">
-                      Try on Phone
-                    </div>
-                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                      Run instantly via API. No setup.
-                    </div>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-              </a>
-
-              {/* Secondary: Gumroad */}
-              <a
-                href={LINK_KIT}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackGumroad('mobile_override')}
-                className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
-              >
-                <div className="flex items-center gap-2 text-sm">
-                  <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
-                </div>
-              </a>
-            </>
-          ) : (
-            <>
-              {/* Status Header */}
-              <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
-                <div className="flex items-center gap-2 text-red-900 dark:text-red-100 font-semibold">
-                  🔴 Cannot Run
-                </div>
-                <p className="text-sm text-red-700 dark:text-red-300 mt-1">
-                  Estimated VRAM requirement exceeds your hardware.
+          {/* API Alert Card - 唯一 CTA */}
+          <div className="border-2 border-red-500 rounded-lg bg-slate-900 dark:bg-slate-950 p-5">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-white font-semibold mb-3">
+                  ⚠️ Hardware insufficient. Local deployment will fail.
                 </p>
-              </div>
-
-              {/* Primary CTA: DeepInfra API - ALWAYS priority in RED */}
-              <a
-                href={LINK_API}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackDeepInfra('red_card')}
-                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-blue-500 rounded-lg">
-                    <Cloud className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-blue-900 dark:text-blue-100">
-                      Run Instantly for $1
-                    </div>
-                    <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                      Skip hardware limits. Cloud API access.
-                    </p>
-                    <div className="flex items-center gap-2 mt-2 text-sm font-medium text-blue-600 dark:text-blue-400">
-                      Get Started <ExternalLink className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              </a>
-
-              {/* Secondary CTA: Vultr Cloud GPU */}
-              <a
-                href={LINK_CLOUD}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackVultr('red_card')}
-                className="block p-4 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/20 hover:border-purple-400 hover:shadow-sm transition-all"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-purple-500 rounded-lg">
-                    <Cloud className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-purple-900 dark:text-purple-100">
-                      Rent High-Memory Cloud GPU
-                    </div>
-                    <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
-                      Get a private H100/A100 with full control.
-                    </p>
-                    <div className="flex items-center gap-2 mt-2 text-sm font-medium text-purple-600 dark:text-purple-400">
-                      Deploy Vultr <ExternalLink className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              </a>
-
-              {/* Fallback: Try Smaller Model (8B) */}
-              {canDowngradeTo8B && (
-                <button
-                  onClick={handleDowngrade}
-                  data-umami-event="tool_downgrade_click"
-                  data-umami-from={model}
-                  data-umami-to={ENTRY_MODEL}
-                  className="w-full p-4 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
+                <a
+                  href={LINK_API}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackDeepInfra('red_card')}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded transition-colors text-sm"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-orange-500 rounded-lg">
-                      <Zap className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-bold text-orange-900 dark:text-orange-100">
-                        Try Smaller Model (8B)
-                      </div>
-                      <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
-                        Your GPU cannot handle {MODELS[model].label}. Try {MODELS[ENTRY_MODEL].label}.
-                      </p>
-                    </div>
-                  </div>
-                </button>
-              )}
-            </>
-          )}
+                  Get DeepInfra API <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -415,105 +306,15 @@ export default function RealityCheck() {
             </p>
           </div>
 
-          {/* Mobile CTA Override or Desktop YELLOW CTA */}
-          {isMobile ? (
-            <>
-              {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
-              <a
-                href={LINK_API}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackDeepInfra('mobile_override')}
-                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  <div className="flex-1">
-                    <div className="font-bold text-blue-900 dark:text-blue-100">
-                      Try on Phone
-                    </div>
-                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                      Run instantly via API. No setup.
-                    </div>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-              </a>
+          {/* Analysis Passed 提示 */}
+          <div className="p-3 bg-green-500/10 border border-green-500/30 rounded text-sm">
+            <p className="text-green-400 font-mono">
+              ✅ Analysis Passed. Hardware is compatible.
+            </p>
+          </div>
 
-              {/* Secondary: Gumroad */}
-              <a
-                href={LINK_KIT}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackGumroad('mobile_override')}
-                className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
-              >
-                <div className="flex items-center gap-2 text-sm">
-                  <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
-                </div>
-              </a>
-            </>
-          ) : (
-            <>
-              {/* Primary CTA: Gumroad - ALWAYS priority in YELLOW */}
-              <a
-                href={LINK_KIT}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackGumroad('yellow_card')}
-                className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl shadow-lg">
-                    <Package className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-amber-900 dark:text-amber-100 flex items-center gap-2">
-                      Get Extreme Optimization Config ($9.90)
-                    </div>
-                    <p className="text-sm text-amber-800 dark:text-amber-200 mt-1 leading-relaxed">
-                      Production-ready templates for tight VRAM scenarios.
-                    </p>
-                    <div className="flex items-center gap-2 mt-3 text-sm font-bold text-amber-700 dark:text-amber-300">
-                      Download <ExternalLink className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              </a>
-
-              {/* Secondary CTA: DeepInfra API (Text Link) */}
-              <div className="text-center">
-                <a
-                  href={LINK_API}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackDeepInfra('yellow_card')}
-                  className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
-                >
-                  Or run smoothly via API <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-
-              {/* Fallback: Try Smaller Model (8B) */}
-              {canDowngradeTo8B && (
-                <button
-                  onClick={handleDowngrade}
-                  data-umami-event="tool_downgrade_click"
-                  data-umami-from={model}
-                  data-umami-to={ENTRY_MODEL}
-                  className="w-full p-3 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
-                >
-                  <div className="flex items-center gap-2 text-sm">
-                    <Zap className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-                    <span className="text-orange-900 dark:text-amber-100 font-medium">
-                      Try Smaller Model (8B)
-                    </span>
-                  </div>
-                </button>
-              )}
-            </>
-          )}
+          {/* Survival Kit Promo - 唯一 CTA */}
+          <SurvivalKitPromo context="reality_check" status="yellow" />
         </div>
       )}
 
@@ -535,45 +336,19 @@ export default function RealityCheck() {
           {/* Mobile CTA Override or Desktop GREEN CTA */}
           {isMobile ? (
             <>
-              {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
-              <a
-                href={LINK_API}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackDeepInfra('mobile_override')}
-                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  <div className="flex-1">
-                    <div className="font-bold text-blue-900 dark:text-blue-100">
-                      Try on Phone
-                    </div>
-                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                      Run instantly via API. No setup.
-                    </div>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-              </a>
+              {/* Analysis Passed 提示 */}
+              <div className="p-3 bg-green-500/10 border border-green-500/30 rounded text-sm">
+                <p className="text-green-400 font-mono">
+                  ✅ Analysis Passed. Hardware is compatible.
+                </p>
+              </div>
 
-              {/* Secondary: Gumroad */}
-              <a
-                href={LINK_KIT}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackGumroad('mobile_override')}
-                className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
-              >
-                <div className="flex items-center gap-2 text-sm">
-                  <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
-                </div>
-              </a>
+              {/* Survival Kit Promo - 唯一 CTA */}
+              <SurvivalKitPromo context="reality_check" status="green" />
             </>
           ) : (
             <>
-              {/* Trust Element: Recommended Settings (Gray background) */}
+              {/* Trust Element: Recommended Settings */}
               <div className="p-4 rounded-lg border border-border bg-muted/50">
                 <div className="flex items-center gap-2 font-bold text-text-primary mb-3">
                   <Settings className="w-4 h-4" />
@@ -595,52 +370,15 @@ export default function RealityCheck() {
                 </div>
               </div>
 
-              {/* Primary CTA: Gumroad - DOMINANT, ALWAYS priority in GREEN */}
-              <a
-                href={LINK_KIT}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackGumroad('green_card')}
-                className="block p-6 rounded-lg border-2 bg-gradient-to-br from-emerald-500 via-green-500 to-amber-500 hover:from-emerald-600 hover:via-green-600 hover:to-amber-600 text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl shadow-lg">
-                    <Package className="w-7 h-7 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-white flex items-center gap-2 text-lg">
-                      🚀 Download 1-Click Survival Kit ($9.90)
-                    </div>
-                    <p className="text-sm text-white/90 mt-2 leading-relaxed">
-                      Ready-to-use templates, monitoring, and prompts.
-                    </p>
-                    <div className="flex items-center gap-2 mt-4 text-base font-bold text-white">
-                      <ExternalLink className="w-5 h-5" />
-                      Get Instant Access
-                    </div>
-                  </div>
-                </div>
-              </a>
-
-              {/* Secondary CTA: DeepInfra API (Weak Text Link ONLY) */}
-              <div className="text-center">
-                <a
-                  href={LINK_API}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackDeepInfra('green_card')}
-                  className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
-                >
-                  Just want to test quickly? Try API. <ExternalLink className="w-3 h-3" />
-                </a>
+              {/* Analysis Passed 提示 */}
+              <div className="p-3 bg-green-500/10 border border-green-500/30 rounded text-sm">
+                <p className="text-green-400 font-mono">
+                  ✅ Analysis Passed. Hardware is compatible.
+                </p>
               </div>
 
-              {/* Footer: Buy Me a Coffee */}
-              <ConversionButton
-                location="tool_green"
-                copy="Your hardware is ready. If this tool saved you time, support the dev."
-                variant="compact"
-              />
+              {/* Survival Kit Promo - 唯一 CTA */}
+              <SurvivalKitPromo context="reality_check" status="green" />
             </>
           )}
         </div>
