@@ -125,7 +125,7 @@ export default function OOMPage() {
                     <p className="text-text-secondary">A used 3090 costs ~$800. That's <strong>1,600 hours</strong> of rental time. Will you actually use it that much?</p>
                   </div>
                   <a
-                    href="https://www.vultr.com/products/gpu/"
+                    href="https://www.vultr.com/?ref=9864821-9J"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-mono text-sm font-bold rounded-lg transition-colors mt-4"
@@ -388,7 +388,7 @@ you are valuing your time at minimum hourly rates.</code>
                   Still want local? Read Troubleshooting →
                 </Link>
                 <a
-                  href="https://www.vultr.com/products/gpu/"
+                  href="https://www.vultr.com/?ref=9864821-9J"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
