@@ -115,13 +115,17 @@ export default function FAQPage() {
         </ContentRail>
 
         {/* Next Step */}
-        <NextStepCard
-          icon="📖"
-          title="Read the DeepSeek R1 Guide"
-          description="Learn how to deploy OpenClaw with DeepSeek R1 locally without running into OOM errors."
-          href={FEATURED_POST_PATH}
-          linkText="Read the Guide"
-        />
+        <ContentRail>
+          <ContentEdge>
+            <NextStepCard
+              icon="📖"
+              title="Read the DeepSeek R1 Guide"
+              description="Learn how to deploy OpenClaw with DeepSeek R1 locally without running into OOM errors."
+              href={FEATURED_POST_PATH}
+              linkText="Read the Guide"
+            />
+          </ContentEdge>
+        </ContentRail>
       </main>
       <Footer />
     </>
