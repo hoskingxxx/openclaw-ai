@@ -36,7 +36,7 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
 
   // Full variant: Complete promo (for article bottom)
   return (
-    <div className="my-8 border-2 border-amber-500/50 rounded-xl bg-gradient-to-br from-amber-50/10 to-orange-50/5 dark:from-amber-950/30 dark:to-orange-950/20 relative overflow-hidden">
+    <div className="my-8 border border-amber-500/50 rounded-xl bg-gradient-to-br from-amber-50/10 to-orange-50/5 dark:from-amber-950/30 dark:to-orange-950/20 relative overflow-hidden">
       {/* 左侧强调条 */}
       <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-amber-500 to-orange-500"></div>
 
