@@ -108,11 +108,11 @@ export const faqs = [
       },
       {
         q: "Does it support DeepSeek API?",
-        a: "Yes. Set `LLM_PROVIDER=openai` and `BASE_URL=https://api.deepseek.com`.\n\nExample `.env`:\n```bash\nLLM_PROVIDER=\"openai\"\nLLM_BASE_URL=\"https://api.deepseek.com\"\nLLM_API_KEY=\"sk-your-key-here\"\nLLM_MODEL=\"deepseek-reasoner\"\n```\n\n👉 See our **[DeepSeek Config Guide for OpenClaw](/guides/how-to-use-deepseek-with-openclaw)** for full setup.",
+        a: "Yes. Set `LLM_PROVIDER=openai` and `BASE_URL=https://api.deepseek.com`.\n\nExample `.env`:\n```bash\nLLM_PROVIDER=\"openai\"\nLLM_BASE_URL=\"https://api.deepseek.com\"\nLLM_API_KEY=\"sk-your-key-here\"\nLLM_MODEL=\"deepseek-reasoner\"\n```\n\n👉 See our [DeepSeek Config Guide for OpenClaw](/guides/how-to-use-deepseek-with-openclaw) for full setup.",
       },
       {
         q: "Does it support local DeepSeek (Ollama)?",
-        a: "Yes. Use `provider: ollama`.\n\nExample setup:\n```bash\n# Install Ollama & pull model\ncurl -fsSL https://ollama.com/install.sh | sh\nollama run deepseek-r1:8b\n\n# Configure OpenClaw\nLLM_PROVIDER=\"ollama\"\nLLM_BASE_URL=\"http://localhost:11434/v1\"\nLLM_MODEL=\"deepseek-r1:8b\"\n```\n\n⚠️ Requires heavy hardware. See **[Hardware Reality Check](/guides/fix-openclaw-cuda-oom-errors)**.",
+        a: "Yes. Use `provider: ollama`.\n\nExample setup:\n```bash\n# Install Ollama & pull model\ncurl -fsSL https://ollama.com/install.sh | sh\nollama run deepseek-r1:8b\n\n# Configure OpenClaw\nLLM_PROVIDER=\"ollama\"\nLLM_BASE_URL=\"http://localhost:11434/v1\"\nLLM_MODEL=\"deepseek-r1:8b\"\n```\n\n⚠️ Requires heavy hardware. See [Hardware Reality Check](/guides/fix-openclaw-cuda-oom-errors).",
       },
       {
         q: "What is the relationship between OpenClaw and Ollama?",
@@ -137,7 +137,7 @@ export const faqs = [
       },
       {
         q: "Why am I getting JSON parsing errors?",
-        a: "DeepSeek R1 wraps responses in `` tags before the actual JSON. OpenClaw's JSON parser fails.\n\nError: `SyntaxError: Unexpected token <` (the model is 'thinking' out loud)\n\n👉 Fix it here: **[JSON Parsing Fix Guide](/guides/fix-openclaw-json-mode-errors)**.",
+        a: "DeepSeek R1 wraps responses in `` tags before the actual JSON. OpenClaw's JSON parser fails.\n\nError: `SyntaxError: Unexpected token <` (the model is 'thinking' out loud)\n\n👉 Fix it here: [JSON Parsing Fix Guide](/guides/fix-openclaw-json-mode-errors).",
       },
     ],
   },
@@ -146,7 +146,7 @@ export const faqs = [
     questions: [
       {
         q: "Is OpenClaw safe? How to prevent Prompt Injection?",
-        a: "OpenClaw has powerful capabilities but requires strict guardrails (containerization, permission limits, command blocking) to be safe.\n\nIf you wouldn't trust a junior intern with root access to this folder, don't trust the agent.\n\nReal incidents I've stopped:\n- Agent tried to `rm -rf .` to \"clean build artifacts\"\n- Agent attempted `curl unknown.sh | bash` because it needed a tool\n\nMitigation strategies:\n- Run in Docker container with read-only filesystem\n- Use dedicated device (Mac Mini, cheap server)\n- Block dangerous commands (rm, format, dd, etc.)\n- Review every execution log\n\n👉 Read the full autopsy: **[CVE-2026-25253 Analysis](/guides/openclaw-security-rce-cve-2026-25253)**.",
+        a: "OpenClaw has powerful capabilities but requires strict guardrails (containerization, permission limits, command blocking) to be safe.\n\nIf you wouldn't trust a junior intern with root access to this folder, don't trust the agent.\n\nReal incidents I've stopped:\n- Agent tried to `rm -rf .` to \"clean build artifacts\"\n- Agent attempted `curl unknown.sh | bash` because it needed a tool\n\nMitigation strategies:\n- Run in Docker container with read-only filesystem\n- Use dedicated device (Mac Mini, cheap server)\n- Block dangerous commands (rm, format, dd, etc.)\n- Review every execution log\n\n👉 Read the full autopsy: [CVE-2026-25253 Analysis](/guides/openclaw-security-rce-cve-2026-25253).",
       },
       {
         q: "Will it 'go rogue'?",
