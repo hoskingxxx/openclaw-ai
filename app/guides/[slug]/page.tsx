@@ -7,6 +7,7 @@ import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SE
 import RealityCheck from "@/components/RealityCheck";
 import { HashScrollFix } from "@/components/HashScrollFix";
 import { GratitudeCard } from "@/components/monetization/GratitudeCard";
+import { SurvivalKitPromo } from "@/components/monetization/SurvivalKitPromo";
 import { FloatingCoffeeWidget } from "@/components/monetization/FloatingCoffeeWidget";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -265,6 +266,11 @@ export default async function BlogPostPage({
             ) : null;
           })()}
 
+          {/* Gumroad 推广 - 顶部 */}
+          <section className="px-4 sm:px-6 mb-8">
+            <SurvivalKitPromo placement="top" />
+          </section>
+
           <section>
             <article
               className="glass-card w-full p-6 prose prose-invert prose-sm md:prose-base prose-max-w-none break-words"
@@ -275,6 +281,11 @@ export default async function BlogPostPage({
 
           {/* Gratitude Card - Primary conversion point */}
           <GratitudeCard />
+
+          {/* Gumroad 推广 - 底部 */}
+          <section className="px-4 sm:px-6 mb-8">
+            <SurvivalKitPromo placement="bottom" />
+          </section>
 
           {post.slug !== "openclaw-error-index" && (
             <section className="px-4 sm:px-6 mt-12 pt-8 border-t border-white/10">
