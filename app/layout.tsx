@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     siteName: "OpenClaw Hub",
     images: [
       {
-        url: "/og-image.png",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "OpenClaw Hub",
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Running DeepSeek R1 Locally: The Unofficial OpenClaw Guide",
     description: "Stop debugging DeepSeek R1 crashes. This battle-tested OpenClaw guide explains CUDA OOM errors, VRAM limits, and the fastest fixes that actually work.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
 
   // Robots

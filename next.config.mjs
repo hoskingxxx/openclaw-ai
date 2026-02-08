@@ -8,9 +8,27 @@ const nextConfig = {
   // 301 重定向
   async redirects() {
     return [
+      // 旧博客路径 → 新指南路径
       {
         source: '/blog/:slug*',
         destination: '/guides/:slug*',
+        permanent: true,
+      },
+      // 已删除页面重定向
+      {
+        source: '/use-cases',
+        destination: '/resources',
+        permanent: true,
+      },
+      // 旧文章 slug 重定向
+      {
+        source: '/guides/openclaw-oom-fix',
+        destination: '/guides/fix-openclaw-cuda-oom-errors',
+        permanent: true,
+      },
+      {
+        source: '/guides/deepseek-r1-optimization',
+        destination: '/guides/fix-openclaw-slow-inference',
         permanent: true,
       },
     ];
