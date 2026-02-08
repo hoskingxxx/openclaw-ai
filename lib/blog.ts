@@ -102,8 +102,8 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "fix-openclaw-spawn-npm-enoent-windows",
     canonicalPath: createCanonicalPath("fix-openclaw-spawn-npm-enoent-windows"),
-    title: "Fix 'Failed to start CLI: Error: spawn npm ENOENT' on Windows",
-    description: "Can't install plugins on Windows? Here is the manual fix and the Node LTS solution.",
+    title: "Fix 'spawn npm ENOENT' Error on Windows (OpenClaw Guide)",
+    description: "The definitive fix for npm error code enoent on Windows. Stop fighting your PATH. Includes a strict Stop Rule for when to switch to Cloud.",
     date: "2026-02-04",
     author: "LazyDev",
     tags: ["Troubleshooting", "Windows", "Node.js", "Environment"],
@@ -162,8 +162,8 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "fix-openclaw-package-json-missing-openclaw-extensions",
     canonicalPath: createCanonicalPath("fix-openclaw-package-json-missing-openclaw-extensions"),
-    title: "Fix 'package.json missing openclaw.extensions' error",
-    description: "Plugin install failed? Use the unified channels package instead.",
+    title: "[Solved] Fix 'package.json missing' in OpenClaw (Extension Error)",
+    description: "Getting 'bundled chrome extension is missing'? Here is the 1-minute fix. If this fails, download our Survival Kit to skip the setup.",
     date: "2026-02-04",
     author: "LazyDev",
     tags: ["Troubleshooting", "Plugins"],
