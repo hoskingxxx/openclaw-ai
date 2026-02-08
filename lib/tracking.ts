@@ -24,8 +24,11 @@ export interface VultrClickEvent extends Record<string, unknown> {
 export interface AffiliateClickEvent extends Record<string, unknown> {
   page_path: string;
   post_slug?: string;
-  source: string;
-  verdict?: "green" | "yellow" | "red" | "unsafe";
+  partner: "gumroad" | "deepinfra" | "vultr";
+  status: "red" | "yellow" | "green";
+  model: string;
+  vram: string;
+  location: "red_card" | "yellow_card" | "green_card" | "mobile_override";
 }
 
 export interface ProductClickEvent extends Record<string, unknown> {
@@ -67,20 +70,26 @@ export function trackVultrClick(params: {
  * Track generic affiliate click (DeepInfra, Vultr new link, etc.)
  */
 export function trackAffiliateClick(params: {
-  source: string;
-  verdict?: "green" | "yellow" | "red" | "unsafe";
+  partner: "gumroad" | "deepinfra" | "vultr";
+  status: "red" | "yellow" | "green";
+  model: string;
+  vram: string;
+  location: "red_card" | "yellow_card" | "green_card" | "mobile_override";
   postSlug?: string;
 }): void {
   if (typeof window === "undefined") return;
 
-  const { source, verdict, postSlug } = params;
+  const { partner, status, model, vram, location, postSlug } = params;
   const page_path = window.location.pathname;
 
   const eventData: AffiliateClickEvent = {
     page_path,
     post_slug: postSlug,
-    source,
-    ...(verdict && { verdict }),
+    partner,
+    status,
+    model,
+    vram,
+    location,
   };
 
   trackEvent("affiliate_click", eventData);

@@ -98,23 +98,7 @@ function calculateStatus(requiredVRAM: number, userVRAM: number): Status {
 // TRACKING HANDLERS (Strict Schema)
 // ============================================================================
 
-interface AffiliateTrackParams {
-  partner: 'gumroad' | 'deepinfra' | 'vultr'
-  location: 'red_card' | 'yellow_card' | 'green_card' | 'mobile_override'
-  model: ModelId
-  vram: VRAMId
-  status: Status
-  postSlug: string
-}
-
-function trackAffiliateClickStrict(params: AffiliateTrackParams) {
-  // Send unified tracking event
-  trackAffiliateClick({
-    source: `tool_${params.partner}_${params.location}`,
-    verdict: params.status,
-    postSlug: params.postSlug,
-  })
-}
+type AffiliateLocation = 'red_card' | 'yellow_card' | 'green_card' | 'mobile_override'
 
 // ============================================================================
 // COMPONENT
@@ -148,17 +132,17 @@ export function VramCalculator() {
   // Show security banner? (Independent layer, does NOT affect status)
   const showSecurityBanner = environment === "windows" || environment === "macos"
 
-  // Tracking helpers
-  const trackGumroad = (location: AffiliateTrackParams['location']) => {
-    trackAffiliateClickStrict({ partner: 'gumroad', location, model, vram, status, postSlug })
+  // Tracking helpers - explicitly call trackEvent with all properties
+  const trackGumroad = (location: AffiliateLocation) => {
+    trackAffiliateClick({ partner: 'gumroad', status, model, vram, location, postSlug })
   }
 
-  const trackDeepInfra = (location: AffiliateTrackParams['location']) => {
-    trackAffiliateClickStrict({ partner: 'deepinfra', location, model, vram, status, postSlug })
+  const trackDeepInfra = (location: AffiliateLocation) => {
+    trackAffiliateClick({ partner: 'deepinfra', status, model, vram, location, postSlug })
   }
 
-  const trackVultr = (location: AffiliateTrackParams['location']) => {
-    trackAffiliateClickStrict({ partner: 'vultr', location, model, vram, status, postSlug })
+  const trackVultr = (location: AffiliateLocation) => {
+    trackAffiliateClick({ partner: 'vultr', status, model, vram, location, postSlug })
   }
 
   const handleDowngrade = () => {
@@ -287,12 +271,6 @@ export function VramCalculator() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackDeepInfra('mobile_override')}
-                data-umami-event="affiliate_click"
-                data-umami-partner="deepinfra"
-                data-umami-location="mobile_override"
-                data-umami-model={model}
-                data-umami-vram={vram}
-                data-umami-status={status}
                 className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
               >
                 <div className="flex items-center gap-3">
@@ -315,12 +293,6 @@ export function VramCalculator() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackGumroad('mobile_override')}
-                data-umami-event="affiliate_click"
-                data-umami-partner="gumroad"
-                data-umami-location="mobile_override"
-                data-umami-model={model}
-                data-umami-vram={vram}
-                data-umami-status={status}
                 className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
               >
                 <div className="flex items-center gap-2 text-sm">
@@ -348,12 +320,6 @@ export function VramCalculator() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackDeepInfra('red_card')}
-            data-umami-event="affiliate_click"
-            data-umami-partner="deepinfra"
-            data-umami-location="red_card"
-            data-umami-model={model}
-            data-umami-vram={vram}
-            data-umami-status={status}
             className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
           >
             <div className="flex items-start gap-3">
@@ -380,12 +346,6 @@ export function VramCalculator() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackVultr('red_card')}
-            data-umami-event="affiliate_click"
-            data-umami-partner="vultr"
-            data-umami-location="red_card"
-            data-umami-model={model}
-            data-umami-vram={vram}
-            data-umami-status={status}
             className="block p-4 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/20 hover:border-purple-400 hover:shadow-sm transition-all"
           >
             <div className="flex items-start gap-3">
@@ -460,12 +420,6 @@ export function VramCalculator() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackDeepInfra('mobile_override')}
-                data-umami-event="affiliate_click"
-                data-umami-partner="deepinfra"
-                data-umami-location="mobile_override"
-                data-umami-model={model}
-                data-umami-vram={vram}
-                data-umami-status={status}
                 className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
               >
                 <div className="flex items-center gap-3">
@@ -488,12 +442,6 @@ export function VramCalculator() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackGumroad('mobile_override')}
-                data-umami-event="affiliate_click"
-                data-umami-partner="gumroad"
-                data-umami-location="mobile_override"
-                data-umami-model={model}
-                data-umami-vram={vram}
-                data-umami-status={status}
                 className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
               >
                 <div className="flex items-center gap-2 text-sm">
@@ -510,12 +458,6 @@ export function VramCalculator() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackGumroad('yellow_card')}
-                data-umami-event="affiliate_click"
-                data-umami-partner="gumroad"
-                data-umami-location="yellow_card"
-                data-umami-model={model}
-                data-umami-vram={vram}
-                data-umami-status={status}
                 className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
               >
                 <div className="flex items-start gap-4">
@@ -543,12 +485,6 @@ export function VramCalculator() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackDeepInfra('yellow_card')}
-                  data-umami-event="affiliate_click"
-                  data-umami-partner="deepinfra"
-                  data-umami-location="yellow_card"
-                  data-umami-model={model}
-                  data-umami-vram={vram}
-                  data-umami-status={status}
                   className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
                 >
                   Or run smoothly via API <ExternalLink className="w-3 h-3" />
@@ -601,12 +537,6 @@ export function VramCalculator() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackDeepInfra('mobile_override')}
-                data-umami-event="affiliate_click"
-                data-umami-partner="deepinfra"
-                data-umami-location="mobile_override"
-                data-umami-model={model}
-                data-umami-vram={vram}
-                data-umami-status={status}
                 className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
               >
                 <div className="flex items-center gap-3">
@@ -629,12 +559,6 @@ export function VramCalculator() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackGumroad('mobile_override')}
-                data-umami-event="affiliate_click"
-                data-umami-partner="gumroad"
-                data-umami-location="mobile_override"
-                data-umami-model={model}
-                data-umami-vram={vram}
-                data-umami-status={status}
                 className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
               >
                 <div className="flex items-center gap-2 text-sm">
@@ -673,12 +597,6 @@ export function VramCalculator() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackGumroad('green_card')}
-                data-umami-event="affiliate_click"
-                data-umami-partner="gumroad"
-                data-umami-location="green_card"
-                data-umami-model={model}
-                data-umami-vram={vram}
-                data-umami-status={status}
                 className="block p-6 rounded-lg border-2 bg-gradient-to-br from-emerald-500 via-green-500 to-amber-500 hover:from-emerald-600 hover:via-green-600 hover:to-amber-600 text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all"
               >
                 <div className="flex items-start gap-4">
@@ -707,12 +625,6 @@ export function VramCalculator() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackDeepInfra('green_card')}
-                  data-umami-event="affiliate_click"
-                  data-umami-partner="deepinfra"
-                  data-umami-location="green_card"
-                  data-umami-model={model}
-                  data-umami-vram={vram}
-                  data-umami-status={status}
                   className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
                 >
                   Just want to test quickly? Try API. <ExternalLink className="w-3 h-3" />
