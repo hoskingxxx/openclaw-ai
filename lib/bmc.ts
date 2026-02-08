@@ -7,6 +7,7 @@ const BMC_BASE_URL = "https://buymeacoffee.com/openclaw";
 export type BMCSource =
   | "navbar"
   | "article-footer"
+  | "footer"
   | "floating-widget"
   | "reality-check"
   | "error-index";

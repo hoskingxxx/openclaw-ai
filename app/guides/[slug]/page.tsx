@@ -6,9 +6,7 @@ import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
 import RealityCheck from "@/components/RealityCheck";
 import { HashScrollFix } from "@/components/HashScrollFix";
-import { GratitudeCard } from "@/components/monetization/GratitudeCard";
 import { SurvivalKitPromo } from "@/components/monetization/SurvivalKitPromo";
-import { FloatingCoffeeWidget } from "@/components/monetization/FloatingCoffeeWidget";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -284,9 +282,6 @@ export default async function BlogPostPage({
             <SurvivalKitPromo variant="full" placement="bottom" />
           </section>
 
-          {/* Gratitude Card - 移到最后 */}
-          <GratitudeCard />
-
           {post.slug !== "openclaw-error-index" && (
             <section className="px-4 sm:px-6 mt-12 pt-8 border-t border-white/10">
               <p className="text-xl font-semibold text-text-primary mb-2">
@@ -308,9 +303,6 @@ export default async function BlogPostPage({
       </main>
 
       <Footer />
-
-      {/* Floating Coffee Widget - Desktop only */}
-      <FloatingCoffeeWidget />
 
       <ArticleStructuredData
         title={post.title}

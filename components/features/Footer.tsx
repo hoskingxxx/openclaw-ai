@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Coffee } from "lucide-react";
 import { siteConfig, footerLinks, socialIcons } from "@/lib/site-config";
+import { getBMCLink } from "@/lib/bmc";
 
 export function Footer() {
   return (
@@ -63,6 +65,16 @@ export function Footer() {
           <p className="text-sm text-text-tertiary">
             {siteConfig.copyright}
           </p>
+          <a
+            href={getBMCLink("footer")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs text-text-tertiary hover:text-brand-primary transition-colors"
+            data-cta="bmc-footer"
+          >
+            <Coffee className="w-3 h-3" />
+            Buy me a coffee
+          </a>
         </div>
       </div>
     </footer>
