@@ -11,14 +11,6 @@ export function Navigation() {
 
   return (
     <>
-      {/* Mobile Overlay */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden pointer-events-none"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
-
       <nav className="md:sticky md:top-0 z-50 w-full border-b border-white/5 bg-background-primary/70 backdrop-blur-lg supports-[backdrop-filter]:bg-background-primary/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 md:py-4">
           <div className="flex items-center justify-between">
@@ -78,6 +70,14 @@ export function Navigation() {
             </div>
           )}
         </div>
+
+        {/* Mobile Overlay - 只覆盖导航栏下方的内容 */}
+        {mobileMenuOpen && (
+          <div
+            className="fixed left-0 right-0 bottom-0 top-[73px] bg-black/50 z-40 lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
       </nav>
     </>
   );
