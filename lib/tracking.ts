@@ -392,6 +392,11 @@ export function trackToolDowngrade(params: {
  * Internal tracking helper
  */
 function trackEvent(eventName: string, data: Record<string, unknown>): void {
+  // DEV: Log payload for verification
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[Umami] ${eventName}`, data);
+  }
+
   const umami = window.umami;
   if (umami) {
     try {
