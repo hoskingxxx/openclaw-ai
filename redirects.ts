@@ -68,4 +68,19 @@ export default {
 
   // If someone tries to access a guide-like URL without /guides/ prefix
   // This is handled by Next.js dynamic routing, but listing for clarity
+
+  // ============================================================================
+  // GSC 404 CLEANUP (2026-02-09 export)
+  // ============================================================================
+
+  // Old opengraph image path
+  "/og-image.png": "/opengraph-image",
+
+  // Old guide URLs
+  "/guides/deepseek-r1-optimization": "/guides/how-to-use-deepseek-with-openclaw",
+  "/guides/openclaw-oom-fix": "/guides/fix-openclaw-cuda-oom-errors",
+
+  // Old pages
+  "/use-cases": "/resources",
+  "/404": "/guides/openclaw-error-index",
 } as const;

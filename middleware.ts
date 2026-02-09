@@ -5,6 +5,11 @@ import redirects from "./redirects"
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
+  // 410 Gone - garbage paths that should never exist
+  if (pathname === "/home/node/.openclaw") {
+    return new NextResponse("Gone", { status: 410 })
+  }
+
   // Check if path matches any redirect rule
   const targetUrl = redirects[pathname as keyof typeof redirects]
 
