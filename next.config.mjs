@@ -28,24 +28,19 @@ const nextConfig = {
       },
       {
         source: '/guides/deepseek-r1-optimization',
-        destination: '/guides/fix-openclaw-slow-inference',
+        destination: '/guides/how-to-use-deepseek-with-openclaw',
         permanent: true,
       },
-      // GSC 404 fixes: favicon 和 OG image 别名
-      {
-        source: '/favicon.ico',
-        destination: '/icon',
-        permanent: true,
-      },
+      // GSC 404 fixes: OG image 别名
       {
         source: '/og-image.png',
         destination: '/opengraph-image',
         permanent: true,
       },
-      // 404 页面本身不应作为 URL 访问
+      // 404 页面 → 错误索引
       {
         source: '/404',
-        destination: '/',
+        destination: '/guides/openclaw-error-index',
         permanent: true,
       },
     ];
