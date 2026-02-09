@@ -5,6 +5,7 @@
  * Canonical Events:
  * - revenue_outbound: All revenue-related outbound clicks
  * - cta_impression: CTA enters viewport (once per pageview)
+ * - cta_click: CTA click tracking
  *
  * Legacy Events (Deprecated - kept for backward compatibility):
  * - vultr_click: Use revenue_outbound instead
@@ -78,85 +79,193 @@ export type Placement =
   | "mobile_override";
 
 /**
- * Destination platform
+ * Destination platform (legacy - kept for backward compatibility)
  */
 export type Dest = "gumroad" | "bmac" | "vultr" | "deepinfra";
 
 /**
- * Offer type
+ * Offer type (legacy - kept for backward compatibility)
  */
 export type Offer = "survival_kit" | "coffee" | "cloud_gpu" | "api_fallback";
+
+// ============================================================================
+// P1 Data Quality - New Property Types
+// ============================================================================
+
+/**
+ * CTA position - standardized across all CTA events
+ */
+export type CtaPosition = "top" | "mid" | "bottom" | "inline";
+
+/**
+ * User intent - why they're seeing this CTA
+ */
+export type Intent = "stuck" | "evaluate" | "escape";
+
+/**
+ * Context - what problem domain they're in
+ */
+export type Context = "windows" | "hardware" | "json" | "docker" | "security";
+
+/**
+ * CTA verdict - simplified for CTA events (no yellow/unsafe)
+ */
+export type CtaVerdict = "red" | "green" | "unknown";
+
+/**
+ * Destination type - platform classification
+ */
+export type DestType = "gumroad" | "vultr" | "api";
+
+/**
+ * Revenue offer - semantic offer type
+ */
+export type RevenueOffer = "fix_now" | "escape_local" | "try_api";
+
+// ============================================================================
+// Event Interfaces (v1.0 + P1 Enrichment)
+// ============================================================================
 
 /**
  * revenue_outbound event data
  * Triggered on every outbound revenue-related click
+ *
+ * P1: Added dest_type, dest_id, and offer (RevenueOffer) for better attribution
  */
 export interface RevenueOutboundEvent extends Record<string, unknown> {
-  dest: Dest;
-  offer: Offer;
+  // Legacy properties (kept for backward compatibility)
+  dest?: Dest;
+  offer?: Offer;
   placement: Placement;
   page_type: PageType;
   slug?: string;
   verdict?: Verdict;
-  path?: string;
+  path: string;
+
+  // P1: New attribution properties
+  dest_type?: DestType;
+  dest_id?: string;
+  offer_revenue?: RevenueOffer;
+
+  // P1: CTA properties
+  cta_id?: string;
+  cta_position?: CtaPosition;
+  intent?: Intent;
+  context?: Context;
 }
 
 /**
  * cta_impression event data
  * Triggered when a revenue-related CTA enters the viewport
  * Fires once per pageview per placement
+ *
+ * P1: Added cta_id, cta_position, intent, context, verdict
  */
 export interface CtaImpressionEvent extends Record<string, unknown> {
-  dest: Dest;
-  offer: Offer;
+  // Legacy properties (kept for backward compatibility)
+  dest?: Dest;
+  offer?: Offer;
   placement: Placement;
   page_type: PageType;
   slug?: string;
   verdict?: Verdict;
-  path?: string;
+  path: string;
+
+  // P1: CTA properties (optional for backward compatibility)
+  cta_id?: string;
+  cta_position?: CtaPosition;
+  intent?: Intent;
+  context?: Context;
+}
+
+/**
+ * cta_click event data
+ * Triggered when any CTA is clicked
+ *
+ * P1: New canonical event
+ */
+export interface CtaClickEvent extends Record<string, unknown> {
+  // Core properties
+  path: string;
+  cta_id: string;
+  cta_position: CtaPosition;
+  intent: Intent;
+  context: Context;
+  verdict: CtaVerdict;
+  page_type: PageType;
+  slug?: string;
+
+  // Optional: revenue context
+  dest_type?: DestType;
+  dest_id?: string;
+  offer?: RevenueOffer;
 }
 
 /**
  * reality_check_impression event data
  * Triggered when Reality Check component is mounted/visible
  * Fires once per pageview
+ *
+ * Unchanged - path property only
  */
 export interface RealityCheckImpressionEvent extends Record<string, unknown> {
   page_type: PageType;
   slug?: string;
-  initial_model: string; // "1.5b" | "8b" | "14b" | "32b" | "70b" | "671b"
-  initial_vram: string; // "4-6gb" | "8gb" | "12gb" | "16gb" | "24gb" | "48gb"
+  initial_model: string;
+  initial_vram: string;
   initial_status: Verdict;
-  path?: string;
+  path: string;
 }
 
 // ============================================================================
-// Canonical Tracking Functions (v1.0)
+// Canonical Tracking Functions (v1.0 + P1 Enrichment)
 // ============================================================================
 
 /**
  * Track revenue outbound click (canonical event)
  * Use this for ALL revenue-related outbound clicks
+ *
+ * P1: Added dest_type, dest_id, offer (RevenueOffer), and optional CTA properties
  */
 export function trackRevenueOutbound(params: {
-  dest: Dest;
-  offer: Offer;
+  // Legacy parameters (kept for backward compatibility)
+  dest?: Dest;
+  offer?: Offer;
   placement: Placement;
   pageType: PageType;
   slug?: string;
   verdict?: Verdict;
-  path?: string;
+  path: string;
+
+  // P1: New parameters (optional for backward compatibility)
+  dest_type?: DestType;
+  dest_id?: string;
+  offer_revenue?: RevenueOffer;
+  cta_id?: string;
+  cta_position?: CtaPosition;
+  intent?: Intent;
+  context?: Context;
 }): void {
   if (typeof window === "undefined") return;
 
   const eventData: RevenueOutboundEvent = {
-    dest: params.dest,
-    offer: params.offer,
+    // Legacy
+    ...(params.dest && { dest: params.dest }),
+    ...(params.offer && { offer: params.offer }),
     placement: params.placement,
     page_type: params.pageType,
     ...(params.slug && { slug: params.slug }),
     ...(params.verdict && { verdict: params.verdict }),
     path: params.path,
+
+    // P1: New (optional)
+    ...(params.dest_type && { dest_type: params.dest_type }),
+    ...(params.dest_id && { dest_id: params.dest_id }),
+    ...(params.offer_revenue && { offer_revenue: params.offer_revenue }),
+    ...(params.cta_id && { cta_id: params.cta_id }),
+    ...(params.cta_position && { cta_position: params.cta_position }),
+    ...(params.intent && { intent: params.intent }),
+    ...(params.context && { context: params.context }),
   };
 
   trackEvent("revenue_outbound", eventData);
@@ -165,15 +274,24 @@ export function trackRevenueOutbound(params: {
 /**
  * Track CTA impression (canonical event)
  * Use IntersectionObserver, fire once per pageview
+ *
+ * P1: Added cta_id, cta_position, intent, context
  */
 export function trackCtaImpression(params: {
-  dest: Dest;
-  offer: Offer;
+  // Legacy parameters (kept for backward compatibility)
+  dest?: Dest;
+  offer?: Offer;
   placement: Placement;
   pageType: PageType;
   slug?: string;
   verdict?: Verdict;
-  path?: string;
+  path: string;
+
+  // P1: New parameters (optional for backward compatibility)
+  cta_id?: string;
+  cta_position?: CtaPosition;
+  intent?: Intent;
+  context?: Context;
 }): void {
   if (typeof window === "undefined") return;
 
@@ -187,16 +305,60 @@ export function trackCtaImpression(params: {
   sessionStorage.setItem(sessionKey, "1");
 
   const eventData: CtaImpressionEvent = {
-    dest: params.dest,
-    offer: params.offer,
+    // Legacy
+    ...(params.dest && { dest: params.dest }),
+    ...(params.offer && { offer: params.offer }),
     placement: params.placement,
     page_type: params.pageType,
     ...(params.slug && { slug: params.slug }),
     ...(params.verdict && { verdict: params.verdict }),
     path: params.path,
+
+    // P1: New (optional)
+    ...(params.cta_id && { cta_id: params.cta_id }),
+    ...(params.cta_position && { cta_position: params.cta_position }),
+    ...(params.intent && { intent: params.intent }),
+    ...(params.context && { context: params.context }),
   };
 
   trackEvent("cta_impression", eventData);
+}
+
+/**
+ * Track CTA click (canonical event)
+ *
+ * P1: New canonical event
+ */
+export function trackCtaClick(params: {
+  path: string;
+  cta_id: string;
+  cta_position: CtaPosition;
+  intent: Intent;
+  context: Context;
+  verdict: CtaVerdict;
+  pageType: PageType;
+  slug?: string;
+  dest_type?: DestType;
+  dest_id?: string;
+  offer?: RevenueOffer;
+}): void {
+  if (typeof window === "undefined") return;
+
+  const eventData: CtaClickEvent = {
+    path: params.path,
+    cta_id: params.cta_id,
+    cta_position: params.cta_position,
+    intent: params.intent,
+    context: params.context,
+    verdict: params.verdict,
+    page_type: params.pageType,
+    ...(params.slug && { slug: params.slug }),
+    ...(params.dest_type && { dest_type: params.dest_type }),
+    ...(params.dest_id && { dest_id: params.dest_id }),
+    ...(params.offer && { offer: params.offer }),
+  };
+
+  trackEvent("cta_click", eventData);
 }
 
 /**
@@ -213,14 +375,16 @@ export function resetCtaImpressions(): void {
 /**
  * Track Reality Check impression (canonical event)
  * Fires once per pageview when Reality Check component is mounted
+ *
+ * Unchanged - only path property enforced
  */
 export function trackRealityCheckImpression(params: {
   pageType: PageType;
   slug?: string;
-  initialModel: string; // "1.5b" | "8b" | "14b" | "32b" | "70b" | "671b"
-  initialVram: string; // "4-6gb" | "8gb" | "12gb" | "16gb" | "24gb" | "48gb"
+  initialModel: string;
+  initialVram: string;
   initialStatus: Verdict;
-  path?: string;
+  path: string;
 }): void {
   if (typeof window === "undefined") return;
 
@@ -291,7 +455,7 @@ export function trackVultrClick(params: {
 export interface AffiliateClickEvent extends Record<string, unknown> {
   page_path: string;
   post_slug?: string;
-  partner: "vultr"; // Gumroad removed per spec v1.0
+  partner: "vultr";
   status: "red" | "yellow" | "green";
   model: string;
   vram: string;
@@ -305,7 +469,7 @@ export interface AffiliateClickEvent extends Record<string, unknown> {
  * DO NOT use for Gumroad
  */
 export function trackAffiliateClick(params: {
-  partner: "vultr"; // Gumroad removed - use trackRevenueOutbound
+  partner: "vultr";
   status: "red" | "yellow" | "green";
   model: string;
   vram: string;
