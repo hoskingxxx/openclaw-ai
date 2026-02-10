@@ -99,7 +99,7 @@ export function JetBrainsSurvivalKitCTA() {
         <span>Buy Clarity — $9.90</span>
       </a>
       <p className="text-sm text-text-secondary mt-4">
-        Buy Clarity — $9.90
+        Includes JetBrains/Cursor red-line rules and stop conditions. Not a fix.
       </p>
     </div>
   )
