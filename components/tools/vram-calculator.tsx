@@ -709,16 +709,16 @@ export function R1PreflightCheck() {
                 <span>Bookmark This Page</span>
               </button>
 
-              {/* Secondary: Cloud GPU (text link only) */}
+              {/* Secondary: Example Cloud Option (text link only) */}
               <div className="text-center">
                 <a
-                  href={LINK_CLOUD}
+                  href={LINK_API}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => handleVultrClick('green_card')}
+                  onClick={() => handleDeepInfraClick('green_card')}
                   className="text-sm text-text-secondary hover:text-brand-primary transition-colors"
                 >
-                  Or use Cloud GPU <ExternalLink className="w-3 h-3 inline" />
+                  Example Cloud Option: DeepInfra (no affiliation) <ExternalLink className="w-3 h-3 inline" />
                 </a>
               </div>
             </>
@@ -761,16 +761,16 @@ export function R1PreflightCheck() {
                 </div>
               </div>
 
-              {/* Secondary: Cloud GPU (text link only) */}
+              {/* Secondary: Example Cloud Option (text link only) */}
               <div className="text-center">
                 <a
-                  href={LINK_CLOUD}
+                  href={LINK_API}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => handleVultrClick('green_card')}
+                  onClick={() => handleDeepInfraClick('green_card')}
                   className="text-sm text-text-secondary hover:text-brand-primary transition-colors"
                 >
-                  Or use Cloud GPU <ExternalLink className="w-3 h-3 inline" />
+                  Example Cloud Option: DeepInfra (no affiliation) <ExternalLink className="w-3 h-3 inline" />
                 </a>
               </div>
 
