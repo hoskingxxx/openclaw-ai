@@ -1,6 +1,6 @@
 ---
 title: "Fix DeepSeek R1 </think> Tag Error in JetBrains / Continue Plugin"
-date: 2026-02-09
+date: "2026-02-09"
 description: "Continue plugin shows 'JSON parsing failed' when using DeepSeek R1 in JetBrains IDEs. This is a known thinking tag issue. Here's the fix that works in IntelliJ, PyCharm, and other JetBrains IDEs."
 category: "Troubleshooting"
 tags: ["JetBrains", "Continue", "DeepSeek", "IDE", "JSON", "Troubleshooting"]
@@ -99,10 +99,9 @@ ollama run deepseek-r1:latest 'Output JSON: {"status": "ok"}' | head -5
 - You haven't spent more than 30 minutes on this
 
 **Choose Automated Fix if:**
-- You want a fix that works across all JetBrains IDEs
-- You want lifetime updates (no re-fixing on plugin updates)
+- You want to know whether continuing is worth it
 - You value your time more than $9.90
-- You want pre-configured settings that Just Work™
+- You want documented stop conditions before burning more time
 :::
 
 </div>
@@ -135,7 +134,7 @@ ollama run deepseek-r1:latest 'Output JSON: {"status": "ok"}' | head -5
 1. Open JetBrains IDE
 2. Go to `File → Settings → Languages & Frameworks → AI → Continue`
 3. Find "System Prompt" or "Custom Instructions"
-4. Add: `"You are a JSON-only API. Output ONLY JSON. Do NOT use <think> tags."`
+4. Add: `"You are a JSON-only API. Output ONLY JSON. Do NOT use  tags."`
 5. Restart IDE
 6. Test with a simple JSON request
 
@@ -145,24 +144,19 @@ ollama run deepseek-r1:latest 'Output JSON: {"status": "ok"}' | head -5
 
 <div class="glass-card p-6 border-l-4 border-green-500">
 
-**Option B: Automated Fix (Lifetime Updates)**
+**Option B: Decision Pack (Stop Rules & Red Lines)**
 
 **What you get:**
-- Pre-configured `ai.json` for Continue plugin
-- Pre-configured `Modelfile` for Ollama
-- Tested on IntelliJ IDEA, PyCharm, WebStorm, CLion
-- Lifetime updates — new fixes delivered automatically
-- Works across all JetBrains IDEs with one install
+- Verified red-line rules for JetBrains + DeepSeek R1
+- Known-safe configuration boundaries (what NOT to change)
+- Clear stop conditions before you burn more time
+- A documented exit path when local setup stops making sense
 
-**Time investment:** 2 minutes to download and apply
+**Time investment:** 2 minutes to read
 
-**Benefits:**
-- No manual config editing
-- Survives plugin updates
-- Consistent across all your JetBrains IDEs
-- Includes additional fixes (JSON mode, OOM prevention, optimized settings)
-
-**Verdict:** Set it once, it works forever.
+**This does not patch your IDE.**
+**It does not automate fixes.**
+**It tells you when continuing is irrational.**
 
 </div>
 
@@ -182,54 +176,14 @@ import JetBrainsSurvivalKitCTA from "@/components/tracking/JetBrainsSurvivalKitC
 
 :::div{.border-l-4 border-blue-500 .glass-card .p-6 .mb-8}
 
-**If you prefer manual editing, here's the complete fix:**
+The manual path is intentionally high-maintenance.
+Exact boundaries and known-safe rules are documented in the Survival Kit.
 
-**Step 1: Locate Continue Plugin Config**
+**If you prefer manual editing:**
 
-Continue plugin stores its config in different locations depending on your JetBrains IDE:
-
-- **IntelliJ IDEA:** `~/.config/JetBrains/IntelliJIdea2024.1/continue/config/ai.json`
-- **PyCharm:** `~/.config/JetBrains/PyCharm2024.1/continue/config/ai.json`
-- **WebStorm:** `~/.config/JetBrains/WebStorm2024.1/continue/config/ai.json`
-- **CLion:** `~/.config/JetBrains/CLion2024.1/continue/config/ai.json`
-
-**Step 2: Add System Prompt Override**
-
-Open `ai.json` and add or modify the `systemPrompt` field:
-
-```json
-{
-  "systemPrompt": "You are a JSON-only API. Output ONLY JSON. Do NOT use <think> tags. Do NOT include any text before or after the JSON. Format: json object like {\"key\": \"value\"}"
-}
-```
-
-**Step 3: Configure Ollama Model (Optional but Recommended)**
-
-If using Ollama, ensure your `Modelfile` includes:
-
-```dockerfile
-FROM deepseek-r1:latest
-
-# Disable thinking tags for JSON mode
-PARAMETER temperature 0.7
-PARAMETER num_ctx 8192
-
-SYSTEM You are a JSON-only API. Output ONLY JSON. No <think> tags.
-```
-
-**Step 4: Restart JetBrains IDE**
-
-Close and reopen your JetBrains IDE for the config to take effect.
-
-**Step 5: Test**
-
-In Continue plugin, send a simple prompt:
-
-```
-Return JSON: {"status": "ok"}
-```
-
-Expected output: `{"status": "ok"}` (clean JSON, no thinking tags)
+1. **Locate Continue plugin config** — Path varies by JetBrains IDE
+2. **Override system prompt** — Add instruction to suppress thinking tags
+3. **Repeat after plugin updates** — Config may be reset on update
 
 :::
 
