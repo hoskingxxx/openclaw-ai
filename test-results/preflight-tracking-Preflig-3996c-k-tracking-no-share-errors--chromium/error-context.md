@@ -1,0 +1,226 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "🦞 OpenClaw Hub 🦞" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: 🦞
+        - generic [ref=e8]: OpenClaw Hub 🦞
+      - generic [ref=e9]:
+        - link "Tools" [ref=e10] [cursor=pointer]:
+          - /url: /tools
+        - link "Start" [ref=e11] [cursor=pointer]:
+          - /url: /docs
+        - link "Guides" [ref=e12] [cursor=pointer]:
+          - /url: /guides
+        - link "Troubleshooting" [ref=e13] [cursor=pointer]:
+          - /url: /troubleshooting
+        - link "Resources" [ref=e14] [cursor=pointer]:
+          - /url: /resources
+      - link "Support on Buy Me a Coffee" [ref=e15] [cursor=pointer]:
+        - /url: https://buymeacoffee.com/openclaw?ref=navbar
+        - img [ref=e16]
+        - generic [ref=e19]: Support
+  - main [ref=e20]:
+    - generic [ref=e23]:
+      - link "← Back Home" [ref=e25] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e26]:
+        - heading "R1 Pre-flight Check" [level=1] [ref=e27]
+        - paragraph [ref=e28]: Stop guessing. Check your VRAM headroom (OS + IDE overhead) before installing.
+        - paragraph [ref=e30]: ✓ Free • Physics-based • No signup required
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - heading "🧮 Can I Run It? Reality Check" [level=3] [ref=e34]:
+            - text: 🧮 Can I Run It?
+            - generic [ref=e35]: Reality Check
+          - paragraph [ref=e36]: Based on common setups. Results are estimates.
+        - generic [ref=e38]:
+          - img [ref=e39]
+          - generic [ref=e41]:
+            - generic [ref=e42]: ⚠️ Security Note
+            - paragraph [ref=e43]:
+              - text: Local environments have limited isolation. For long-term safety, use our
+              - link "Safe Config" [ref=e44] [cursor=pointer]:
+                - /url: https://hilda666888.gumroad.com/l/ymwwgm
+              - text: or a
+              - link "Cloud VPS" [ref=e45] [cursor=pointer]:
+                - /url: https://www.vultr.com/?ref=9864821-9J
+              - text: .
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - text: Your Environment
+            - combobox [ref=e48]:
+              - option "☁️ Cloud VPS / Docker (Isolated)"
+              - option "🪟 Local Windows (Personal PC)" [selected]
+              - option "🍎 Local macOS (Apple Silicon)"
+          - generic [ref=e49]:
+            - text: Your VRAM
+            - combobox [ref=e50]:
+              - option "4GB–6GB (Entry Level)"
+              - option "8GB"
+              - option "12GB"
+              - option "16GB"
+              - option "24GB" [selected]
+              - option "48GB+"
+          - generic [ref=e51]:
+            - text: Target Model
+            - combobox [ref=e52]:
+              - option "DeepSeek-R1-Distill-Qwen-1.5B"
+              - option "DeepSeek-R1-Distill-Llama-8B" [selected]
+              - option "DeepSeek-R1-Distill-Llama-14B"
+              - option "DeepSeek-R1-Distill-Qwen-32B"
+              - option "DeepSeek-R1-Distill-Llama-70B"
+              - option "DeepSeek-V3 (671B Full)"
+        - generic [ref=e53]:
+          - generic [ref=e54]: "✅ Status: Ready (with caveats)"
+          - paragraph [ref=e55]: Hardware looks good. Save this page for future reference.
+          - button "Copy Link to Share" [ref=e56] [cursor=pointer]:
+            - generic [ref=e57]: Copy Link to Share
+          - generic [ref=e58]:
+            - generic [ref=e59]:
+              - img [ref=e60]
+              - text: Recommended Settings
+            - generic [ref=e63]:
+              - generic [ref=e64]:
+                - generic [ref=e65]: Quantization
+                - generic [ref=e66]: 4-bit
+              - generic [ref=e67]:
+                - generic [ref=e68]: Context
+                - generic [ref=e69]: "4096"
+              - generic [ref=e70]:
+                - generic [ref=e71]: Batch
+                - generic [ref=e72]: "1"
+          - link "Or try DeepInfra API" [ref=e74] [cursor=pointer]:
+            - /url: https://deepinfra.com/
+            - text: Or try DeepInfra API
+            - img [ref=e75]
+          - link "Buy me a coffee" [ref=e79] [cursor=pointer]:
+            - /url: https://buymeacoffee.com/openclaw?ref=tool_green
+            - img [ref=e80]
+            - generic [ref=e83]: Buy me a coffee
+        - generic [ref=e85]:
+          - heading "What this tool does — and what it doesn't" [level=4] [ref=e86]
+          - paragraph [ref=e87]:
+            - text: This calculator measures
+            - strong [ref=e88]: possibility
+            - text: .
+          - paragraph [ref=e89]:
+            - text: It tells you what
+            - emphasis [ref=e90]: might
+            - text: work based on VRAM and model size.
+          - paragraph [ref=e91]:
+            - text: It does
+            - strong [ref=e92]: not
+            - text: "tell you:"
+          - list [ref=e93]:
+            - listitem [ref=e94]: When to stop
+            - listitem [ref=e95]: Whether continuing is rational
+            - listitem [ref=e96]: How much time you're about to waste
+          - paragraph [ref=e97]: "If you're still guessing after seeing this result:"
+          - paragraph [ref=e98]:
+            - text: 👉
+            - strong [ref=e99]: The Survival Kit exists for what comes next.
+          - paragraph [ref=e100]:
+            - text: It doesn't optimize.
+            - text: It decides.
+          - link "Buy Clarity — $9.90" [ref=e101] [cursor=pointer]:
+            - /url: https://hilda666888.gumroad.com/l/ymwwgm
+        - paragraph [ref=e103]:
+          - text: "JetBrains / Cursor users:"
+          - text: Local R1 failures usually happen
+          - strong [ref=e104]: before inference
+          - text: .
+          - text: The red lines are documented inside the Survival Kit.
+        - paragraph [ref=e105]: "*Results are estimates based on common setups. Actual requirements may vary."
+      - generic [ref=e107]:
+        - heading "What This Checks" [level=2] [ref=e108]
+        - paragraph [ref=e109]:
+          - text: Most VRAM calculators show theoretical model size only. This tool accounts for the
+          - strong [ref=e110]: invisible overhead
+          - text: "that breaks most local setups:"
+        - list [ref=e111]:
+          - listitem [ref=e112]:
+            - text: •
+            - strong [ref=e113]: OS overhead
+            - text: "(Windows 11: ~2-4GB, macOS: ~1.5-3GB)"
+          - listitem [ref=e114]:
+            - text: •
+            - strong [ref=e115]: IDE overhead
+            - text: "(VS Code / JetBrains: ~500MB-2GB depending on extensions)"
+          - listitem [ref=e116]:
+            - text: •
+            - strong [ref=e117]: Browser tabs
+            - text: "(Chrome/Edge: ~300-800MB each)"
+          - listitem [ref=e118]:
+            - text: •
+            - strong [ref=e119]: Agent context growth
+            - text: (KV cache that expands with usage)
+        - paragraph [ref=e120]:
+          - text: The tool calculates
+          - strong [ref=e121]: actual available VRAM
+          - text: after subtracting these overheads, then compares against model requirements at 4-bit quantization.
+      - generic [ref=e123]:
+        - heading "Understanding Your Results" [level=2] [ref=e124]
+        - generic [ref=e125]:
+          - paragraph [ref=e126]: "RED (Local Setup Not Viable): Physics limit reached. Your VRAM will cause instability or OOM loops. Consider cloud GPU or the Survival Kit for decision boundaries."
+          - paragraph [ref=e127]: "YELLOW (High Risk Zone): You're on the razor's edge. Browser tabs or IDE plugins will crash you. The Survival Kit provides stop rules and red lines."
+          - paragraph [ref=e128]: "GREEN (Ready with caveats): Hardware looks good, but bookmark this page for updated boundaries as models grow."
+      - generic [ref=e130]:
+        - heading "Explore" [level=3] [ref=e131]
+        - generic [ref=e132]:
+          - link "→ Hardware Requirements Reality" [ref=e133] [cursor=pointer]:
+            - /url: /guides/hardware-requirements-reality-check
+          - link "→ OOM Error Fixes" [ref=e134] [cursor=pointer]:
+            - /url: /guides/fix-openclaw-cuda-oom-errors
+          - link "→ Error Index" [ref=e135] [cursor=pointer]:
+            - /url: /guides/openclaw-error-index
+  - contentinfo [ref=e136]:
+    - generic [ref=e138]:
+      - generic [ref=e139]:
+        - heading "OpenClaw Hub 🦞" [level=4] [ref=e140]
+        - paragraph [ref=e141]:
+          - text: Unofficial community docs.
+          - text: Not affiliated with the official project.
+      - generic [ref=e142]:
+        - heading "Docs" [level=4] [ref=e143]
+        - list [ref=e144]:
+          - listitem [ref=e145]:
+            - link "Start" [ref=e146] [cursor=pointer]:
+              - /url: /docs
+          - listitem [ref=e147]:
+            - link "Quick Start" [ref=e148] [cursor=pointer]:
+              - /url: /quick-start
+          - listitem [ref=e149]:
+            - link "Guides" [ref=e150] [cursor=pointer]:
+              - /url: /guides
+          - listitem [ref=e151]:
+            - link "Troubleshooting" [ref=e152] [cursor=pointer]:
+              - /url: /troubleshooting
+          - listitem [ref=e153]:
+            - link "FAQ" [ref=e154] [cursor=pointer]:
+              - /url: /faq
+      - generic [ref=e155]:
+        - heading "Official" [level=4] [ref=e156]
+        - list [ref=e157]:
+          - listitem [ref=e158]:
+            - link "Official GitHub Repo" [ref=e159] [cursor=pointer]:
+              - /url: https://github.com/openclaw/openclaw
+              - img [ref=e160]
+              - text: Official GitHub Repo
+          - listitem [ref=e162]:
+            - link "Discord Community" [ref=e163] [cursor=pointer]:
+              - /url: https://discord.gg/openclaw
+              - img [ref=e164]
+              - text: Discord Community
+    - generic [ref=e167]:
+      - paragraph [ref=e168]: "Privacy: Local logs only. No telemetry."
+      - paragraph [ref=e169]: © 2026 OpenClaw Community Documentation
+      - link "Buy me a coffee" [ref=e170] [cursor=pointer]:
+        - /url: https://buymeacoffee.com/openclaw?ref=footer
+        - img [ref=e171]
+        - text: Buy me a coffee
+  - alert [ref=e173]
+```

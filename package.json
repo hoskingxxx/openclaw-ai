@@ -13,6 +13,8 @@
     "check:constraints": "node scripts/check-mdx-naked-html.js && node scripts/check-globals-css-scope.js && node scripts/check-mdx-issues.js",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:preflight": "playwright test tests/preflight-tracking.spec.ts",
+    "test:preflight:headed": "playwright test tests/preflight-tracking.spec.ts --headed",
     "audit": "tsx scripts/website-audit.ts",
     "audit:prod": "AUDIT_URL=https://openclaw-ai.org tsx scripts/website-audit.ts"
   },
@@ -44,6 +46,7 @@
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/typography": "^0.5.19",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^20",
