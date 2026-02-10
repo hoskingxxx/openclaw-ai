@@ -6,7 +6,6 @@ import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
 import RealityCheck from "@/components/RealityCheck";
 import { HashScrollFix } from "@/components/HashScrollFix";
-import { SurvivalKitPromo } from "@/components/monetization/SurvivalKitPromo";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -291,11 +290,6 @@ export default async function BlogPostPage({
               </div>
             </section>
           )}
-
-          {/* Gumroad 推广 - 底部 (full) */}
-          <section className="px-4 sm:px-6 mb-8">
-            <SurvivalKitPromo variant="full" placement="bottom" />
-          </section>
         </ContentRail>
       </main>
 
