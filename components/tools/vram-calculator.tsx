@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { usePathname } from "next/navigation"
 import { trackAffiliateClick, trackToolDowngrade, trackRevenueOutbound, trackCtaImpression, trackCtaClick, getPageType } from "@/lib/tracking"
 import { ConversionButton } from "@/components/monetization/ConversionButton"
-import { ExternalLink, Cloud, AlertTriangle, Settings, Package, Shield, Cpu, Zap } from "lucide-react"
+import { ExternalLink, Cloud, AlertTriangle, Settings, Package, Shield, Cpu, Zap, Check } from "lucide-react"
 
 // ============================================================================
 // GLOBAL AFFILIATE LINKS (HARDCODED)
@@ -129,6 +129,7 @@ export function R1PreflightCheck() {
   const [vram, setVram] = useState<VRAMId>("8gb")
   const [environment, setEnvironment] = useState<Environment>("windows")
   const [isMobile, setIsMobile] = useState(false)
+  const [showCopyToast, setShowCopyToast] = useState(false)
 
   const pathname = usePathname()
   const postSlug = pathname?.split("/").filter(Boolean).pop() || ""
@@ -234,8 +235,12 @@ export function R1PreflightCheck() {
       dest_id: "survival_kit",
       cta_id: `gumroad_${status}_${location}`,
       offer_revenue: "fix_now",
+      // Context: model, vram, environment for analysis
+      model,
+      vram,
+      environment,
     })
-  }, [pathname, postSlug, status])
+  }, [pathname, postSlug, status, model, vram, environment])
 
   const handleDeepInfraClick = useCallback((location: AffiliateLocation) => {
     const pageType = getPageType(pathname || "")
@@ -252,8 +257,12 @@ export function R1PreflightCheck() {
       dest_id: "deepinfra",
       cta_id: `deepinfra_${status}_${location}`,
       offer_revenue: "try_api",
+      // Context: model, vram, environment for analysis
+      model,
+      vram,
+      environment,
     })
-  }, [pathname, postSlug, status])
+  }, [pathname, postSlug, status, model, vram, environment])
 
   const handleVultrClick = useCallback((location: AffiliateLocation) => {
     const pageType = getPageType(pathname || "")
@@ -272,6 +281,10 @@ export function R1PreflightCheck() {
       dest_id: "vultr_cloud_gpu",
       cta_id: `vultr_${status}_${location}`,
       offer_revenue: "escape_local",
+      // Context: model, vram, environment for analysis
+      model,
+      vram,
+      environment,
     })
 
     trackAffiliateClick({
@@ -283,28 +296,37 @@ export function R1PreflightCheck() {
       postSlug,
       path: pathname,
     })
-  }, [status, model, vram, postSlug, pathname])
+  }, [status, model, vram, postSlug, pathname, environment])
 
-  // Bookmark tracking - non-revenue but useful for retention analysis
+  // Bookmark/Copy tracking - copies link to clipboard
   const handleBookmarkClick = useCallback((location: AffiliateLocation) => {
     const pageType = getPageType(pathname || "")
     // Map Status to CtaVerdict (yellow -> unknown for non-revenue CTAs)
     const verdictForCta: "red" | "green" | "unknown" = status === "yellow" ? "unknown" : status
-    // Use cta_click for non-revenue CTAs
+
+    // Copy link to clipboard
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setShowCopyToast(true)
+      setTimeout(() => setShowCopyToast(false), 2000)
+    })
+
+    // Use cta_click for non-revenue CTAs with full context
     trackCtaClick({
       path: pathname,
-      cta_id: `bookmark_${status}_${location}`,
+      cta_id: `copy_link_${status}_${location}`,
       cta_position: location === "mobile_override" ? "inline" : "bottom",
       intent: "evaluate",
       context: "hardware",
       verdict: verdictForCta,
       pageType,
       slug: postSlug,
-      dest_type: undefined, // bookmark is internal
-      dest_id: undefined,
-      offer: undefined,
+      // dest_type/dest_id are undefined for non-revenue actions
+      // Context: model, vram, environment for analysis
+      model,
+      vram,
+      environment,
     })
-  }, [pathname, postSlug, status])
+  }, [pathname, postSlug, status, model, vram, environment])
 
   const handleDowngrade = () => {
     // Track downgrade with full context for analysis
@@ -701,57 +723,53 @@ export function R1PreflightCheck() {
 
           {/* Copy: What this means */}
           <p className="text-sm text-green-200 dark:text-green-100 mb-4">
-            Hardware looks good. Bookmark this page for updated boundaries.
+            Hardware looks good. Save this page for future reference.
           </p>
+
+          {/* Toast feedback */}
+          {showCopyToast && (
+            <div className="mb-4 p-3 rounded-lg bg-green-900/30 border border-green-700/50 text-green-300 text-sm text-center flex items-center justify-center gap-2">
+              <Check className="w-4 h-4" />
+              Link copied!
+            </div>
+          )}
 
           {/* Mobile CTA or Desktop GREEN CTA */}
           {isMobile ? (
             <>
-              {/* Primary: Bookmark - Soft retention for GREEN (mobile) */}
+              {/* Primary: Copy Link - Soft retention for GREEN (mobile) */}
               <button
                 onClick={() => {
                   handleBookmarkClick('mobile_override')
-                  if (navigator.share) {
-                    navigator.share({
-                      title: 'R1 Pre-flight Check',
-                      url: window.location.href,
-                    })
-                  }
                 }}
                 className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
               >
-                <span>Bookmark This Page</span>
+                <span>Copy Link to Share</span>
               </button>
 
-              {/* Secondary: Example Cloud Option (text link only) */}
+              {/* Secondary: Cloud Option (text link only) */}
               <div className="text-center">
                 <a
                   href={LINK_API}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => handleDeepInfraClick('green_card')}
-                  className="text-sm text-text-secondary hover:text-brand-primary transition-colors"
+                  className="text-sm text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  Example Cloud Option: DeepInfra (no affiliation) <ExternalLink className="w-3 h-3 inline" />
+                  Or try DeepInfra API <ExternalLink className="w-3 h-3 inline" />
                 </a>
               </div>
             </>
           ) : (
             <>
-              {/* Primary: Bookmark - Soft retention for GREEN (desktop) */}
+              {/* Primary: Copy Link - Soft retention for GREEN (desktop) */}
               <button
                 onClick={() => {
                   handleBookmarkClick('green_card')
-                  if (navigator.share) {
-                    navigator.share({
-                      title: 'R1 Pre-flight Check',
-                      url: window.location.href,
-                    })
-                  }
                 }}
                 className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
               >
-                <span>Bookmark Page for Later</span>
+                <span>Copy Link to Share</span>
               </button>
 
               {/* Trust Element: Recommended Settings */}
@@ -776,16 +794,16 @@ export function R1PreflightCheck() {
                 </div>
               </div>
 
-              {/* Secondary: Example Cloud Option (text link only) */}
+              {/* Secondary: Cloud Option (text link only) */}
               <div className="text-center">
                 <a
                   href={LINK_API}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => handleDeepInfraClick('green_card')}
-                  className="text-sm text-text-secondary hover:text-brand-primary transition-colors"
+                  className="text-sm text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  Example Cloud Option: DeepInfra (no affiliation) <ExternalLink className="w-3 h-3 inline" />
+                  Or try DeepInfra API <ExternalLink className="w-3 h-3 inline" />
                 </a>
               </div>
 

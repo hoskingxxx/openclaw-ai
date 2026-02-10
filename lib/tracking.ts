@@ -154,6 +154,11 @@ export interface RevenueOutboundEvent extends Record<string, unknown> {
   cta_position?: CtaPosition;
   intent?: Intent;
   context?: Context;
+
+  // Context: model selection, hardware context for analysis
+  model?: string;
+  vram?: string;
+  environment?: string;
 }
 
 /**
@@ -201,6 +206,11 @@ export interface CtaClickEvent extends Record<string, unknown> {
   dest_type?: DestType;
   dest_id?: string;
   offer?: RevenueOffer;
+
+  // Optional: context for analysis (model selection, hardware context)
+  model?: string;
+  vram?: string;
+  environment?: string;
 }
 
 /**
@@ -228,6 +238,7 @@ export interface RealityCheckImpressionEvent extends Record<string, unknown> {
  * Use this for ALL revenue-related outbound clicks
  *
  * P1: Added dest_type, dest_id, offer (RevenueOffer), and optional CTA properties
+ * P1: Added model, vram, environment for context analysis
  */
 export function trackRevenueOutbound(params: {
   // Legacy parameters (kept for backward compatibility)
@@ -247,6 +258,11 @@ export function trackRevenueOutbound(params: {
   cta_position?: CtaPosition;
   intent?: Intent;
   context?: Context;
+
+  // Context: model selection, hardware context for analysis
+  model?: string;
+  vram?: string;
+  environment?: string;
 }): void {
   if (typeof window === "undefined") return;
 
@@ -268,6 +284,11 @@ export function trackRevenueOutbound(params: {
     ...(params.cta_position && { cta_position: params.cta_position }),
     ...(params.intent && { intent: params.intent }),
     ...(params.context && { context: params.context }),
+
+    // Context: model, vram, environment
+    ...(params.model && { model: params.model }),
+    ...(params.vram && { vram: params.vram }),
+    ...(params.environment && { environment: params.environment }),
   };
 
   trackEvent("revenue_outbound", eventData);
@@ -330,6 +351,7 @@ export function trackCtaImpression(params: {
  * Track CTA click (canonical event)
  *
  * P1: New canonical event
+ * P1: Added model, vram, environment for context analysis
  */
 export function trackCtaClick(params: {
   path: string;
@@ -343,6 +365,11 @@ export function trackCtaClick(params: {
   dest_type?: DestType;
   dest_id?: string;
   offer?: RevenueOffer;
+
+  // Context: model selection, hardware context for analysis
+  model?: string;
+  vram?: string;
+  environment?: string;
 }): void {
   if (typeof window === "undefined") return;
 
@@ -358,6 +385,11 @@ export function trackCtaClick(params: {
     ...(params.dest_type && { dest_type: params.dest_type }),
     ...(params.dest_id && { dest_id: params.dest_id }),
     ...(params.offer && { offer: params.offer }),
+
+    // Context: model, vram, environment
+    ...(params.model && { model: params.model }),
+    ...(params.vram && { vram: params.vram }),
+    ...(params.environment && { environment: params.environment }),
   };
 
   trackEvent("cta_click", eventData);

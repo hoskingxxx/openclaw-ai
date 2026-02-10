@@ -22,6 +22,7 @@ export const siteConfig = {
 // Navigation Links (Header)
 // ============================================================================
 export const navLinks = [
+  { title: "Tools", href: "/tools" },
   { title: "Start", href: "/docs" },
   { title: "Guides", href: "/guides" },
   { title: "Troubleshooting", href: "/troubleshooting" },
