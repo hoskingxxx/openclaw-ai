@@ -39,7 +39,7 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
     return (
       <div ref={elementRef} className="my-4 border border-border rounded-lg bg-card h-[60px] sm:h-[70px] flex items-center justify-between px-4 gap-3">
         <h4 className="text-sm sm:text-base font-bold text-text-primary font-mono flex-1">
-          System Prescription: Pre-configured DeepSeek R1 setup
+          Stop guessing. See the red lines.
         </h4>
         <a
           href={GUMROAD_LINK}
@@ -74,12 +74,12 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
         {/* 主标题 */}
         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
           <Package className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-          Stop Wasting Time on Configs
+          Stop Guessing. Know When to Stop.
         </h3>
 
         {/* 副标题 */}
         <p className="text-gray-700 dark:text-gray-300 mb-5 leading-relaxed">
-          Get the production-ready DeepSeek R1 + OpenClaw config pack. Includes fixes for OOM, permission errors, and optimized settings.
+          This kit contains decision boundaries, not tutorials. Stop rules, red lines, and exit points for DeepSeek R1.
         </p>
 
         {/* CTA 按钮 */}
@@ -97,13 +97,13 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
         {/* 信任标识 */}
         <div className="mt-4 pt-4 border-t border-amber-500/20 flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
           <span className="flex items-center gap-1">
-            <span>✓</span> OOM Fix Templates
+            <span>✓</span> Stop Rules
           </span>
           <span className="flex items-center gap-1">
-            <span>✓</span> Optimization Presets
+            <span>✓</span> Red Lines
           </span>
           <span className="flex items-center gap-1">
-            <span>✓</span> Error Recovery
+            <span>✓</span> Exit Points
           </span>
         </div>
       </div>
