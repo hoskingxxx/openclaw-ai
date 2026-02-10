@@ -95,7 +95,7 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
         </a>
 
         {/* 信任标识 */}
-        <div className="mt-4 pt-4 border-t border-amber-500/20 flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
+        <div className="mt-4 flex items-center gap-4 text-xs text-text-secondary">
           <span className="flex items-center gap-1">
             <span>✓</span> Stop Rules
           </span>
