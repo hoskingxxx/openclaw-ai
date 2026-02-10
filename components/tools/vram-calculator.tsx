@@ -460,14 +460,9 @@ export function VramCalculator() {
           ) : (
             <>
               {/* Status Header */}
-              <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
-                <div className="flex items-center gap-2 text-red-900 dark:text-red-100 font-semibold">
-                  <AlertTriangle className="w-5 h-5" />
-                  🔴 Cannot Run
-                </div>
-                <p className="text-sm text-red-700 dark:text-red-300 mt-1">
-                  Estimated VRAM requirement exceeds your hardware.
-                </p>
+              <div className="flex items-center gap-2 text-red-400 font-semibold">
+                <AlertTriangle className="w-5 h-5" />
+                🔴 Cannot Run — VRAM exceeds your hardware.
               </div>
 
               {/* Primary CTA: DeepInfra API - ALWAYS priority in RED */}
@@ -559,14 +554,9 @@ export function VramCalculator() {
       {status === "yellow" && (
         <div className="space-y-3">
           {/* Status Header */}
-          <div className="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800">
-            <div className="flex items-center gap-2 text-yellow-900 dark:text-yellow-100 font-semibold">
-              <AlertTriangle className="w-5 h-5" />
-              ⚠️ Performance Warning
-            </div>
-            <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-              VRAM is very tight. Optimization required.
-            </p>
+          <div className="flex items-center gap-2 text-yellow-400 font-semibold">
+            <AlertTriangle className="w-5 h-5" />
+            ⚠️ Performance Warning — VRAM is very tight.
           </div>
 
           {/* Mobile CTA Override or Desktop YELLOW CTA */}
@@ -679,13 +669,8 @@ export function VramCalculator() {
       {status === "green" && (
         <div className="space-y-4">
           {/* Status Header */}
-          <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
-            <div className="flex items-center gap-2 text-green-900 dark:text-green-100 font-semibold">
-              ✅ Ready to Run
-            </div>
-            <p className="text-sm text-green-700 dark:text-green-300 mt-1">
-              Your hardware can handle this model.
-            </p>
+          <div className="flex items-center gap-2 text-green-400 font-semibold">
+            ✅ Ready to Run — Your hardware can handle this model.
           </div>
 
           {/* Mobile CTA Override or Desktop GREEN CTA */}
