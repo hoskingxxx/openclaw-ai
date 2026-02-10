@@ -104,7 +104,7 @@ type AffiliateLocation = 'red_card' | 'yellow_card' | 'green_card' | 'mobile_ove
 // COMPONENT
 // ============================================================================
 
-export function VramCalculator() {
+export function R1PreflightCheck() {
   const [model, setModel] = useState<ModelId>("8b")
   const [vram, setVram] = useState<VRAMId>("8gb")
   const [environment, setEnvironment] = useState<Environment>("windows")
@@ -411,10 +411,10 @@ export function VramCalculator() {
           <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
             <div className="flex items-center gap-2 text-red-900 dark:text-red-100 font-semibold">
               <AlertTriangle className="w-5 h-5" />
-              🔴 Cannot Run
+              Status: Local Setup Not Viable
             </div>
             <p className="text-sm text-red-700 dark:text-red-300 mt-1">
-              Estimated VRAM requirement exceeds your hardware.
+              Physics limit reached. VRAM overhead will cause instability or OOM loops.
             </p>
           </div>
 
@@ -433,28 +433,27 @@ export function VramCalculator() {
                   <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div className="flex-1">
                     <div className="font-bold text-blue-900 dark:text-blue-100">
-                      Try on Phone
+                      Run on Cloud GPU
                     </div>
-                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                      Run instantly via API. No setup.
-                    </div>
+                    <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                      DeepInfra API - Instant access
+                    </p>
                   </div>
                   <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
               </a>
 
-              {/* Secondary: Gumroad */}
+              {/* Secondary: Survival Kit */}
               <a
                 href={LINK_KIT}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleGumroadClick('mobile_override')}
-                className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
+                className="block p-3 rounded-lg border border-text-secondary hover:border-brand-primary transition-all text-center"
               >
-                <div className="flex items-center gap-2 text-sm">
-                  <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <span className="text-amber-900 dark:text-amber-100">Buy Clarity — $9.90</span>
-                </div>
+                <span className="text-sm text-text-secondary">
+                  Get Survival Kit (View Stop Rules)
+                </span>
               </a>
             </>
           ) : (
@@ -462,7 +461,7 @@ export function VramCalculator() {
               {/* Status Header */}
               <div className="flex items-center gap-2 text-red-400 font-semibold">
                 <AlertTriangle className="w-5 h-5" />
-                🔴 Cannot Run — VRAM exceeds your hardware.
+                Status: Local Setup Not Viable
               </div>
 
               {/* Primary CTA: DeepInfra API - ALWAYS priority in RED */}
@@ -480,10 +479,10 @@ export function VramCalculator() {
                   </div>
                   <div className="flex-1">
                     <div className="font-bold text-blue-900 dark:text-blue-100">
-                      Run Instantly for $1
+                      Run on Cloud GPU
                     </div>
                     <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                      Skip hardware limits. Cloud API access.
+                      DeepInfra API - Instant access, no setup
                     </p>
                     <div className="flex items-center gap-2 mt-2 text-sm font-medium text-blue-600 dark:text-blue-400">
                       Get Started <ExternalLink className="w-4 h-4" />
@@ -492,32 +491,18 @@ export function VramCalculator() {
                 </div>
               </a>
 
-              {/* Secondary CTA: Vultr Cloud GPU */}
-              <a
-                ref={vultrRedCardRef}
-                href={LINK_CLOUD}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleVultrClick('red_card')}
-                className="block p-4 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/20 hover:border-purple-400 hover:shadow-sm transition-all"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-purple-500 rounded-lg">
-                    <Cloud className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-purple-900 dark:text-purple-100">
-                      Rent High-Memory Cloud GPU
-                    </div>
-                    <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
-                      Get a private H100/A100 with full control.
-                    </p>
-                    <div className="flex items-center gap-2 mt-2 text-sm font-medium text-purple-600 dark:text-purple-400">
-                      Deploy Vultr <ExternalLink className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              </a>
+              {/* Secondary CTA: Survival Kit - Decision boundary */}
+              <div className="text-center mt-3">
+                <a
+                  href={LINK_KIT}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => handleGumroadClick('red_card')}
+                  className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
+                >
+                  Get Survival Kit (View Stop Rules) <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
 
               {/* Fallback: Try Smaller Model (8B) */}
               {canDowngradeTo8B && (
@@ -556,46 +541,54 @@ export function VramCalculator() {
           {/* Status Header */}
           <div className="flex items-center gap-2 text-yellow-400 font-semibold">
             <AlertTriangle className="w-5 h-5" />
-            ⚠️ Performance Warning — VRAM is very tight.
+            Status: High Risk Zone
           </div>
+
+          {/* Copy: Risk explanation */}
+          <p className="text-sm text-yellow-200 dark:text-yellow-100 mb-4">
+            You are on the razor's edge. Browser tabs or IDE plugins will crash you.
+          </p>
 
           {/* Mobile CTA Override or Desktop YELLOW CTA */}
           {isMobile ? (
             <>
-              {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
-              <a
-                href={LINK_API}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleDeepInfraClick('mobile_override')}
-                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  <div className="flex-1">
-                    <div className="font-bold text-blue-900 dark:text-blue-100">
-                      Try on Phone
-                    </div>
-                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                      Run instantly via API. No setup.
-                    </div>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-              </a>
-
-              {/* Secondary: Gumroad */}
+              {/* Primary: Gumroad - ALWAYS priority in MOBILE YELLOW */}
               <a
                 href={LINK_KIT}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleGumroadClick('mobile_override')}
-                className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
+                className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
               >
-                <div className="flex items-center gap-2 text-sm">
-                  <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <span className="text-amber-900 dark:text-amber-100">Buy Clarity — $9.90</span>
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl shadow-lg">
+                    <Package className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-bold text-amber-900 dark:text-amber-100 flex items-center gap-2">
+                      Download Survival Kit ($9.90)
+                    </div>
+                    <p className="text-sm text-amber-800 dark:text-amber-200 mt-1 leading-relaxed">
+                      Stop rules, red lines, and decision boundaries.
+                    </p>
+                    <div className="flex items-center gap-2 mt-3 text-sm font-bold text-amber-700 dark:text-amber-300">
+                      Get Started → <ExternalLink className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
+              </a>
+
+              {/* Secondary: Cloud GPU */}
+              <a
+                href={LINK_CLOUD}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => handleVultrClick('mobile_override')}
+                className="block p-4 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/20 hover:border-purple-400 transition-all text-center"
+              >
+                <span className="text-sm text-purple-900 dark:text-purple-100">
+                  Or rent a Cloud GPU
+                </span>
               </a>
             </>
           ) : (
@@ -615,10 +608,10 @@ export function VramCalculator() {
                   </div>
                   <div className="flex-1">
                     <div className="font-bold text-amber-900 dark:text-amber-100 flex items-center gap-2">
-                      Buy Clarity — $9.90
+                      Download Survival Kit ($9.90)
                     </div>
                     <p className="text-sm text-amber-800 dark:text-amber-200 mt-1 leading-relaxed">
-                      Red lines + exit paths for tight VRAM.
+                      Stop rules, red lines, and decision boundaries.
                     </p>
                     <div className="flex items-center gap-2 mt-3 text-sm font-bold text-amber-700 dark:text-amber-300">
                       See Red Lines → <ExternalLink className="w-4 h-4" />
@@ -627,17 +620,16 @@ export function VramCalculator() {
                 </div>
               </a>
 
-              {/* Secondary CTA: DeepInfra API (Text Link) */}
-              <div className="text-center">
+              {/* Secondary CTA: Cloud GPU */}
+              <div className="text-center mt-3">
                 <a
-                  ref={deepInfraYellowCardRef}
-                  href={LINK_API}
+                  href={LINK_CLOUD}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => handleDeepInfraClick('yellow_card')}
-                  className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
+                  onClick={() => handleVultrClick('yellow_card')}
+                  className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
                 >
-                  Or run smoothly via API <ExternalLink className="w-3 h-3" />
+                  Or rent a Cloud GPU <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
 
@@ -670,8 +662,13 @@ export function VramCalculator() {
         <div className="space-y-4">
           {/* Status Header */}
           <div className="flex items-center gap-2 text-green-400 font-semibold">
-            ✅ Ready to Run — Your hardware can handle this model.
+            ✅ Status: Ready (with caveats)
           </div>
+
+          {/* Copy: What this means */}
+          <p className="text-sm text-green-200 dark:text-green-100 mb-4">
+            Hardware looks good. Bookmark this page for updated boundaries.
+          </p>
 
           {/* Mobile CTA Override or Desktop GREEN CTA */}
           {isMobile ? (
@@ -712,6 +709,48 @@ export function VramCalculator() {
                 </div>
               </a>
             </>
+          {/* Mobile CTA Override or Desktop GREEN CTA */}
+          {isMobile ? (
+            <>
+              {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
+              <a
+                href={LINK_API}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => handleDeepInfraClick('mobile_override')}
+                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div className="flex-1">
+                    <div className="font-bold text-blue-900 dark:text-blue-100">
+                      Run on Cloud GPU
+                    </div>
+                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                      DeepInfra API - Instant access
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                </div>
+              </a>
+
+              {/* Secondary: Bookmark */}
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: 'R1 Pre-flight Check',
+                      url: window.location.href,
+                    })
+                  }
+                }}
+                className="block p-4 rounded-lg border border-text-secondary bg-card hover:border-brand-primary transition-all text-center"
+              >
+                <span className="text-sm text-text-secondary">
+                  Bookmark This Page
+                </span>
+              </button>
+            </>
           ) : (
             <>
               {/* Trust Element: Recommended Settings (Gray background) */}
@@ -736,46 +775,20 @@ export function VramCalculator() {
                 </div>
               </div>
 
-              {/* Primary CTA: Gumroad - DOMINANT, ALWAYS priority in GREEN */}
-              <a
-                ref={gumroadGreenCardRef}
-                href={LINK_KIT}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleGumroadClick('green_card')}
-                className="block p-6 rounded-lg border-2 bg-gradient-to-br from-emerald-500 via-green-500 to-amber-500 hover:from-emerald-600 hover:via-green-600 hover:to-amber-600 text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all"
+              {/* Primary CTA: Bookmark - Soft retention for GREEN */}
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: 'R1 Pre-flight Check',
+                      url: window.location.href,
+                    })
+                  }
+                }}
+                className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
               >
-                <div className="flex items-start gap-4">
-                  <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl shadow-lg">
-                    <Package className="w-7 h-7 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-white flex items-center gap-2 text-lg">
-                      Buy Clarity — $9.90
-                    </div>
-                    <p className="text-sm text-white/90 mt-2 leading-relaxed">
-                      Stop rules, red lines, and decision boundaries.
-                    </p>
-                    <div className="flex items-center gap-2 mt-4 text-base font-bold text-white">
-                      See Red Lines → <ExternalLink className="w-5 h-5" />
-                    </div>
-                  </div>
-                </div>
-              </a>
-
-              {/* Secondary CTA: DeepInfra API (Weak Text Link ONLY) */}
-              <div className="text-center">
-                <a
-                  ref={deepInfraGreenCardRef}
-                  href={LINK_API}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleDeepInfraClick('green_card')}
-                  className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
-                >
-                  Just want to test quickly? Try API. <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
+                <span>Bookmark Page for Later</span>
+              </button>
 
               {/* Footer: Buy Me a Coffee */}
               <ConversionButton
