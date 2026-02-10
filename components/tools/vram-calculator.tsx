@@ -82,15 +82,35 @@ const ENTRY_MODEL: ModelId = "8b"
 // CALCULATION ENGINE (4-bit Quantization Only)
 // ============================================================================
 
-function calculateStatus(requiredVRAM: number, userVRAM: number): Status {
-  // RED: Impossible
-  if (requiredVRAM > userVRAM) return "red"
+/**
+ * Calculate effective VRAM after OS/IDE overhead
+ * Cloud: No overhead (isolated environment)
+ * Windows: ~3GB overhead (OS + IDE + browser)
+ * macOS: ~2GB overhead (window server + IDE)
+ */
+function getEffectiveVRAM(userVRAM: number, environment: Environment): number {
+  const overheadMap: Record<Environment, number> = {
+    cloud: 0,
+    windows: 3,
+    macos: 2,
+  }
+  return Math.max(0, userVRAM - overheadMap[environment])
+}
 
-  // YELLOW: Tight fit (within 5% margin)
-  const threshold = userVRAM * 0.95
-  if (requiredVRAM > threshold) return "yellow"
+/**
+ * Calculate status based on absolute headroom (in GB)
+ * Using effectiveVRAM (after OS/IDE overhead), not raw GPU VRAM
+ */
+function calculateStatus(requiredVRAM: number, effectiveVRAM: number): Status {
+  const headroom = effectiveVRAM - requiredVRAM
 
-  // GREEN: Comfortable fit
+  // RED: Not enough VRAM (negative headroom)
+  if (headroom < 0) return "red"
+
+  // YELLOW: Edge of stability (less than 2GB headroom)
+  if (headroom < 2) return "yellow"
+
+  // GREEN: Comfortable fit (2GB+ headroom)
   return "green"
 }
 
@@ -131,13 +151,14 @@ export function R1PreflightCheck() {
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
-  // Calculate status (OS does NOT affect status)
+  // Calculate status using effective VRAM (after OS/IDE overhead)
   const userVRAM = VRAM_OPTIONS.find(o => o.id === vram)!.gb
+  const effectiveVRAM = getEffectiveVRAM(userVRAM, environment)
   const requiredVRAM = MODELS[model].requiredVRAM
-  const status = calculateStatus(requiredVRAM, userVRAM)
+  const status = calculateStatus(requiredVRAM, effectiveVRAM)
 
-  // Try Smaller Model always goes to 8B (ENTRY_MODEL), unless already at 8B or smaller
-  const canDowngradeTo8B = model !== "8b" && model !== "1.5b"
+  // Try Smaller Model only if it would improve status (RED → YELLOW/GREEN)
+  const canDowngradeTo8B = model !== "8b" && model !== "1.5b" && status === "red"
 
   // Show security banner? (Independent layer, does NOT affect status)
   const showSecurityBanner = environment === "windows" || environment === "macos"
@@ -504,7 +525,7 @@ export function R1PreflightCheck() {
                 </a>
               </div>
 
-              {/* Fallback: Try Smaller Model (8B) */}
+              {/* Fallback: Check if 8B is viable (only shown if currently RED) */}
               {canDowngradeTo8B && (
                 <button
                   onClick={handleDowngrade}
@@ -519,10 +540,10 @@ export function R1PreflightCheck() {
                     </div>
                     <div className="flex-1">
                       <div className="font-bold text-orange-900 dark:text-orange-100">
-                        Try Smaller Model (8B)
+                        Check if 8B is viable
                       </div>
                       <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
-                        Your GPU cannot handle {MODELS[model].label}. Try {MODELS[ENTRY_MODEL].label}.
+                        Test if {MODELS[ENTRY_MODEL].label} fits your VRAM after overhead.
                       </p>
                     </div>
                   </div>
@@ -633,7 +654,7 @@ export function R1PreflightCheck() {
                 </a>
               </div>
 
-              {/* Fallback: Try Smaller Model (8B) */}
+              {/* Fallback: Check if 8B is viable (only shown if currently RED) */}
               {canDowngradeTo8B && (
                 <button
                   onClick={handleDowngrade}
@@ -645,7 +666,7 @@ export function R1PreflightCheck() {
                   <div className="flex items-center gap-2 text-sm">
                     <Zap className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                     <span className="text-orange-900 dark:text-amber-100 font-medium">
-                      Try Smaller Model (8B)
+                      Check if 8B is viable
                     </span>
                   </div>
                 </button>
@@ -670,70 +691,10 @@ export function R1PreflightCheck() {
             Hardware looks good. Bookmark this page for updated boundaries.
           </p>
 
-          {/* Mobile CTA Override or Desktop GREEN CTA */}
+          {/* Mobile CTA or Desktop GREEN CTA */}
           {isMobile ? (
             <>
-              {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
-              <a
-                href={LINK_API}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleDeepInfraClick('mobile_override')}
-                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  <div className="flex-1">
-                    <div className="font-bold text-blue-900 dark:text-blue-100">
-                      Try on Phone
-                    </div>
-                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                      Run instantly via API. No setup.
-                    </div>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-              </a>
-
-              {/* Secondary: Gumroad */}
-              <a
-                href={LINK_KIT}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleGumroadClick('mobile_override')}
-                className="block p-3 rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition-all"
-              >
-                <div className="flex items-center gap-2 text-sm">
-                  <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <span className="text-amber-900 dark:text-amber-100">Buy Clarity — $9.90</span>
-                </div>
-              </a>
-            </>
-          ) : (
-            <>
-              {/* Primary: DeepInfra API - ALWAYS priority in MOBILE */}
-              <a
-                href={LINK_API}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleDeepInfraClick('mobile_override')}
-                className="block p-4 rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  <div className="flex-1">
-                    <div className="font-bold text-blue-900 dark:text-blue-100">
-                      Run on Cloud GPU
-                    </div>
-                    <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                      DeepInfra API - Instant access
-                    </div>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-              </a>
-
-              {/* Secondary: Bookmark */}
+              {/* Primary: Bookmark - Soft retention for GREEN (mobile) */}
               <button
                 onClick={() => {
                   if (navigator.share) {
@@ -743,14 +704,42 @@ export function R1PreflightCheck() {
                     })
                   }
                 }}
-                className="block p-4 rounded-lg border border-text-secondary bg-card hover:border-brand-primary transition-all text-center"
+                className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
               >
-                <span className="text-sm text-text-secondary">
-                  Bookmark This Page
-                </span>
+                <span>Bookmark This Page</span>
               </button>
 
-              {/* Trust Element: Recommended Settings (Gray background) */}
+              {/* Secondary: Cloud GPU (text link only) */}
+              <div className="text-center">
+                <a
+                  href={LINK_CLOUD}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => handleVultrClick('green_card')}
+                  className="text-sm text-text-secondary hover:text-brand-primary transition-colors"
+                >
+                  Or use Cloud GPU <ExternalLink className="w-3 h-3 inline" />
+                </a>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Primary: Bookmark - Soft retention for GREEN (desktop) */}
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: 'R1 Pre-flight Check',
+                      url: window.location.href,
+                    })
+                  }
+                }}
+                className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
+              >
+                <span>Bookmark Page for Later</span>
+              </button>
+
+              {/* Trust Element: Recommended Settings */}
               <div className="p-4 rounded-lg border border-border" style={{backgroundColor: '#313131'}}>
                 <div className="flex items-center gap-2 font-bold text-text-primary mb-3">
                   <Settings className="w-4 h-4" />
@@ -772,20 +761,18 @@ export function R1PreflightCheck() {
                 </div>
               </div>
 
-              {/* Primary CTA: Bookmark - Soft retention for GREEN */}
-              <button
-                onClick={() => {
-                  if (navigator.share) {
-                    navigator.share({
-                      title: 'R1 Pre-flight Check',
-                      url: window.location.href,
-                    })
-                  }
-                }}
-                className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
-              >
-                <span>Bookmark Page for Later</span>
-              </button>
+              {/* Secondary: Cloud GPU (text link only) */}
+              <div className="text-center">
+                <a
+                  href={LINK_CLOUD}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => handleVultrClick('green_card')}
+                  className="text-sm text-text-secondary hover:text-brand-primary transition-colors"
+                >
+                  Or use Cloud GPU <ExternalLink className="w-3 h-3 inline" />
+                </a>
+              </div>
 
               {/* Footer: Buy Me a Coffee */}
               <ConversionButton
