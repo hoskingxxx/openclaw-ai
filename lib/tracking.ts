@@ -140,6 +140,7 @@ export interface RevenueOutboundEvent extends Record<string, unknown> {
   offer?: Offer;
   placement: Placement;
   page_type: PageType;
+  pageType?: PageType; // Transitional dual-write
   slug?: string;
   verdict?: Verdict;
   path: string;
@@ -174,6 +175,7 @@ export interface CtaImpressionEvent extends Record<string, unknown> {
   offer?: Offer;
   placement: Placement;
   page_type: PageType;
+  pageType?: PageType; // Transitional dual-write
   slug?: string;
   verdict?: Verdict;
   path: string;
@@ -200,6 +202,7 @@ export interface CtaClickEvent extends Record<string, unknown> {
   context: Context;
   verdict: CtaVerdict;
   page_type: PageType;
+  pageType?: PageType; // Transitional dual-write
   slug?: string;
 
   // Optional: revenue context
@@ -272,6 +275,7 @@ export function trackRevenueOutbound(params: {
     ...(params.offer && { offer: params.offer }),
     placement: params.placement,
     page_type: params.pageType,
+    pageType: params.pageType, // Transitional dual-write
     ...(params.slug && { slug: params.slug }),
     ...(params.verdict && { verdict: params.verdict }),
     path: params.path,
@@ -333,6 +337,7 @@ export function trackCtaImpression(params: {
     ...(params.offer && { offer: params.offer }),
     placement: params.placement,
     page_type: params.pageType,
+    pageType: params.pageType, // Transitional dual-write
     ...(params.slug && { slug: params.slug }),
     ...(params.verdict && { verdict: params.verdict }),
     path: params.path,
@@ -381,6 +386,7 @@ export function trackCtaClick(params: {
     context: params.context,
     verdict: params.verdict,
     page_type: params.pageType,
+    pageType: params.pageType, // Transitional dual-write
     ...(params.slug && { slug: params.slug }),
     ...(params.dest_type && { dest_type: params.dest_type }),
     ...(params.dest_id && { dest_id: params.dest_id }),

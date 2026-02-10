@@ -298,19 +298,38 @@ export function R1PreflightCheck() {
     })
   }, [status, model, vram, postSlug, pathname, environment])
 
-  // Bookmark/Copy tracking - copies link to clipboard
+  // Save/Share tracking - copies link only (no navigator.share to avoid AbortError)
   const handleBookmarkClick = useCallback((location: AffiliateLocation) => {
     const pageType = getPageType(pathname || "")
     // Map Status to CtaVerdict (yellow -> unknown for non-revenue CTAs)
     const verdictForCta: "red" | "green" | "unknown" = status === "yellow" ? "unknown" : status
 
-    // Copy link to clipboard
-    navigator.clipboard.writeText(window.location.href).then(() => {
+    // Copy link to clipboard with fallback
+    const copyToClipboard = () => {
+      // Modern API
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(window.location.href)
+      }
+      // Fallback for older browsers
+      const tempInput = document.createElement("input")
+      tempInput.value = window.location.href
+      document.body.appendChild(tempInput)
+      tempInput.select()
+      try {
+        document.execCommand("copy")
+      } catch (err) {
+        console.error("[Copy fallback failed]", err)
+      }
+      document.body.removeChild(tempInput)
+      return Promise.resolve()
+    }
+
+    copyToClipboard().then(() => {
       setShowCopyToast(true)
       setTimeout(() => setShowCopyToast(false), 2000)
     })
 
-    // Use cta_click for non-revenue CTAs with full context
+    // Track the copy action
     trackCtaClick({
       path: pathname,
       cta_id: `copy_link_${status}_${location}`,
@@ -320,7 +339,7 @@ export function R1PreflightCheck() {
       verdict: verdictForCta,
       pageType,
       slug: postSlug,
-      // dest_type/dest_id are undefined for non-revenue actions
+      dest_id: "copy_link",
       // Context: model, vram, environment for analysis
       model,
       vram,
@@ -495,7 +514,7 @@ export function R1PreflightCheck() {
                   onClick={() => handleDeepInfraClick('mobile_override')}
                   className="text-sm text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  Or try DeepInfra API <ExternalLink className="w-3 h-3 inline" />
+                  Alternative: DeepInfra <ExternalLink className="w-3 h-3 inline" />
                 </a>
               </div>
             </>
@@ -556,12 +575,12 @@ export function R1PreflightCheck() {
                   onClick={() => handleDeepInfraClick('red_card')}
                   className="text-sm text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  Or try DeepInfra API <ExternalLink className="w-3 h-3 inline" />
+                  Alternative: DeepInfra <ExternalLink className="w-3 h-3 inline" />
                 </a>
               </div>
 
               {/* Fallback: Check if 8B is viable (only shown if currently RED) */}
-              {canDowngradeTo8B && (
+              {canDowngradeTo8B ? (
                 <button
                   onClick={handleDowngrade}
                   data-umami-event="tool_downgrade_click"
@@ -583,6 +602,12 @@ export function R1PreflightCheck() {
                     </div>
                   </div>
                 </button>
+              ) : (
+                <p className="text-xs text-text-tertiary text-center py-2">
+                  {model === "8b" || model === "1.5b"
+                    ? "Already using the smallest recommended model"
+                    : `Your VRAM is sufficient for ${MODELS[model].label}`}
+                </p>
               )}
             </>
           )}
@@ -690,7 +715,7 @@ export function R1PreflightCheck() {
               </div>
 
               {/* Fallback: Check if 8B is viable (only shown if currently RED) */}
-              {canDowngradeTo8B && (
+              {canDowngradeTo8B ? (
                 <button
                   onClick={handleDowngrade}
                   data-umami-event="tool_downgrade_click"
@@ -705,6 +730,12 @@ export function R1PreflightCheck() {
                     </span>
                   </div>
                 </button>
+              ) : (
+                <p className="text-xs text-text-tertiary text-center py-2">
+                  {model === "8b" || model === "1.5b"
+                    ? "Already using the smallest recommended model"
+                    : `Your VRAM is sufficient for ${MODELS[model].label}`}
+                </p>
               )}
             </>
           )}
@@ -744,7 +775,7 @@ export function R1PreflightCheck() {
                 }}
                 className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
               >
-                <span>Copy Link to Share</span>
+                <span>Save / Share</span>
               </button>
 
               {/* Secondary: Cloud Option (text link only) */}
@@ -756,7 +787,7 @@ export function R1PreflightCheck() {
                   onClick={() => handleDeepInfraClick('green_card')}
                   className="text-sm text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  Or try DeepInfra API <ExternalLink className="w-3 h-3 inline" />
+                  Alternative: DeepInfra <ExternalLink className="w-3 h-3 inline" />
                 </a>
               </div>
             </>
@@ -769,7 +800,7 @@ export function R1PreflightCheck() {
                 }}
                 className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
               >
-                <span>Copy Link to Share</span>
+                <span>Save / Share</span>
               </button>
 
               {/* Trust Element: Recommended Settings */}
@@ -803,7 +834,7 @@ export function R1PreflightCheck() {
                   onClick={() => handleDeepInfraClick('green_card')}
                   className="text-sm text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  Or try DeepInfra API <ExternalLink className="w-3 h-3 inline" />
+                  Alternative: DeepInfra <ExternalLink className="w-3 h-3 inline" />
                 </a>
               </div>
 
@@ -824,43 +855,53 @@ export function R1PreflightCheck() {
           The calculator = possibility. The kit = decision.
           ==================================================================== */}
       <div className="mt-6 pt-6 border-t border-border">
-        <div className="p-4 rounded-lg border border-border bg-muted/30">
-          <h4 className="text-sm font-semibold text-text-primary mb-3">
-            What this tool does — and what it doesn't
-          </h4>
-          <p className="text-sm text-text-secondary mb-3">
-            This calculator measures <strong>possibility</strong>.
-          </p>
-          <p className="text-sm text-text-secondary mb-3">
-            It tells you what <em>might</em> work based on VRAM and model size.
-          </p>
-          <p className="text-sm text-text-secondary mb-4">
-            It does <strong>not</strong> tell you:
-          </p>
-          <ul className="text-sm text-text-secondary mb-4 ml-4 list-disc space-y-1">
-            <li>When to stop</li>
-            <li>Whether continuing is rational</li>
-            <li>How much time you're about to waste</li>
-          </ul>
-          <p className="text-sm text-text-secondary mb-2">
-            If you're still guessing after seeing this result:
-          </p>
-          <p className="text-sm text-text-secondary mb-3">
-            👉 <strong>The Survival Kit exists for what comes next.</strong>
-          </p>
-          <p className="text-sm text-text-secondary mb-4">
-            It doesn't optimize.<br />
-            It decides.
-          </p>
-          <a
-            href={LINK_KIT}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-text-secondary hover:text-text-primary underline underline-offset-4 transition-colors"
-          >
-            Buy Clarity — $9.90
-          </a>
-        </div>
+        <details className="group">
+          <summary className="cursor-pointer list-none">
+            <div className="p-4 rounded-lg border border-border bg-muted/30 hover:bg-muted/50 transition-colors">
+              <h4 className="text-sm font-semibold text-text-primary flex items-center gap-2">
+                What this tool does — and what it doesn't
+                <span className="text-text-tertiary group-open:rotate-90 transition-transform">▶</span>
+              </h4>
+            </div>
+          </summary>
+          <div className="p-4 rounded-lg border border-t-0 border-border bg-muted/30">
+            <p className="text-sm text-text-secondary mb-3">
+              This calculator measures <strong>possibility</strong>.
+            </p>
+            <p className="text-sm text-text-secondary mb-3">
+              It tells you what <em>might</em> work based on VRAM and model size.
+            </p>
+            <p className="text-sm text-text-secondary mb-4">
+              It does <strong>not</strong> tell you:
+            </p>
+            <ul className="text-sm text-text-secondary mb-4 ml-4 list-disc space-y-1">
+              <li>When to stop</li>
+              <li>Whether continuing is rational</li>
+              <li>How much time you're about to waste</li>
+            </ul>
+            <p className="text-sm text-text-secondary mb-2">
+              If you're still guessing after seeing this result:
+            </p>
+            <p className="text-sm text-text-secondary mb-3">
+              👉 <strong>The Survival Kit exists for what comes next.</strong>
+            </p>
+            <p className="text-sm text-text-secondary mb-4">
+              It doesn't optimize.<br />
+              It decides.
+            </p>
+            {status !== "green" && (
+              <a
+                href={LINK_KIT}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => handleGumroadClick('green_card')}
+                className="text-sm text-text-secondary hover:text-text-primary underline underline-offset-4 transition-colors"
+              >
+                Buy Clarity — $9.90
+              </a>
+            )}
+          </div>
+        </details>
       </div>
 
       {/* JetBrains / Cursor Disclaimer */}
