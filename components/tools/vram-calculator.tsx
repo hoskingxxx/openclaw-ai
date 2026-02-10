@@ -453,7 +453,7 @@ export function VramCalculator() {
               >
                 <div className="flex items-center gap-2 text-sm">
                   <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
+                  <span className="text-amber-900 dark:text-amber-100">Buy Clarity — $9.90</span>
                 </div>
               </a>
             </>
@@ -604,7 +604,7 @@ export function VramCalculator() {
               >
                 <div className="flex items-center gap-2 text-sm">
                   <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
+                  <span className="text-amber-900 dark:text-amber-100">Buy Clarity — $9.90</span>
                 </div>
               </a>
             </>
@@ -625,7 +625,7 @@ export function VramCalculator() {
                   </div>
                   <div className="flex-1">
                     <div className="font-bold text-amber-900 dark:text-amber-100 flex items-center gap-2">
-                      Get Extreme Optimization Config ($9.90)
+                      Buy Clarity — $9.90
                     </div>
                     <p className="text-sm text-amber-800 dark:text-amber-200 mt-1 leading-relaxed">
                       Production-ready templates for tight VRAM scenarios.
@@ -723,7 +723,7 @@ export function VramCalculator() {
               >
                 <div className="flex items-center gap-2 text-sm">
                   <Package className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <span className="text-amber-900 dark:text-amber-100">View Survival Kit</span>
+                  <span className="text-amber-900 dark:text-amber-100">Buy Clarity — $9.90</span>
                 </div>
               </a>
             </>
@@ -766,7 +766,7 @@ export function VramCalculator() {
                   </div>
                   <div className="flex-1">
                     <div className="font-bold text-white flex items-center gap-2 text-lg">
-                      🚀 Download 1-Click Survival Kit ($9.90)
+                      Buy Clarity — $9.90
                     </div>
                     <p className="text-sm text-white/90 mt-2 leading-relaxed">
                       Ready-to-use templates, monitoring, and prompts.
@@ -844,9 +844,18 @@ export function VramCalculator() {
             rel="noopener noreferrer"
             className="text-sm text-text-secondary hover:text-text-primary underline underline-offset-4 transition-colors"
           >
-            Download the OpenClaw Survival Kit ($9.90)
+            Buy Clarity — $9.90
           </a>
         </div>
+      </div>
+
+      {/* JetBrains / Cursor Disclaimer */}
+      <div className="mt-4 pt-4 border-t border-border">
+        <p className="text-xs text-text-tertiary leading-relaxed">
+          JetBrains / Cursor users:<br />
+          Local R1 failures usually happen <strong>before inference</strong>.<br />
+          The red lines are documented inside the Survival Kit.
+        </p>
       </div>
 
       {/* Footer Note */}

@@ -141,6 +141,11 @@ ollama run deepseek-r1:8b`}
               <p className="text-xs text-text-tertiary font-mono mt-6 break-words">
                 Bookmark this page. You will be back after your next OOM.
               </p>
+              <p className="text-xs text-text-tertiary mt-4 leading-relaxed">
+                JetBrains / Cursor users:<br />
+                Local R1 failures usually happen <strong className="font-semibold">before inference</strong>.<br />
+                The red lines are documented inside the Survival Kit.
+              </p>
             </div>
           </section>
           </ContentEdge>

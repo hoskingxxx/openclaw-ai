@@ -48,7 +48,7 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
           onClick={handleClick}
           className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded transition-colors text-xs sm:text-sm flex-shrink-0"
         >
-          Download Kit
+          Buy Clarity — $9.90
         </a>
       </div>
     );
@@ -90,7 +90,7 @@ export function SurvivalKitPromo({ variant = "full", placement = "top" }: Surviv
           onClick={handleClick}
           className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
         >
-          <span>Download Survival Kit ($9.90)</span>
+          <span>Buy Clarity — $9.90</span>
           <ExternalLink className="w-4 h-4" />
         </a>
 

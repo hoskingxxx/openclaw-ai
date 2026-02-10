@@ -1,0 +1,293 @@
+---
+title: "Fix DeepSeek R1 </think> Tag Error in JetBrains / Continue Plugin"
+date: 2026-02-09
+description: "Continue plugin shows 'JSON parsing failed' when using DeepSeek R1 in JetBrains IDEs. This is a known thinking tag issue. Here's the fix that works in IntelliJ, PyCharm, and other JetBrains IDEs."
+category: "Troubleshooting"
+tags: ["JetBrains", "Continue", "DeepSeek", "IDE", "JSON", "Troubleshooting"]
+author: "LazyDev"
+featured: false
+seoKeywords: ["DeepSeek R1 JetBrains", "Continue plugin JSON error", "JetBrains DeepSeek", "Continue plugin DeepSeek", "DeepSeek thinking tags JetBrains"]
+---
+
+<div class="glass-card p-6 border-l-4 border-red-500 mb-8">
+
+**Error Confirmation**
+
+```bash
+Error: JSON parsing failed. Unexpected token '<'
+Expecting value: line 1 column 1 (char 0)
+    at JSON.parse (<anonymous>)
+    at ContinueExtension.handleResponse (/extensions/continue/core/handler.js:84)
+```
+
+**What You See in JetBrains:**
+
+Continue plugin throws an error when DeepSeek R1 responds. The plugin expects clean JSON but receives thinking tags instead.
+
+**Full Response (The Problem):**
+
+DeepSeek R1 wraps its response in thinking tags before the actual JSON:
+
+```text
+<!-- think -->
+The user is asking for a JSON response. Let me format it properly...
+<!-- /think -->
+```
+
+```json
+{"result": "actual data here"}
+```
+
+**Scope:** Continue's JSON parser fails because it receives `<!-- think -->` tags at position 0 instead of the expected `{`. The plugin doesn't strip DeepSeek's thinking tags before parsing JSON.
+
+**Error Code:** `Unexpected token '<'` — JSON parser encountered thinking tag markup instead of opening brace.
+
+</div>
+
+---
+
+<div class="glass-card p-6 border-l-4 border-blue-500 mb-8">
+
+**Affected Environment**
+
+| Component | Version | Last Verified |
+|-----------|---------|---------------|
+| JetBrains IDEs | IntelliJ IDEA, PyCharm, WebStorm, CLion | 2026-02-09 |
+| Continue Plugin | Latest stable | 2026-02-09 |
+| DeepSeek R1 | All variants (8b, 32b, 70b, distilled) | 2026-02-09 |
+| Ollama | Latest | 2026-02-09 |
+
+**Note:** This issue affects ALL JetBrains IDEs using Continue plugin with DeepSeek R1. The root cause is DeepSeek's thinking tags, not a bug in Continue or JetBrains.
+
+</div>
+
+---
+
+## 3-Minute Sanity Check
+
+Run these commands to confirm the issue:
+
+```bash
+# 1. Is DeepSeek R1 running?
+ollama list | grep deepseek-r1
+# Expected: deepseek-r1:latest (or variant)
+
+# 2. Test raw JSON output (should show thinking tags)
+ollama run deepseek-r1:latest 'Output JSON: {"status": "ok"}' | head -5
+# Expected: You will see <!-- think --> tags before the JSON
+
+# 3. Check Continue plugin is configured for JSON mode
+# In JetBrains: File → Settings → Languages & Frameworks → AI → Continue
+# Look for "Response format" or "JSON mode" setting
+```
+
+**If step 2 shows NO thinking tags:** Your issue may not be DeepSeek thinking tags. Check for other JSON formatting issues.
+
+---
+
+## Decision Gate
+
+<div class="glass-card p-6 border-l-4 border-green-500 mb-8">
+
+:::decision-gate
+### Stop wrestling with your IDE. Choose your path.
+
+**Choose Manual Fix only if:**
+- You enjoy editing configuration files for each JetBrains IDE
+- You have multiple development machines to maintain
+- You're comfortable updating configs on each Continue plugin update
+- You haven't spent more than 30 minutes on this
+
+**Choose Automated Fix if:**
+- You want a fix that works across all JetBrains IDEs
+- You want lifetime updates (no re-fixing on plugin updates)
+- You value your time more than $9.90
+- You want pre-configured settings that Just Work™
+:::
+
+</div>
+
+---
+
+## Fork in the Road
+
+<div class="grid md:grid-cols-2 gap-6 mb-8">
+
+<div class="glass-card p-6 border-l-4 border-orange-500">
+
+**Option A: Manual Fix (High Maintenance)**
+
+**What you'll do:**
+- Edit Continue plugin's `ai.json` configuration manually
+- Add system prompt override to disable DeepSeek thinking tags
+- Repeat for each JetBrains IDE (IntelliJ, PyCharm, WebStorm, etc.)
+- Re-apply fix every time Continue plugin updates
+
+**Time investment:** 20-30 minutes initially, then 5-10 minutes per update
+
+**Risks:**
+- Config gets wiped on plugin update
+- Different JetBrains IDEs store config in different locations
+- Easy to forget which settings you changed
+- No centralized management
+
+**Steps:**
+1. Open JetBrains IDE
+2. Go to `File → Settings → Languages & Frameworks → AI → Continue`
+3. Find "System Prompt" or "Custom Instructions"
+4. Add: `"You are a JSON-only API. Output ONLY JSON. Do NOT use <think> tags."`
+5. Restart IDE
+6. Test with a simple JSON request
+
+**Verdict:** High maintenance. You will repeat this every time Continue updates.
+
+</div>
+
+<div class="glass-card p-6 border-l-4 border-green-500">
+
+**Option B: Automated Fix (Lifetime Updates)**
+
+**What you get:**
+- Pre-configured `ai.json` for Continue plugin
+- Pre-configured `Modelfile` for Ollama
+- Tested on IntelliJ IDEA, PyCharm, WebStorm, CLion
+- Lifetime updates — new fixes delivered automatically
+- Works across all JetBrains IDEs with one install
+
+**Time investment:** 2 minutes to download and apply
+
+**Benefits:**
+- No manual config editing
+- Survives plugin updates
+- Consistent across all your JetBrains IDEs
+- Includes additional fixes (JSON mode, OOM prevention, optimized settings)
+
+**Verdict:** Set it once, it works forever.
+
+</div>
+
+</div>
+
+---
+
+## Primary CTA
+
+import JetBrainsSurvivalKitCTA from "@/components/tracking/JetBrainsSurvivalKitCTA"
+
+<JetBrainsSurvivalKitCTA />
+
+---
+
+## Manual Guide (SEO)
+
+:::div{.border-l-4 border-blue-500 .glass-card .p-6 .mb-8}
+
+**If you prefer manual editing, here's the complete fix:**
+
+**Step 1: Locate Continue Plugin Config**
+
+Continue plugin stores its config in different locations depending on your JetBrains IDE:
+
+- **IntelliJ IDEA:** `~/.config/JetBrains/IntelliJIdea2024.1/continue/config/ai.json`
+- **PyCharm:** `~/.config/JetBrains/PyCharm2024.1/continue/config/ai.json`
+- **WebStorm:** `~/.config/JetBrains/WebStorm2024.1/continue/config/ai.json`
+- **CLion:** `~/.config/JetBrains/CLion2024.1/continue/config/ai.json`
+
+**Step 2: Add System Prompt Override**
+
+Open `ai.json` and add or modify the `systemPrompt` field:
+
+```json
+{
+  "systemPrompt": "You are a JSON-only API. Output ONLY JSON. Do NOT use <think> tags. Do NOT include any text before or after the JSON. Format: json object like {\"key\": \"value\"}"
+}
+```
+
+**Step 3: Configure Ollama Model (Optional but Recommended)**
+
+If using Ollama, ensure your `Modelfile` includes:
+
+```dockerfile
+FROM deepseek-r1:latest
+
+# Disable thinking tags for JSON mode
+PARAMETER temperature 0.7
+PARAMETER num_ctx 8192
+
+SYSTEM You are a JSON-only API. Output ONLY JSON. No <think> tags.
+```
+
+**Step 4: Restart JetBrains IDE**
+
+Close and reopen your JetBrains IDE for the config to take effect.
+
+**Step 5: Test**
+
+In Continue plugin, send a simple prompt:
+
+```
+Return JSON: {"status": "ok"}
+```
+
+Expected output: `{"status": "ok"}` (clean JSON, no thinking tags)
+
+:::
+
+---
+
+## Why NOT Other Options
+
+<div class="glass-card p-6 border-l-4 border-orange-500 mb-8">
+
+| Option | Rejection Reason |
+|--------|------------------|
+| **Switch to a different LLM** | DeepSeek R1 is one of the best local models. Switching avoids the problem rather than fixing it. |
+| **Edit Continue plugin source code** | Requires rebuilding the plugin from source. Breaks on every update. |
+| **Disable Continue plugin entirely** | Loses the convenience of AI assistant in your IDE. Manual copy-pasting is slower. |
+| **Use web-based DeepSeek** | No local context of your codebase. Privacy concerns. Requires internet connection. |
+| **Wait for Continue plugin update** | Thinking tags are part of DeepSeek's architecture. No timeline for a fix. |
+
+</div>
+
+---
+
+## Summary
+
+| Check | Command | Pass Criteria |
+|-------|---------|---------------|
+| DeepSeek R1 installed | `ollama list \| grep deepseek-r1` | Shows deepseek-r1:latest or variant |
+| Thinking tags present | `ollama run deepseek-r1:latest 'Output JSON' \| head -5` | Shows `<!-- think -->` tags |
+| Continue plugin configured | Check IDE settings for Continue config | Continue is enabled and configured |
+
+**Decision:**
+
+- **Want a 2-minute fix that survives updates?** Get Survival Kit (Option B)
+- **Enjoy manual config editing?** Follow the Manual Guide above
+
+---
+
+## Related Guides
+
+- [How to Use DeepSeek R1 with OpenClaw](/guides/how-to-use-deepseek-with-openclaw) - Complete DeepSeek R1 configuration guide
+- [Fix OpenClaw JSON Mode Errors](/guides/fix-openclaw-json-mode-errors) - Same thinking tags issue, different tool
+- [Hardware Requirements Reality Check](/guides/hardware-requirements-reality-check) - Can your hardware run DeepSeek R1?
+
+---
+
+<div class="text-xs text-text-tertiary mt-8 pt-4 border-t border-white/5 leading-relaxed">
+
+JetBrains / Cursor users:
+Local R1 failures usually happen **before inference**.
+The red lines are documented inside the Survival Kit.
+
+</div>
+
+---
+
+<div class="text-center text-sm text-text-secondary mt-8 pt-4 border-t border-white/5">
+
+☕ If this helped, you can [buy me a coffee](https://buymeacoffee.com/openclaw?ref=troubleshooting).
+
+No obligation — just support for more real crash logs.
+
+</div>
