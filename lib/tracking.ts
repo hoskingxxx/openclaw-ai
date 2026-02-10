@@ -598,7 +598,7 @@ export function trackToolDowngrade(params: {
 function trackEvent(eventName: string, data: Record<string, unknown>): void {
   // DEV: Log payload for verification (enable via localStorage.umami_debug = "1")
   if (process.env.NODE_ENV === "development" || (typeof window !== "undefined" && localStorage.getItem("umami_debug") === "1")) {
-    console.log(`[Umami] ${eventName}`, data);
+    console.log(`[Umami] ${eventName}`, JSON.stringify(data));
   }
 
   const umami = window.umami;

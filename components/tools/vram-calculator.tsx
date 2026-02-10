@@ -474,6 +474,7 @@ export function R1PreflightCheck() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleVultrClick('mobile_override')}
+                data-testid="cta-vultr"
                 className="block p-4 rounded-lg border-2 border-purple-500 bg-purple-50 dark:bg-purple-950/30 hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-all"
               >
                 <div className="flex items-center gap-3">
@@ -531,6 +532,7 @@ export function R1PreflightCheck() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleVultrClick('red_card')}
+                data-testid="cta-vultr"
                 className="block p-4 rounded-lg border-2 border-purple-500 bg-purple-50 dark:bg-purple-950/30 hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-all"
               >
                 <div className="flex items-start gap-3">
@@ -631,6 +633,7 @@ export function R1PreflightCheck() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleGumroadClick('mobile_override')}
+                data-testid="cta-gumroad"
                 className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
               >
                 <div className="flex items-start gap-4">
@@ -673,6 +676,7 @@ export function R1PreflightCheck() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleGumroadClick('yellow_card')}
+                data-testid="cta-gumroad"
                 className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
               >
                 <div className="flex items-start gap-4">
@@ -759,6 +763,7 @@ export function R1PreflightCheck() {
                 onClick={() => {
                   handleBookmarkClick('mobile_override')
                 }}
+                data-testid="cta-copy-link"
                 className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
               >
                 <span>Save / Share</span>
@@ -784,6 +789,7 @@ export function R1PreflightCheck() {
                 onClick={() => {
                   handleBookmarkClick('green_card')
                 }}
+                data-testid="cta-copy-link"
                 className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
               >
                 <span>Save / Share</span>

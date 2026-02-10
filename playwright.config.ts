@@ -14,9 +14,10 @@ export default defineConfig({
     ['html', { outputFolder: 'playwright-report' }],
   ],
   use: {
-    baseURL: 'https://openclaw-ai.org',
-    trace: 'retain-on-failure',
-    screenshot: 'only-on-failure',
+    baseURL: 'http://localhost:3000',
+    trace: 'on',
+    screenshot: 'on',
+    video: 'on-first-retry',
   },
   projects: [
     {

@@ -5,3 +5,5 @@ dist
 .vercel
 .env*.local
 tsconfig.tsbuildinfo
+playwright-report/
+test-results/
