@@ -95,6 +95,10 @@ export const faqs = [
         a: "OpenClaw is an open-source AI Agent framework that executes real tasks on your computer—reading files, running commands, modifying code—not just chat.\n\nThink of it as a junior engineer with sudo privileges. If you wouldn't trust an intern with root access to this folder, don't trust the agent.",
       },
       {
+        q: "Is this related to Clawdbot or Moltbot?",
+        a: "Yes. The ecosystem went through rapid rebranding (Clawdbot → Moltbot → OpenClaw) in a short period of time. This site exists to track the breakages and decision boundaries that tend to get lost during fast-moving rebrands — so you don't waste weekends chasing moving targets.",
+      },
+      {
         q: "What's the essential difference from ChatGPT / Claude?",
         a: "ChatGPT answers questions and gives advice. OpenClaw reads files, runs commands, modifies code, and executes workflows.\n\nChatGPT is a consultant. OpenClaw is the intern who actually does the work.",
       },
