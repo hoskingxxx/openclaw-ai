@@ -99,7 +99,7 @@ export function JetBrainsSurvivalKitCTA() {
         <span>Buy Clarity — $9.90</span>
       </a>
       <p className="text-sm text-text-secondary mt-4">
-        Download Survival Kit — Pre-configured JetBrains + Continue + DeepSeek R1
+        Buy Clarity — $9.90
       </p>
     </div>
   )
