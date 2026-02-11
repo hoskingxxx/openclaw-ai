@@ -254,7 +254,7 @@ export default async function BlogPostPage({
 
             // 调试日志（生产环境可移除）
             if (typeof window !== "undefined") {
-              console.log("[RealityCheck] Current slug:", post.slug, "Show:", shouldShow);
+              console.log("[R1PreflightCheck] Current slug:", post.slug, "Show:", shouldShow);
             }
 
             return shouldShow ? (
