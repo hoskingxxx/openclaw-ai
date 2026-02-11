@@ -84,39 +84,28 @@ export default function RecommendedSetupPage() {
           </ContentEdge>
         </ContentRail>
 
-        {/* Exit CTAs (P0-1 fix - dead end) */}
+        {/* Exit Block - Before Coming Soon */}
         <ContentRail>
           <ContentEdge>
           <section className="py-6">
-            <div className="glass-card p-6">
-              <h2 className="text-lg font-bold text-text-primary mb-4">
-                Need GPU Now? Quick Exit:
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold text-text-primary">
+                Before you choose a VPS, check if you even need one.
               </h2>
-              <div className="flex flex-col sm:flex-row gap-4">
-                {/* Primary: Vultr */}
-                <a
-                  href="https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=recommended_setup&utm_content=exit_cta"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 px-6 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all flex items-center justify-center gap-2 font-semibold"
-                >
-                  <Zap className="w-5 h-5" />
-                  Rent Cloud GPU (Vultr)
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-                {/* Secondary: Preflight check */}
+              <p className="text-text-secondary">
+                Run the R1 Pre-flight Check to avoid wasting money on the wrong setup.
+              </p>
+              <div className="space-y-3 pt-2">
                 <Link
                   href="/preflight"
-                  className="flex-1 px-6 py-4 border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white rounded-lg transition-all flex items-center justify-center gap-2 font-semibold"
+                  className="inline-block px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-all"
                 >
-                  <Cpu className="w-5 h-5" />
-                  Check If I Can Run It
-                  <ArrowRight className="w-4 h-4" />
+                  Run Pre-flight Check
                 </Link>
+                <div className="text-sm text-text-secondary">
+                  Or <a href="https://hilda666888.gumroad.com/l/ymwwgm" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-orange-400 underline">get the 1-Click Survival Kit ($9.90)</a>
+                </div>
               </div>
-              <p className="text-xs text-text-tertiary mt-4">
-                Not sure which GPU you need? Start with the reality check →
-              </p>
             </div>
           </section>
           </ContentEdge>

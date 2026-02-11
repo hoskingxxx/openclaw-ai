@@ -272,6 +272,14 @@ export function trackRevenueOutbound(params: {
 }): void {
   if (typeof window === "undefined") return;
 
+  // Click protection: prevent double-firing (P0 hotfix)
+  const clickKey = `revenue_outbound:${params.path}:${params.cta_id || params.placement}:${params.verdict || 'unknown'}`;
+  if (sessionStorage.getItem(clickKey) === "1") {
+    return;
+  }
+  // Mark as fired (expires on session end)
+  sessionStorage.setItem(clickKey, "1");
+
   const eventData: RevenueOutboundEvent = {
     // Legacy
     ...(params.dest && { dest: params.dest }),
@@ -325,8 +333,8 @@ export function trackCtaImpression(params: {
 }): void {
   if (typeof window === "undefined") return;
 
-  // Check if already fired for this placement
-  const sessionKey = `cta_impression_${params.placement}`;
+  // Dedupe key: path + cta_id + verdict (per P0 hotfix spec)
+  const sessionKey = `cta_impression:${params.path}:${params.cta_id || params.placement}:${params.verdict || 'unknown'}`;
   if (sessionStorage.getItem(sessionKey) === "1") {
     return;
   }
