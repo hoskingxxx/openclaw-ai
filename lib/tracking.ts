@@ -100,17 +100,17 @@ export type Offer = "survival_kit" | "coffee" | "cloud_gpu" | "api_fallback";
 /**
  * CTA position - standardized across all CTA events
  */
-export type CtaPosition = "top" | "mid" | "bottom" | "inline";
+export type CtaPosition = "top" | "mid" | "bottom" | "inline" | "verdict_primary" | "verdict_secondary";
 
 /**
  * User intent - why they're seeing this CTA
  */
-export type Intent = "stuck" | "evaluate" | "escape";
+export type Intent = "stuck" | "evaluate" | "escape" | "ship" | "clarity";
 
 /**
  * Context - what problem domain they're in
  */
-export type Context = "windows" | "hardware" | "json" | "docker" | "security" | "ide";
+export type Context = "windows" | "hardware" | "json" | "docker" | "security" | "ide" | "setup";
 
 /**
  * CTA verdict - simplified for CTA events (includes yellow)
@@ -125,7 +125,7 @@ export type DestType = "gumroad" | "vultr" | "api";
 /**
  * Revenue offer - semantic offer type
  */
-export type RevenueOffer = "fix_now" | "escape_local" | "try_api";
+export type RevenueOffer = "fix_now" | "escape_local" | "try_api" | "run_now" | "stop_rules" | "save_time";
 
 // ============================================================================
 // Event Interfaces (v1.0 + P1 Enrichment)

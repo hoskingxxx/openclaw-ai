@@ -21,9 +21,9 @@
 
 import { useState, useEffect, useCallback, useRef } from "react"
 import { usePathname } from "next/navigation"
-import { trackAffiliateClick, trackToolDowngrade, trackRevenueOutbound, trackCtaImpression, trackCtaClick, getPageType } from "@/lib/tracking"
-import { ConversionButton } from "@/components/monetization/ConversionButton"
-import { ExternalLink, Cloud, AlertTriangle, Settings, Package, Shield, Cpu, Zap, Check } from "lucide-react"
+import { trackAffiliateClick, trackRevenueOutbound, trackCtaImpression, trackCtaClick, getPageType } from "@/lib/tracking"
+import type { RevenueOffer } from "@/lib/tracking"
+import { ExternalLink, Cloud, AlertTriangle, Settings, Package, Check } from "lucide-react"
 
 // ============================================================================
 // GLOBAL AFFILIATE LINKS (HARDCODED)
@@ -153,12 +153,9 @@ export function R1PreflightCheck() {
   const pathname = usePathname()
   const postSlug = pathname?.split("/").filter(Boolean).pop() || ""
 
-  // Refs for CTA impression tracking
-  const gumroadSecurityRef = useRef<HTMLAnchorElement>(null)
-  const vultrSecurityRef = useRef<HTMLAnchorElement>(null)
+  // Refs for CTA impression tracking (Verdict Gate - only primary CTAs)
   const vultrRedCardRef = useRef<HTMLAnchorElement>(null)
   const gumroadYellowCardRef = useRef<HTMLAnchorElement>(null)
-  const gumroadGreenCardRef = useRef<HTMLAnchorElement>(null)
 
   // Mobile detection
   useEffect(() => {
@@ -174,53 +171,11 @@ export function R1PreflightCheck() {
   const requiredVRAM = MODELS[model].requiredVRAM
   const status = calculateStatus(requiredVRAM, effectiveVRAM)
 
-  // Try Smaller Model only if it would improve status (RED → YELLOW/GREEN)
-  const canDowngradeTo8B = model !== "8b" && model !== "1.5b" && status === "red"
-
-  // Show security banner? (Independent layer, does NOT affect status)
-  const showSecurityBanner = environment === "windows" || environment === "macos"
-
-  // CTA impression tracking for text links
+  // CTA impression tracking - Verdict Gate spec
   useEffect(() => {
     const pageType = getPageType(pathname || "")
 
-    // Security banner Gumroad link impression
-    if (showSecurityBanner && gumroadSecurityRef.current) {
-      trackCtaImpression({
-        dest: "gumroad",
-        offer: "survival_kit",
-        placement: "green_card",
-        pageType,
-        slug: postSlug,
-        verdict: "green",
-        path: pathname,
-        // P1: CTA properties for observability
-        cta_id: "gumroad_green_security_banner",
-        cta_position: "top",
-        intent: "escape",
-        context: "security",
-      })
-    }
-
-    // Security banner Vultr link impression
-    if (showSecurityBanner && vultrSecurityRef.current) {
-      trackCtaImpression({
-        dest: "vultr",
-        offer: "cloud_gpu",
-        placement: "green_card",
-        pageType,
-        slug: postSlug,
-        verdict: "green",
-        path: pathname,
-        // P1: CTA properties for observability
-        cta_id: "vultr_green_security_banner",
-        cta_position: "top",
-        intent: "escape",
-        context: "security",
-      })
-    }
-
-    // Vultr red card impression (primary RED CTA)
+    // RED: Vultr primary CTA impression
     if (status === "red" && vultrRedCardRef.current) {
       trackCtaImpression({
         dest: "vultr",
@@ -230,15 +185,14 @@ export function R1PreflightCheck() {
         slug: postSlug,
         verdict: "red",
         path: pathname,
-        // P1: CTA properties for observability
-        cta_id: "vultr_red_red_card",
-        cta_position: "bottom",
+        cta_id: "vultr_red_primary",
+        cta_position: "verdict_primary",
         intent: "escape",
         context: "hardware",
       })
     }
 
-    // Gumroad yellow card impression
+    // YELLOW: Gumroad primary CTA impression
     if (status === "yellow" && gumroadYellowCardRef.current) {
       trackCtaImpression({
         dest: "gumroad",
@@ -248,32 +202,45 @@ export function R1PreflightCheck() {
         slug: postSlug,
         verdict: "yellow",
         path: pathname,
-        // P1: CTA properties for observability
-        cta_id: "gumroad_yellow_yellow_card",
-        cta_position: "bottom",
+        cta_id: "kit_yellow_primary",
+        cta_position: "verdict_primary",
         intent: "evaluate",
         context: "hardware",
       })
     }
-  }, [pathname, postSlug, showSecurityBanner, status])
+  }, [pathname, postSlug, status])
 
-  // Tracking helpers - use revenue_outbound for Gumroad and DeepInfra per Spec v1.0
-  // P1: Add model, vram, environment for post-hoc analysis
+  // Tracking helpers - Verdict Gate tracking spec
   const handleGumroadClick = useCallback((location: AffiliateLocation) => {
     const pageType = getPageType(pathname || "")
+    // Map status/location to canonical cta_id per spec
+    const ctaIdMap: Record<Status, string> = {
+      red: "kit_red_secondary",
+      yellow: "kit_yellow_primary",
+      green: "kit_green_secondary",
+    }
+    const offerMap: Record<Status, RevenueOffer> = {
+      red: "stop_rules" as const,
+      yellow: "fix_now" as const,
+      green: "save_time" as const,
+    }
+
     trackRevenueOutbound({
       dest: "gumroad",
       offer: "survival_kit",
-      placement: status === "yellow" ? "yellow_card" : "green_card",
+      placement: location,
       pageType,
       slug: postSlug,
       verdict: status,
       path: pathname,
-      // P1: Enrichment
+      // Verdict Gate spec
       dest_type: "gumroad",
-      dest_id: "survival_kit",
-      cta_id: `gumroad_${status}_${location}`,
-      offer_revenue: "fix_now",
+      dest_id: "gumroad_ymwwgm",
+      cta_id: ctaIdMap[status],
+      cta_position: status === "yellow" ? "verdict_primary" : "verdict_secondary",
+      intent: status === "yellow" ? ("evaluate" as const) : ("clarity" as const),
+      context: status === "green" ? ("setup" as const) : ("hardware" as const),
+      offer_revenue: offerMap[status],
       // Context: model, vram, environment for analysis
       model,
       vram,
@@ -306,6 +273,13 @@ export function R1PreflightCheck() {
   const handleVultrClick = useCallback((location: AffiliateLocation) => {
     const pageType = getPageType(pathname || "")
 
+    // Map status/location to canonical cta_id per spec
+    const ctaIdMap: Record<Status, string> = {
+      red: "vultr_red_primary",
+      yellow: "vultr_yellow_secondary",
+      green: "vultr_green_secondary",
+    }
+
     // Double-write: fire BOTH revenue_outbound (canonical) and affiliate_click (legacy)
     trackRevenueOutbound({
       dest: "vultr",
@@ -315,11 +289,14 @@ export function R1PreflightCheck() {
       slug: postSlug,
       verdict: status,
       path: pathname,
-      // P1: Enrichment
+      // Verdict Gate spec
       dest_type: "vultr",
       dest_id: "vultr_cloud_gpu",
-      cta_id: `vultr_${status}_${location}`,
-      offer_revenue: "escape_local",
+      cta_id: ctaIdMap[status],
+      cta_position: status === "red" ? ("verdict_primary" as const) : ("verdict_secondary" as const),
+      intent: "escape" as const,
+      context: "hardware" as const,
+      offer_revenue: "run_now" as const,
       // Context: model, vram, environment for analysis
       model,
       vram,
@@ -366,33 +343,22 @@ export function R1PreflightCheck() {
       setTimeout(() => setShowCopyToast(false), 2000)
     })
 
-    // Track the copy action
+    // Track the copy action - Verdict Gate spec
     trackCtaClick({
       path: pathname,
-      cta_id: `copy_link_${status}_${location}`,
-      cta_position: location === "mobile_override" ? "inline" : "bottom",
-      intent: "evaluate",
-      context: "hardware",
-      verdict: status, // Use status directly (red/yellow/green)
+      cta_id: "green_primary_copy",
+      cta_position: "verdict_primary",
+      intent: "ship" as const,
+      context: "setup" as const,
+      verdict: status,
       pageType,
       slug: postSlug,
-      dest_id: "copy_link",
       // Context: model, vram, environment for analysis
       model,
       vram,
       environment,
     })
   }, [pathname, postSlug, status, model, vram, environment])
-
-  const handleDowngrade = () => {
-    // Track downgrade with full context for analysis
-    trackToolDowngrade({
-      fromModel: model,
-      toModel: ENTRY_MODEL,
-      postSlug,
-    })
-    setModel(ENTRY_MODEL)
-  }
 
   return (
     <div className="my-8 p-6 border border-border rounded-xl bg-card shadow-sm">
@@ -405,46 +371,6 @@ export function R1PreflightCheck() {
           Based on common setups. Results are estimates.
         </p>
       </div>
-
-      {/* Security Banner (Independent Layer - Does NOT affect status) */}
-      {showSecurityBanner && (
-        <div className="mb-6 p-4 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/20">
-          <div className="flex items-start gap-3">
-            <Shield className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <div className="font-semibold text-amber-900 dark:text-amber-100 text-sm">
-                ⚠️ Security Note
-              </div>
-              <p className="text-sm text-amber-800 dark:text-amber-200 mt-1">
-                Local environments have limited isolation.
-                {" "}For long-term safety, use our{" "}
-                <a
-                  ref={gumroadSecurityRef}
-                  href={LINK_KIT}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleGumroadClick('green_card')}
-                  className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
-                >
-                  Safe Config
-                </a>
-                {" "}or a{" "}
-                <a
-                  ref={vultrSecurityRef}
-                  href={LINK_CLOUD}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleVultrClick('green_card')}
-                  className="underline hover:text-amber-950 dark:hover:text-amber-100 font-medium"
-                >
-                  Cloud VPS
-                </a>
-                .
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Input Controls */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -489,394 +415,200 @@ export function R1PreflightCheck() {
       </div>
 
       {/* ====================================================================
-          RED STATE (Cannot Run)
+          🔴 RED STATE — Exit Mode (Cloud Dominant)
           ==================================================================== */}
       {status === "red" && (
-        <div className="space-y-3">
-          {/* Status Header */}
-          <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
-            <div className="flex items-center gap-2 text-red-900 dark:text-red-100 font-semibold">
-              <AlertTriangle className="w-5 h-5" />
-              Status: Local Setup Not Viable
-            </div>
-            <p className="text-sm text-red-700 dark:text-red-300 mt-1">
-              Physics limit reached. VRAM overhead will cause instability or OOM loops.
-            </p>
+        <div className="space-y-4">
+          {/* Headline */}
+          <div className="pb-2 border-b border-red-900/30">
+            <h3 className="text-lg font-semibold text-red-400">
+              Local setup not viable.
+            </h3>
           </div>
 
-          {/* Mobile CTA or Desktop RED CTA */}
-          {isMobile ? (
-            <>
-              {/* Primary: Vultr Cloud GPU (has affiliate commission) */}
-              <a
-                href={LINK_CLOUD}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleVultrClick('mobile_override')}
-                data-testid="cta-vultr"
-                className="block p-4 rounded-lg border-2 border-purple-500 bg-purple-50 dark:bg-purple-950/30 hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <Cloud className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                  <div className="flex-1">
-                    <div className="font-bold text-purple-900 dark:text-purple-100">
-                      Run on Cloud GPU
-                    </div>
-                    <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
-                      Vultr - Instant GPU access
-                    </p>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                </div>
-              </a>
-
-              {/* Secondary: Survival Kit */}
-              <a
-                href={LINK_KIT}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleGumroadClick('mobile_override')}
-                className="block p-3 rounded-lg border border-text-secondary hover:border-brand-primary transition-all text-center"
-              >
-                <span className="text-sm text-text-secondary">
-                  Get Survival Kit (View Stop Rules)
-                </span>
-              </a>
-
-              {/* Tertiary: DeepInfra (alternative) */}
-              <div className="text-center">
-                <a
-                  href={LINK_API}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleDeepInfraClick('mobile_override')}
-                  className="text-sm text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
-                  Alternative: DeepInfra <ExternalLink className="w-3 h-3 inline" />
-                </a>
-              </div>
-            </>
-          ) : (
-            <>
-              {/* Status Header */}
-              <div className="flex items-center gap-2 text-red-400 font-semibold">
-                <AlertTriangle className="w-5 h-5" />
-                Status: Local Setup Not Viable
-              </div>
-
-              {/* Primary CTA: Vultr Cloud GPU (has affiliate commission) */}
-              <a
-                ref={vultrRedCardRef}
-                href={LINK_CLOUD}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleVultrClick('red_card')}
-                data-testid="cta-vultr"
-                className="block p-4 rounded-lg border-2 border-purple-500 bg-purple-50 dark:bg-purple-950/30 hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-all"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-purple-500 rounded-lg">
-                    <Cloud className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-purple-900 dark:text-purple-100">
-                      Run on Cloud GPU
-                    </div>
-                    <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
-                      Vultr - GPU servers from $2.50/hr
-                    </p>
-                    <div className="flex items-center gap-2 mt-2 text-sm font-medium text-purple-600 dark:text-purple-400">
-                      Get Started <ExternalLink className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              </a>
-
-              {/* Secondary CTA: Survival Kit - Decision boundary */}
-              <div className="text-center mt-3">
-                <a
-                  href={LINK_KIT}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleGumroadClick('red_card')}
-                  className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-brand-primary transition-colors"
-                >
-                  Get Survival Kit (View Stop Rules) <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-
-              {/* Tertiary: DeepInfra (alternative) */}
-              <div className="text-center mt-2">
-                <a
-                  href={LINK_API}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleDeepInfraClick('red_card')}
-                  className="text-sm text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
-                  Alternative: DeepInfra <ExternalLink className="w-3 h-3 inline" />
-                </a>
-              </div>
-
-              {/* Fallback: Check if 8B is viable (only shown if currently RED) */}
-              {canDowngradeTo8B && (
-                <button
-                  onClick={handleDowngrade}
-                  data-umami-event="tool_downgrade_click"
-                  data-umami-from={model}
-                  data-umami-to={ENTRY_MODEL}
-                  className="w-full p-4 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-orange-500 rounded-lg">
-                      <Zap className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-bold text-orange-900 dark:text-orange-100">
-                        Check if 8B is viable
-                      </div>
-                      <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
-                        Test if {MODELS[ENTRY_MODEL].label} fits your VRAM after overhead.
-                      </p>
-                    </div>
-                  </div>
-                </button>
-              )}
-            </>
-          )}
-        </div>
-      )}
-
-      {/* ====================================================================
-          YELLOW STATE (Tight Fit - Optimization Needed)
-          ==================================================================== */}
-      {status === "yellow" && (
-        <div className="space-y-3">
-          {/* Status Header */}
-          <div className="flex items-center gap-2 text-yellow-400 font-semibold">
-            <AlertTriangle className="w-5 h-5" />
-            Status: High Risk Zone
-          </div>
-
-          {/* Copy: Risk explanation */}
-          <p className="text-sm text-yellow-200 dark:text-yellow-100 mb-4">
-            You are on the razor's edge. Browser tabs or IDE plugins will crash you.
+          {/* Subline */}
+          <p className="text-sm text-red-300/80">
+            Your hardware headroom is below stable threshold.
           </p>
 
-          {/* Mobile CTA Override or Desktop YELLOW CTA */}
-          {isMobile ? (
-            <>
-              {/* Primary: Gumroad - ALWAYS priority in MOBILE YELLOW */}
-              <a
-                href={LINK_KIT}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleGumroadClick('mobile_override')}
-                data-testid="cta-gumroad"
-                className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl shadow-lg">
-                    <Package className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-amber-900 dark:text-amber-100 flex items-center gap-2">
-                      Download Survival Kit ($9.90)
-                    </div>
-                    <p className="text-sm text-amber-800 dark:text-amber-200 mt-1 leading-relaxed">
-                      Stop rules, red lines, and decision boundaries.
-                    </p>
-                    <div className="flex items-center gap-2 mt-3 text-sm font-bold text-amber-700 dark:text-amber-300">
-                      Get Started → <ExternalLink className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              </a>
+          {/* Pressure line (factual) */}
+          <p className="text-xs text-text-tertiary italic">
+            After OS and IDE overhead, this configuration cannot operate safely.
+          </p>
 
-              {/* Secondary: Cloud GPU */}
-              <a
-                href={LINK_CLOUD}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleVultrClick('mobile_override')}
-                className="block p-4 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/20 hover:border-purple-400 transition-all text-center"
-              >
-                <span className="text-sm text-purple-900 dark:text-purple-100">
-                  Or rent a Cloud GPU
-                </span>
-              </a>
-            </>
-          ) : (
-            <>
-              {/* Primary CTA: Gumroad - ALWAYS priority in YELLOW */}
-              <a
-                ref={gumroadYellowCardRef}
-                href={LINK_KIT}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleGumroadClick('yellow_card')}
-                data-testid="cta-gumroad"
-                className="block p-5 rounded-lg border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 hover:border-amber-600 hover:shadow-lg hover:shadow-amber-500/20 transition-all"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl shadow-lg">
-                    <Package className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-amber-900 dark:text-amber-100 flex items-center gap-2">
-                      Download Survival Kit ($9.90)
-                    </div>
-                    <p className="text-sm text-amber-800 dark:text-amber-200 mt-1 leading-relaxed">
-                      Stop rules, red lines, and decision boundaries.
-                    </p>
-                    <div className="flex items-center gap-2 mt-3 text-sm font-bold text-amber-700 dark:text-amber-300">
-                      See Red Lines → <ExternalLink className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              </a>
-
-              {/* Secondary CTA: Cloud GPU */}
-              <div className="text-center mt-3">
-                <a
-                  href={LINK_CLOUD}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleVultrClick('yellow_card')}
-                  className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
-                >
-                  Or rent a Cloud GPU <ExternalLink className="w-3 h-3" />
-                </a>
+          {/* Primary CTA: Cloud (visually dominant) */}
+          <a
+            ref={vultrRedCardRef}
+            href={LINK_CLOUD}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => handleVultrClick('red_card')}
+            data-testid="cta-vultr"
+            className="block p-5 rounded-lg border-2 border-purple-500 bg-purple-600 hover:bg-purple-700 transition-all"
+          >
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-white/10 rounded-lg flex-shrink-0">
+                <Cloud className="w-5 h-5 text-white" />
               </div>
-
-              {/* Fallback: Check if 8B is viable (only shown if RED and not already on 8B/1.5B) */}
-              {canDowngradeTo8B && (
-                <button
-                  onClick={handleDowngrade}
-                  data-umami-event="tool_downgrade_click"
-                  data-umami-from={model}
-                  data-umami-to={ENTRY_MODEL}
-                  className="w-full p-3 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/20 hover:border-orange-400 hover:shadow-sm transition-all text-left"
-                >
-                  <div className="flex items-center gap-2 text-sm">
-                    <Zap className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-                    <span className="text-orange-900 dark:text-amber-100 font-medium">
-                      Check if 8B is viable
-                    </span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <div className="font-bold text-white text-lg">
+                    Stop struggling. Move to Cloud
                   </div>
-                </button>
-              )}
-            </>
-          )}
+                  {/* Badge (subtle) */}
+                  <span className="px-2 py-0.5 text-xs bg-white/20 text-white/80 rounded-full flex-shrink-0">
+                    Ready in ~60 seconds
+                  </span>
+                </div>
+                <p className="text-sm text-purple-100 mt-2">
+                  Start from ~$0.01/hr. No hardware ceiling.
+                </p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-white/60 flex-shrink-0" />
+            </div>
+          </a>
+
+          {/* Secondary CTA: Survival Kit (muted, 10% visual weight) */}
+          <div className="text-center pt-2">
+            <a
+              href={LINK_KIT}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleGumroadClick('red_card')}
+              className="text-sm text-text-tertiary hover:text-text-secondary transition-colors"
+            >
+              Need stop rules + red lines? Get the Survival Kit ($9.90).
+            </a>
+          </div>
         </div>
       )}
 
       {/* ====================================================================
-          GREEN STATE (Ready)
+          🟡 YELLOW STATE — Fragile Mode (Kit Dominant)
+          ==================================================================== */}
+      {status === "yellow" && (
+        <div className="space-y-4">
+          {/* Headline */}
+          <div className="pb-2 border-b border-yellow-900/30">
+            <h3 className="text-lg font-semibold text-yellow-400">
+              You are in the risk zone.
+            </h3>
+          </div>
+
+          {/* Pressure line (diagnostic, not fear) */}
+          <p className="text-sm text-yellow-200/80">
+            Under real usage, memory drift typically pushes this configuration into RED.
+          </p>
+
+          {/* Factual addition */}
+          <p className="text-xs text-text-tertiary">
+            Practical headroom is within ~1–2GB.
+          </p>
+
+          {/* Primary CTA: Survival Kit (dominant) */}
+          <a
+            ref={gumroadYellowCardRef}
+            href={LINK_KIT}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => handleGumroadClick('yellow_card')}
+            data-testid="cta-gumroad"
+            className="block p-5 rounded-lg border-2 border-amber-500 bg-amber-600 hover:bg-amber-700 transition-all"
+          >
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-white/10 rounded-lg flex-shrink-0">
+                <Package className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-bold text-white text-lg">
+                  Get the Survival Kit — Stop Rules Inside
+                </div>
+              </div>
+              <ExternalLink className="w-4 h-4 text-white/60 flex-shrink-0" />
+            </div>
+          </a>
+
+          {/* Secondary CTA: Cloud (muted ghost, 15% visual weight) */}
+          <div className="pt-2">
+            <a
+              href={LINK_CLOUD}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleVultrClick('yellow_card')}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm text-text-tertiary hover:text-text-secondary border border-text-tertiary/30 hover:border-text-tertiary/50 rounded-lg transition-all"
+            >
+              Skip tuning. Run on Cloud instead.
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* ====================================================================
+          🟢 GREEN STATE — Clean Mode (No Hard Sell)
           ==================================================================== */}
       {status === "green" && (
         <div className="space-y-4">
-          {/* Status Header */}
-          <div className="flex items-center gap-2 text-green-400 font-semibold">
-            ✅ Status: Ready (with caveats)
+          {/* Headline */}
+          <div className="pb-2 border-b border-green-900/30">
+            <h3 className="text-lg font-semibold text-green-400">
+              Hardware looks sufficient.
+            </h3>
           </div>
-
-          {/* Copy: What this means */}
-          <p className="text-sm text-green-200 dark:text-green-100 mb-4">
-            Hardware looks good. Save this page for future reference.
-          </p>
 
           {/* Toast feedback */}
           {showCopyToast && (
-            <div className="mb-4 p-3 rounded-lg bg-green-900/30 border border-green-700/50 text-green-300 text-sm text-center flex items-center justify-center gap-2">
+            <div className="p-3 rounded-lg bg-green-900/30 border border-green-700/50 text-green-300 text-sm text-center flex items-center justify-center gap-2">
               <Check className="w-4 h-4" />
-              Link copied!
+              Config copied!
             </div>
           )}
 
-          {/* Mobile CTA or Desktop GREEN CTA */}
-          {isMobile ? (
-            <>
-              {/* Primary: Copy Link - Soft retention for GREEN (mobile) */}
-              <button
-                onClick={() => {
-                  handleBookmarkClick('mobile_override')
-                }}
-                data-testid="cta-copy-link"
-                className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
-              >
-                <span>Save / Share</span>
-              </button>
+          {/* Primary CTA: Copy Config (no monetization) */}
+          <button
+            onClick={() => {
+              handleBookmarkClick('green_card')
+            }}
+            data-testid="cta-copy-link"
+            className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2"
+          >
+            <span>Copy Recommended Config</span>
+          </button>
 
-              {/* Secondary: Cloud Option (text link only) */}
-              <div className="text-center">
-                <a
-                  href={LINK_API}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleDeepInfraClick('green_card')}
-                  className="text-sm text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
-                  Alternative: DeepInfra <ExternalLink className="w-3 h-3 inline" />
-                </a>
+          {/* Recommended Settings (trust element) */}
+          <div className="p-4 rounded-lg border border-border bg-muted/30">
+            <div className="flex items-center gap-2 font-bold text-text-primary mb-3">
+              <Settings className="w-4 h-4" />
+              Recommended Settings
+            </div>
+            <div className="grid grid-cols-3 gap-3 text-sm">
+              <div>
+                <div className="text-text-tertiary text-xs">Quantization</div>
+                <div className="font-mono font-medium">4-bit</div>
               </div>
-            </>
-          ) : (
-            <>
-              {/* Primary: Copy Link - Soft retention for GREEN (desktop) */}
-              <button
-                onClick={() => {
-                  handleBookmarkClick('green_card')
-                }}
-                data-testid="cta-copy-link"
-                className="w-full p-4 rounded-lg border border-brand-primary bg-brand-primary hover:bg-brand-hover text-white font-medium hover:shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
-              >
-                <span>Save / Share</span>
-              </button>
-
-              {/* Trust Element: Recommended Settings */}
-              <div className="p-4 rounded-lg border border-border" style={{backgroundColor: '#313131'}}>
-                <div className="flex items-center gap-2 font-bold text-text-primary mb-3">
-                  <Settings className="w-4 h-4" />
-                  Recommended Settings
-                </div>
-                <div className="grid grid-cols-3 gap-3 text-sm">
-                  <div>
-                    <div className="text-text-tertiary text-xs">Quantization</div>
-                    <div className="font-mono font-medium">4-bit</div>
-                  </div>
-                  <div>
-                    <div className="text-text-tertiary text-xs">Context</div>
-                    <div className="font-mono font-medium">4096</div>
-                  </div>
-                  <div>
-                    <div className="text-text-tertiary text-xs">Batch</div>
-                    <div className="font-mono font-medium">1</div>
-                  </div>
-                </div>
+              <div>
+                <div className="text-text-tertiary text-xs">Context</div>
+                <div className="font-mono font-medium">4096</div>
               </div>
-
-              {/* Secondary: Cloud Option (text link only) */}
-              <div className="text-center">
-                <a
-                  href={LINK_API}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleDeepInfraClick('green_card')}
-                  className="text-sm text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
-                  Alternative: DeepInfra <ExternalLink className="w-3 h-3 inline" />
-                </a>
+              <div>
+                <div className="text-text-tertiary text-xs">Batch</div>
+                <div className="font-mono font-medium">1</div>
               </div>
+            </div>
+          </div>
 
-              {/* Footer: Buy Me a Coffee */}
-              <ConversionButton
-                location="tool_green"
-                copy="Your hardware is ready. If this tool saved you time, support the dev."
-                variant="compact"
-              />
-            </>
-          )}
+          {/* Secondary CTA: Survival Kit (muted text link, not primary) */}
+          <div className="text-center pt-2">
+            <a
+              href={LINK_KIT}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleGumroadClick('green_card')}
+              className="text-sm text-text-tertiary hover:text-text-secondary transition-colors"
+            >
+              Want stop rules + ready configs? The Survival Kit saves time.
+            </a>
+          </div>
         </div>
       )}
 

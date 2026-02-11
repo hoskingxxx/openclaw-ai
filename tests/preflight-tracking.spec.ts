@@ -454,7 +454,7 @@ test.describe('Preflight Tracking Acceptance', () => {
     expect(ctaClick!.payload.page_type, 'page_type must be "preflight"').toBe('preflight');
     expect(getPathFromEvent(ctaClick!), 'path must be "/preflight"').toBe('/preflight');
     expect(getVerdictFromEvent(ctaClick!), 'verdict must be "green"').toBe('green');
-    expect(ctaClick!.payload.cta_id, 'cta_id must contain "copy_link"').toContain('copy_link');
+    expect(ctaClick!.payload.cta_id, 'cta_id must be "green_primary_copy"').toBe('green_primary_copy');
 
     // Critical: NO share-related errors
     const shareErrors = errors.filter((e: string) =>
