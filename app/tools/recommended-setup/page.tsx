@@ -5,7 +5,8 @@ import { ContentRail } from "@/components/features/ContentRail";
 import { ContentEdge } from "@/components/features/ContentEdge";
 import { FEATURED_POST_PATH } from "@/lib/blog";
 import type { Metadata } from "next";
-import { Cpu, Server, Zap } from "lucide-react";
+import { Cpu, Server, Zap, ExternalLink, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Recommended VPS Setup for OpenClaw - DigitalOcean, Vultr & More",
@@ -79,6 +80,44 @@ export default function RecommendedSetupPage() {
             <p className="text-xl text-text-secondary">
               GPU cloud providers tested with OpenClaw + DeepSeek R1
             </p>
+          </section>
+          </ContentEdge>
+        </ContentRail>
+
+        {/* Exit CTAs (P0-1 fix - dead end) */}
+        <ContentRail>
+          <ContentEdge>
+          <section className="py-6">
+            <div className="glass-card p-6">
+              <h2 className="text-lg font-bold text-text-primary mb-4">
+                Need GPU Now? Quick Exit:
+              </h2>
+              <div className="flex flex-col sm:flex-row gap-4">
+                {/* Primary: Vultr */}
+                <a
+                  href="https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=content&utm_campaign=recommended_setup&utm_content=exit_cta"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 px-6 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all flex items-center justify-center gap-2 font-semibold"
+                >
+                  <Zap className="w-5 h-5" />
+                  Rent Cloud GPU (Vultr)
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                {/* Secondary: Preflight check */}
+                <Link
+                  href="/preflight"
+                  className="flex-1 px-6 py-4 border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white rounded-lg transition-all flex items-center justify-center gap-2 font-semibold"
+                >
+                  <Cpu className="w-5 h-5" />
+                  Check If I Can Run It
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+              <p className="text-xs text-text-tertiary mt-4">
+                Not sure which GPU you need? Start with the reality check →
+              </p>
+            </div>
           </section>
           </ContentEdge>
         </ContentRail>

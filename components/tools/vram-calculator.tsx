@@ -194,6 +194,11 @@ export function R1PreflightCheck() {
         slug: postSlug,
         verdict: "green",
         path: pathname,
+        // P1: CTA properties for observability
+        cta_id: "gumroad_green_security_banner",
+        cta_position: "top",
+        intent: "escape",
+        context: "security",
       })
     }
 
@@ -207,6 +212,11 @@ export function R1PreflightCheck() {
         slug: postSlug,
         verdict: "green",
         path: pathname,
+        // P1: CTA properties for observability
+        cta_id: "vultr_green_security_banner",
+        cta_position: "top",
+        intent: "escape",
+        context: "security",
       })
     }
 
@@ -220,6 +230,11 @@ export function R1PreflightCheck() {
         slug: postSlug,
         verdict: "red",
         path: pathname,
+        // P1: CTA properties for observability
+        cta_id: "vultr_red_red_card",
+        cta_position: "bottom",
+        intent: "escape",
+        context: "hardware",
       })
     }
 
@@ -233,6 +248,11 @@ export function R1PreflightCheck() {
         slug: postSlug,
         verdict: "yellow",
         path: pathname,
+        // P1: CTA properties for observability
+        cta_id: "gumroad_yellow_yellow_card",
+        cta_position: "bottom",
+        intent: "evaluate",
+        context: "hardware",
       })
     }
   }, [pathname, postSlug, showSecurityBanner, status])
