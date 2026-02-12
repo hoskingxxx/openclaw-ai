@@ -23,7 +23,7 @@ export function SecurityHero() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center py-20 bg-black">
+    <section className="relative flex items-center justify-center py-20 bg-black min-h-[80vh]">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-3xl"></div>
 
