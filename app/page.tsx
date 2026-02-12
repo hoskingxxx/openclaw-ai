@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Hero } from "@/components/features/Hero";
+import { SecurityHero } from "@/components/features/SecurityHero";
 import { Footer } from "@/components/features/Footer";
 import { Navigation } from "@/components/features/Navigation";
 import { Button } from "@/components/ui/Button";
@@ -49,10 +49,9 @@ export default function HomePage() {
   return (
     <>
       <Navigation />
-      <PromoBanner />
       <main>
-        {/* Hero Section */}
-        <Hero />
+        {/* Security Hero Section - "The Gate" */}
+        <SecurityHero />
 
         {/* Triage CTA */}
         <ContentRail>

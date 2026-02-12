@@ -2,6 +2,7 @@ import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
 import { Breadcrumbs } from "@/components/features/Breadcrumbs";
 import { ContentRail } from "@/components/features/ContentRail";
+import { SecurityWarningWidget } from "@/components/blog/SecurityWarningWidget";
 import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
 import { R1PreflightCheck } from "@/components/tools/vram-calculator";
@@ -206,7 +207,14 @@ export default async function BlogPostPage({
         <HashScrollFix />
       </Suspense>
       <main className="min-h-screen" data-section="guides">
-        <ContentRail className="py-4">
+        {/* Security Warning Widget - Interceptor */}
+        <div className="bg-background">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6">
+            <SecurityWarningWidget postTitle={post?.title} />
+          </div>
+        </div>
+
+        <ContentRail className="pt-2">
           <header className="px-4 sm:px-6 py-8 pb-4">
             <Breadcrumbs
               items={[

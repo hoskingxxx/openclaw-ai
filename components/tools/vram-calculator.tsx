@@ -147,10 +147,18 @@ export function R1PreflightCheck() {
   const [vram, setVram] = useState<VRAMId>("8gb")
   const [environment, setEnvironment] = useState<Environment>("windows")
   const [isMobile, setIsMobile] = useState(false)
+
   const [showCopyToast, setShowCopyToast] = useState(false)
 
   const pathname = usePathname()
   const postSlug = pathname?.split("/").filter(Boolean).pop() || ""
+
+  // Debug mode detection (URL param ?debug=1)
+  const [searchParams] = useState(() => {
+    if (typeof window === 'undefined') return new URLSearchParams()
+    return new URLSearchParams(window.location.search)
+  })
+  const debugMode = searchParams.get('debug') === '1'
 
   // Refs for CTA impression tracking (Verdict Gate - only primary CTAs)
   const vultrRedCardRef = useRef<HTMLAnchorElement>(null)
@@ -169,6 +177,40 @@ export function R1PreflightCheck() {
   const effectiveVRAM = getEffectiveVRAM(userVRAM, environment)
   const requiredVRAM = MODELS[model].requiredVRAM
   const status = calculateStatus(requiredVRAM, effectiveVRAM)
+  const headroom = effectiveVRAM - requiredVRAM
+
+  // Safe margin from actual calculation logic (hardcoded 2.0 GB in calculateStatus)
+  const SAFE_MARGIN_GB = 2.0
+
+  // Overhead values from actual getEffectiveVRAM logic
+  const overheadMap: Record<Environment, number> = {
+    cloud: 0,
+    windows: 3,
+    macos: 2,
+  }
+  const environmentOverhead = overheadMap[environment]
+
+  // Read-only breakdown for audit trail (all values from existing calculations)
+  const breakdown = {
+    // Input values
+    userVRAM,
+    environment,
+    model,
+
+    // Computed values (from existing logic, no new assumptions)
+    requiredVRAM,
+    effectiveVRAM,
+    headroom,
+    safeMargin: SAFE_MARGIN_GB,
+    status,
+
+    // Overheads (only what exists in getEffectiveVRAM, no invented values)
+    overheads: {
+      osOverhead: environmentOverhead, // Source: overheadMap in getEffectiveVRAM
+      ideOverhead: 0, // Bundled into environment overhead
+      browserOverhead: 0, // Bundled into environment overhead
+    },
+  } as const
 
   // CTA impression tracking - Verdict Gate spec
   useEffect(() => {
@@ -603,6 +645,164 @@ export function R1PreflightCheck() {
               Want stop rules + ready configs? The Survival Kit saves time.
             </a>
           </div>
+        </div>
+      )}
+
+      {/* ====================================================================
+          DEBUG BREAKDOWN — Make verdict reproducible
+          ==================================================================== */}
+      <div className="mt-6 pt-6 border-t border-border">
+        <details className="group">
+          <summary className="cursor-pointer list-none">
+            <div className="p-3 rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/30 transition-colors">
+              <h4 className="text-xs font-mono text-text-tertiary flex items-center gap-2">
+                Show calculation details
+                <span className="text-text-tertiary group-open:rotate-90 transition-transform">▶</span>
+              </h4>
+            </div>
+          </summary>
+          <div className="mt-2 p-4 rounded-lg border border-border bg-muted/30 space-y-3">
+            {/* Input Values */}
+            <div className="grid grid-cols-2 gap-4 text-xs font-mono">
+              <div>
+                <span className="text-text-tertiary">Model:</span>{' '}
+                <span className="text-text-secondary">{MODELS[model].label}</span>
+              </div>
+              <div>
+                <span className="text-text-tertiary">Environment:</span>{' '}
+                <span className="text-text-secondary">{ENVIRONMENT_OPTIONS.find(o => o.id === environment)!.label}</span>
+              </div>
+            </div>
+
+            {/* Computed Values */}
+            <div className="space-y-2 text-xs font-mono">
+              <div className="flex justify-between border-b border-border/50 pb-1">
+                <span className="text-text-tertiary">Raw VRAM:</span>
+                <span className="text-text-secondary">{userVRAM.toFixed(1)} GB</span>
+              </div>
+              <div className="flex justify-between border-b border-border/50 pb-1">
+                <span className="text-text-tertiary">Environment overhead:</span>
+                <span className="text-text-secondary">-{(userVRAM - effectiveVRAM).toFixed(1)} GB</span>
+              </div>
+              <div className="flex justify-between border-b border-border/50 pb-1">
+                <span className="text-text-tertiary">Effective VRAM:</span>
+                <span className="text-text-secondary font-bold">{effectiveVRAM.toFixed(1)} GB</span>
+              </div>
+              <div className="flex justify-between border-b border-border/50 pb-1">
+                <span className="text-text-tertiary">Required VRAM (4-bit):</span>
+                <span className="text-text-secondary">{requiredVRAM.toFixed(1)} GB</span>
+              </div>
+              <div className="flex justify-between border-b border-border/50 pb-1">
+                <span className="text-text-tertiary">Headroom:</span>
+                <span className={headroom >= 0 ? "text-green-400" : "text-red-400"}>
+                  {headroom.toFixed(1)} GB
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-text-tertiary">Safe margin:</span>
+                <span className="text-text-secondary">{SAFE_MARGIN_GB.toFixed(1)} GB</span>
+              </div>
+            </div>
+
+            {/* Decision Rule */}
+            <div className="pt-2 border-t border-border">
+              <div className="text-xs text-text-tertiary mb-2">Decision rule:</div>
+              <div className="text-xs font-mono space-y-1 text-text-secondary">
+                <div className={status === "red" ? "text-red-400 font-bold" : ""}>
+                  {status === "red" ? "✓ " : ""}RED if headroom &lt; 0 GB
+                </div>
+                <div className={status === "yellow" ? "text-yellow-400 font-bold" : ""}>
+                  {status === "yellow" ? "✓ " : ""}YELLOW if 0 ≤ headroom &lt; 2 GB
+                </div>
+                <div className={status === "green" ? "text-green-400 font-bold" : ""}>
+                  {status === "green" ? "✓ " : ""}GREEN if headroom ≥ 2 GB
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      {/* ====================================================================
+          DEBUG MODE AUDIT PANEL — Only renders when ?debug=1
+          Shows breakdown with "对账式解释" (reconciliation-style explanation)
+          ==================================================================== */}
+      {debugMode && (
+        <div className="mt-6 pt-6 border-t border-border">
+          <details className="group" open>
+            <summary className="cursor-pointer list-none">
+              <div className="p-3 rounded-lg border border-dashed border-red-500/30 bg-red-950/20 hover:bg-red-950/30 transition-colors">
+                <h4 className="text-xs font-mono text-red-400 flex items-center gap-2">
+                  🔍 DEBUG BREAKDOWN (audit mode)
+                  <span className="text-text-tertiary text-[10px]">?debug=1</span>
+                </h4>
+              </div>
+            </summary>
+            <div
+              data-testid="debug-breakdown"
+              className="mt-2 p-4 rounded-lg border border-red-500/30 bg-muted/30 space-y-3 text-xs font-mono"
+            >
+              {/* Reconciliation-style explanation (对账式解释) */}
+              <div className="p-3 rounded bg-background border border-border">
+                <div className="text-text-tertiary mb-2">Reconciliation (对账式解释):</div>
+                <div className="text-text-secondary font-bold">
+                  {userVRAM.toFixed(1)} - {environmentOverhead.toFixed(1)} = {effectiveVRAM.toFixed(1)}; required {requiredVRAM.toFixed(1)};{' '}
+                  {effectiveVRAM.toFixed(1)} {effectiveVRAM >= requiredVRAM ? '≥' : '<'} {requiredVRAM.toFixed(1)} ⇒{' '}
+                  <span className={status === 'red' ? 'text-red-400' : status === 'yellow' ? 'text-yellow-400' : 'text-green-400'}>
+                    {status.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+
+              {/* Input values */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-text-tertiary mb-2">Input values</div>
+                  <div className="space-y-1">
+                    <div>model: <span className="text-text-secondary">{breakdown.model}</span></div>
+                    <div>userVRAM: <span className="text-text-secondary">{breakdown.userVRAM} GB</span></div>
+                    <div>environment: <span className="text-text-secondary">{breakdown.environment}</span></div>
+                  </div>
+                </div>
+                <div>
+                  <div className="text-text-tertiary mb-2">Computed values</div>
+                  <div className="space-y-1">
+                    <div>requiredVRAM: <span className="text-text-secondary">{breakdown.requiredVRAM} GB</span></div>
+                    <div>effectiveVRAM: <span className="text-text-secondary font-bold">{breakdown.effectiveVRAM} GB</span></div>
+                    <div>headroom: <span className={breakdown.headroom >= 0 ? 'text-green-400' : 'text-red-400'}>{breakdown.headroom} GB</span></div>
+                    <div>safeMargin: <span className="text-text-secondary">{breakdown.safeMargin} GB</span></div>
+                    <div>status: <span className="text-text-secondary">{breakdown.status}</span></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Overheads breakdown */}
+              <div className="pt-2 border-t border-border/50">
+                <div className="text-text-tertiary mb-2">Overheads (source: getEffectiveVRAM)</div>
+                <div className="space-y-1">
+                  <div>osOverhead: <span className="text-text-secondary">{breakdown.overheads.osOverhead} GB</span> <span className="text-text-tertiary">(environment overhead from overheadMap)</span></div>
+                  <div>ideOverhead: <span className="text-text-secondary">{breakdown.overheads.ideOverhead} GB</span> <span className="text-text-tertiary">(bundled into environment overhead)</span></div>
+                  <div>browserOverhead: <span className="text-text-secondary">{breakdown.overheads.browserOverhead} GB</span> <span className="text-text-tertiary">(bundled into environment overhead)</span></div>
+                </div>
+              </div>
+
+              {/* Decision rule applied */}
+              <div className="pt-2 border-t border-border/50">
+                <div className="text-text-tertiary mb-2">Decision rule applied:</div>
+                <div className="space-y-1 text-text-secondary">
+                  <div className={status === 'red' ? 'text-red-400 font-bold' : ''}>
+                    {status === 'red' ? '✓ ' : ''}RED: headroom ({headroom.toFixed(1)}) &lt; 0
+                  </div>
+                  <div className={status === 'yellow' ? 'text-yellow-400 font-bold' : ''}>
+                    {status === 'yellow' ? '✓ ' : ''}YELLOW: 0 ≤ headroom ({headroom.toFixed(1)}) &lt; {SAFE_MARGIN_GB}
+                  </div>
+                  <div className={status === 'green' ? 'text-green-400 font-bold' : ''}>
+                    {status === 'green' ? '✓ ' : ''}GREEN: headroom ({headroom.toFixed(1)}) ≥ {SAFE_MARGIN_GB}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
         </div>
       )}
 

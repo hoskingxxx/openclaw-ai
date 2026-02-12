@@ -238,6 +238,16 @@ test.describe('Preflight Tracking Acceptance', () => {
   }
 
   /**
+   * Helper: Select calculator option by label text
+   * Finds select with matching label text and selects it
+   */
+  async function selectCalculatorOption(page: any, labelText: string) {
+    // Use the actual CSS class from the component: grid-cols-1 md:grid-cols-3
+    const select = page.locator(`.grid.grid-cols-1 select`).filter({ hasText: labelText });
+    await select.selectOption(labelText);
+  }
+
+  /**
    * Helper: Validate revenue_outbound schema
    * Ensures only allowed fields are present
    */
@@ -519,5 +529,426 @@ test.describe('Preflight Tracking Acceptance', () => {
       console.log(`  ${i + 1}. placement=${imp.payload.placement}, cta_id=${imp.payload.cta_id || 'N/A'}`);
     });
     console.log('');
+  });
+
+  /**
+   * Scenario E: Debug Breakdown - RED state
+   * Verify breakdown values are consistent with RED verdict
+   * Windows + 8GB + 70B → headroom = 5 - 42 = -37 GB (RED)
+   */
+  test('E) Debug Breakdown: RED state values are consistent', async ({ page }) => {
+    // Select inputs for RED state
+    await selectCalculatorInputs(page, 'windows', '8gb', '70b');
+    await waitForStatusUpdate(page, 'red');
+
+    // Open Debug Breakdown section
+    const debugSummary = page.getByText('Show calculation details');
+    await debugSummary.click();
+
+    // Wait for breakdown content to appear
+    await page.waitForTimeout(300);
+
+    // Extract values from breakdown - use the details element content
+    const breakdownLocator = page.locator('details').filter({ hasText: 'Show calculation details' });
+    const breakdownText = await breakdownLocator.textContent();
+
+    console.log('\n=== SCENARIO E: RED DEBUG BREAKDOWN ===');
+    console.log('Breakdown content:', breakdownText);
+
+    // Verify key values are present
+    expect(breakdownText).toContain('Raw VRAM:');
+    expect(breakdownText).toContain('8.0 GB');
+    expect(breakdownText).toContain('Effective VRAM:');
+    expect(breakdownText).toContain('5.0 GB'); // 8GB - 3GB overhead
+    expect(breakdownText).toContain('Required VRAM');
+    expect(breakdownText).toContain('42.0 GB'); // 70B model requires 42GB
+    expect(breakdownText).toContain('Headroom:');
+    // Headroom should be negative (RED)
+    expect(breakdownText).toContain('-37.0 GB'); // 5 - 42 = -37
+
+    // Verify decision rule matches RED verdict
+    expect(breakdownText).toContain('RED if headroom < 0 GB');
+
+    // Verify RED rule is highlighted/bolded
+    const redRule = page.locator('text=RED if headroom').first();
+    const isRedBolded = await redRule.evaluate(el => {
+      return window.getComputedStyle(el).fontWeight === '700' ||
+             window.getComputedStyle(el).fontWeight === 'bold';
+    });
+    expect(isRedBolded).toBe(true);
+
+    console.log('✅ Scenario E PASSED\n');
+  });
+
+  /**
+   * Scenario F: Debug Breakdown - YELLOW state
+   * Verify breakdown values are consistent with YELLOW verdict
+   * Windows + 24GB + 32B → headroom = 21 - 20 = 1 GB (YELLOW)
+   */
+  test('F) Debug Breakdown: YELLOW state values are consistent', async ({ page }) => {
+    // Select inputs for YELLOW state
+    await selectCalculatorInputs(page, 'windows', '24gb', '32b');
+    await waitForStatusUpdate(page, 'yellow');
+
+    // Open Debug Breakdown section
+    const debugSummary = page.getByText('Show calculation details');
+    await debugSummary.click();
+
+    // Wait for breakdown content to appear
+    await page.waitForTimeout(300);
+
+    // Extract values from breakdown - use the details element content
+    const breakdownLocator = page.locator('details').filter({ hasText: 'Show calculation details' });
+    const breakdownText = await breakdownLocator.textContent();
+
+    console.log('\n=== SCENARIO F: YELLOW DEBUG BREAKDOWN ===');
+    console.log('Breakdown content:', breakdownText);
+
+    // Verify key values are present
+    expect(breakdownText).toContain('Raw VRAM:');
+    expect(breakdownText).toContain('24.0 GB');
+    expect(breakdownText).toContain('Effective VRAM:');
+    expect(breakdownText).toContain('21.0 GB'); // 24GB - 3GB overhead
+    expect(breakdownText).toContain('Required VRAM');
+    expect(breakdownText).toContain('20.0 GB'); // 32B model requires 20GB
+    expect(breakdownText).toContain('Headroom:');
+    // Headroom should be positive but less than 2GB (YELLOW)
+    expect(breakdownText).toContain('1.0 GB'); // 21 - 20 = 1
+
+    // Verify decision rule matches YELLOW verdict
+    expect(breakdownText).toContain('YELLOW if 0 ≤ headroom < 2 GB');
+
+    // Verify YELLOW rule is highlighted/bolded
+    const yellowRule = page.locator('text=YELLOW if 0').first();
+    const isYellowBolded = await yellowRule.evaluate(el => {
+      return window.getComputedStyle(el).fontWeight === '700' ||
+             window.getComputedStyle(el).fontWeight === 'bold';
+    });
+    expect(isYellowBolded).toBe(true);
+
+    console.log('✅ Scenario F PASSED\n');
+  });
+
+  /**
+   * Scenario G: Debug Breakdown - GREEN state
+   * Verify breakdown values are consistent with GREEN verdict
+   * Windows + 24GB + 8B → headroom = 21 - 6 = 15 GB (GREEN)
+   */
+  test('G) Debug Breakdown: GREEN state values are consistent', async ({ page }) => {
+    // Select inputs for GREEN state
+    await selectCalculatorInputs(page, 'windows', '24gb', '8b');
+    await waitForStatusUpdate(page, 'green');
+
+    // Open Debug Breakdown section
+    const debugSummary = page.getByText('Show calculation details');
+    await debugSummary.click();
+
+    // Wait for breakdown content to appear
+    await page.waitForTimeout(300);
+
+    // Extract values from breakdown - use the details element content
+    const breakdownLocator = page.locator('details').filter({ hasText: 'Show calculation details' });
+    const breakdownText = await breakdownLocator.textContent();
+
+    console.log('\n=== SCENARIO G: GREEN DEBUG BREAKDOWN ===');
+    console.log('Breakdown content:', breakdownText);
+
+    // Verify key values are present
+    expect(breakdownText).toContain('Raw VRAM:');
+    expect(breakdownText).toContain('24.0 GB');
+    expect(breakdownText).toContain('Effective VRAM:');
+    expect(breakdownText).toContain('21.0 GB'); // 24GB - 3GB overhead
+    expect(breakdownText).toContain('Required VRAM');
+    expect(breakdownText).toContain('6.0 GB'); // 8B model requires 6GB
+    expect(breakdownText).toContain('Headroom:');
+    // Headroom should be >= 2GB (GREEN)
+    expect(breakdownText).toContain('15.0 GB'); // 21 - 6 = 15
+
+    // Verify decision rule matches GREEN verdict
+    expect(breakdownText).toContain('GREEN if headroom ≥ 2 GB');
+
+    // Verify GREEN rule is highlighted/bolded
+    const greenRule = page.locator('text=GREEN if headroom').first();
+    const isGreenBolded = await greenRule.evaluate(el => {
+      return window.getComputedStyle(el).fontWeight === '700' ||
+             window.getComputedStyle(el).fontWeight === 'bold';
+    });
+    expect(isGreenBolded).toBe(true);
+
+    console.log('✅ Scenario G PASSED\n');
+  });
+
+  /**
+   * Regression Tests for Debug Breakdown Panel
+   * Verify panel values match verdict across all three states
+   */
+  test.describe('Debug Breakdown Regression Tests', () => {
+    test.beforeEach(async ({ page }) => {
+      // Enable debug mode by navigating with ?debug=1
+      await page.goto('/preflight?debug=1');
+      await page.waitForLoadState('domcontentloaded');
+
+      // Set desktop viewport
+      await page.setViewportSize({ width: 1280, height: 720 });
+
+      // Wait for calculator to initialize
+      await page.waitForTimeout(500);
+    });
+
+    /**
+     * DEBUG MODE AUDIT TESTS
+     * These tests verify the debug breakdown panel (?debug=1) shows correct calculations
+     * All values must match the actual calculation logic, not hardcoded strings
+     */
+
+    /**
+     * RED State Debug Audit
+     * Windows + 8GB + 70B:
+     *   - userVRAM: 8, osOverhead: 3, effectiveVRAM: 8 - 3 = 5
+     *   - requiredVRAM: 42, headroom: 5 - 42 = -37
+     *   - headroom < 0 => RED
+     */
+    test('DEBUG-AUDIT-RED: Panel values match actual calculation (debug=1)', async ({ page }) => {
+      // Navigate with debug=1 to enable audit panel
+      await page.goto('/preflight?debug=1');
+
+      // Select RED state inputs
+      await selectCalculatorOption(page, 'windows');
+      await selectCalculatorOption(page, '8gb');
+      await selectCalculatorOption(page, '70b');
+      await page.waitForTimeout(500);
+      await page.waitForSelector('[data-testid="cta-vultr"]', { state: 'visible' });
+
+      // Locate debug panel using data-testid
+      const debugPanel = page.locator('[data-testid="debug-breakdown"]');
+      await expect(debugPanel).toBeVisible();
+
+      const panelText = await debugPanel.textContent();
+      console.log('\n=== DEBUG-AUDIT-RED ===');
+      console.log('Panel content:', panelText);
+
+      // Verify reconciliation-style explanation
+      // "8.0 - 3.0 = 5.0; required 42.0; 5.0 < 42.0 ⇒ RED"
+      expect(panelText).toContain('8.0 - 3.0 = 5.0');
+      expect(panelText).toContain('required 42.0');
+      expect(panelText).toContain('5.0 < 42.0');
+      expect(panelText).toContain('⇒ RED');
+
+      // Verify breakdown values match calculation
+      expect(panelText).toContain('userVRAM: 8 GB');
+      expect(panelText).toContain('requiredVRAM: 42 GB');
+      expect(panelText).toContain('effectiveVRAM: 5 GB');
+      expect(panelText).toContain('headroom: -37 GB');
+      expect(panelText).toContain('status: red');
+
+      // Verify overheads are from actual logic
+      expect(panelText).toContain('osOverhead: 3 GB');
+      expect(panelText).toContain('ideOverhead: 0 GB');
+      expect(panelText).toContain('browserOverhead: 0 GB');
+
+      console.log('✅ DEBUG-AUDIT-RED PASSED\n');
+    });
+
+    /**
+     * YELLOW State Debug Audit
+     * Windows + 24GB + 32B:
+     *   - userVRAM: 24, osOverhead: 3, effectiveVRAM: 24 - 3 = 21
+     *   - requiredVRAM: 20, headroom: 21 - 20 = 1
+     *   - 0 <= headroom < 2 => YELLOW
+     */
+    test('DEBUG-AUDIT-YELLOW: Panel values match actual calculation (debug=1)', async ({ page }) => {
+      await page.goto('/preflight?debug=1');
+
+      await selectCalculatorOption(page, 'windows');
+      await selectCalculatorOption(page, '24gb');
+      await selectCalculatorOption(page, '32b');
+      await page.waitForTimeout(500);
+      await page.waitForSelector('[data-testid="cta-gumroad"]', { state: 'visible' });
+
+      const debugPanel = page.locator('[data-testid="debug-breakdown"]');
+      await expect(debugPanel).toBeVisible();
+
+      const panelText = await debugPanel.textContent();
+      console.log('\n=== DEBUG-AUDIT-YELLOW ===');
+      console.log('Panel content:', panelText);
+
+      // Verify reconciliation-style explanation
+      expect(panelText).toContain('24.0 - 3.0 = 21.0');
+      expect(panelText).toContain('required 20.0');
+      expect(panelText).toContain('21.0 ≥ 20.0');  // effectiveVRAM >= requiredVRAM
+      expect(panelText).toContain('⇒ YELLOW');
+
+      // Verify breakdown values
+      expect(panelText).toContain('userVRAM: 24 GB');
+      expect(panelText).toContain('requiredVRAM: 20 GB');
+      expect(panelText).toContain('effectiveVRAM: 21 GB');
+      expect(panelText).toContain('headroom: 1 GB');
+      expect(panelText).toContain('safeMargin: 2 GB');
+      expect(panelText).toContain('status: yellow');
+
+      console.log('✅ DEBUG-AUDIT-YELLOW PASSED\n');
+    });
+
+    /**
+     * GREEN State Debug Audit
+     * Windows + 24GB + 8B:
+     *   - userVRAM: 24, osOverhead: 3, effectiveVRAM: 24 - 3 = 21
+     *   - requiredVRAM: 6, headroom: 21 - 6 = 15
+     *   - headroom >= 2 => GREEN
+     */
+    test('DEBUG-AUDIT-GREEN: Panel values match actual calculation (debug=1)', async ({ page }) => {
+      await page.goto('/preflight?debug=1');
+
+      await selectCalculatorOption(page, 'windows');
+      await selectCalculatorOption(page, '24gb');
+      await selectCalculatorOption(page, '8b');
+      await page.waitForTimeout(500);
+      await page.waitForSelector('[data-testid="cta-copy-link"]', { state: 'visible' });
+
+      const debugPanel = page.locator('[data-testid="debug-breakdown"]');
+      await expect(debugPanel).toBeVisible();
+
+      const panelText = await debugPanel.textContent();
+      console.log('\n=== DEBUG-AUDIT-GREEN ===');
+      console.log('Panel content:', panelText);
+
+      // Verify reconciliation-style explanation
+      expect(panelText).toContain('24.0 - 3.0 = 21.0');
+      expect(panelText).toContain('required 6.0');
+      expect(panelText).toContain('21.0 ≥ 6.0');
+      expect(panelText).toContain('⇒ GREEN');
+
+      // Verify breakdown values
+      expect(panelText).toContain('userVRAM: 24 GB');
+      expect(panelText).toContain('requiredVRAM: 6 GB');
+      expect(panelText).toContain('effectiveVRAM: 21 GB');
+      expect(panelText).toContain('headroom: 15 GB');
+      expect(panelText).toContain('safeMargin: 2 GB');
+      expect(panelText).toContain('status: green');
+
+      console.log('✅ DEBUG-AUDIT-GREEN PASSED\n');
+    });
+  });
+
+  /**
+   * EDGE CASE TESTS
+   * Tests for specific combinations mentioned in requirements
+   */
+  test.describe('Edge Cases (Controversial Combinations)', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 720 });
+      // Navigate with debug=1
+      await page.goto('/preflight?debug=1');
+      await page.waitForTimeout(500);
+    });
+
+    /**
+     * Edge Case 1: Windows + 12GB + 14B
+     * Calculation: userVRAM=12, osOverhead=3, effectiveVRAM=12-3=9, requiredVRAM=10, headroom=9-10=-1
+     * Verdict: headroom < 0 => RED
+     */
+    test('EDGE-1: Windows + 12GB + 14B = RED', async ({ page }) => {
+      await selectCalculatorOption(page, 'windows');
+      await selectCalculatorOption(page, '12gb');
+      await selectCalculatorOption(page, '14b');
+      await page.waitForTimeout(500);
+      await page.waitForSelector('[data-testid="cta-vultr"]', { state: 'visible' });
+
+      const debugPanel = page.locator('[data-testid="debug-breakdown"]');
+      const panelText = await debugPanel.textContent();
+
+      // Verify verdict is RED (headroom = 9 - 10 = -1 < 0)
+      expect(panelText).toContain('status: red');
+      expect(panelText).toContain('headroom: -1 GB');
+
+      // Verify reconciliation: 12.0 - 3.0 = 9.0; required 10.0; 9.0 < 10.0 => RED
+      expect(panelText).toContain('12.0 - 3.0 = 9.0');
+      expect(panelText).toContain('required 10.0');
+      expect(panelText).toContain('9.0 < 10.0');
+
+      console.log('✅ EDGE-1 PASSED: Windows + 12GB + 14B = RED\n');
+    });
+
+    /**
+     * Edge Case 2: macOS + 12GB + 14B
+     * Calculation: userVRAM=12, osOverhead=2, effectiveVRAM=12-2=10, requiredVRAM=10, headroom=10-10=0
+     * Verdict: headroom >= 0 but < 2 => YELLOW
+     */
+    test('EDGE-2: macOS + 12GB + 14B = YELLOW', async ({ page }) => {
+      await selectCalculatorOption(page, 'macos');
+      await selectCalculatorOption(page, '12gb');
+      await selectCalculatorOption(page, '14b');
+      await page.waitForTimeout(500);
+      await page.waitForSelector('[data-testid="cta-gumroad"]', { state: 'visible' });
+
+      const debugPanel = page.locator('[data-testid="debug-breakdown"]');
+      const panelText = await debugPanel.textContent();
+
+      // Verify verdict is YELLOW (headroom = 10 - 10 = 0, 0 <= 0 < 2)
+      expect(panelText).toContain('status: yellow');
+      expect(panelText).toContain('headroom: 0 GB');
+
+      // Verify reconciliation: 12.0 - 2.0 = 10.0; required 10.0; 10.0 >= 10.0 => YELLOW
+      expect(panelText).toContain('12.0 - 2.0 = 10.0');
+      expect(panelText).toContain('required 10.0');
+      expect(panelText).toContain('10.0 ≥ 10.0');
+      expect(panelText).toContain('⇒ YELLOW');
+
+      console.log('✅ EDGE-2 PASSED: macOS + 12GB + 14B = YELLOW\n');
+    });
+
+    /**
+     * Edge Case 3: Windows + 16GB + 32B
+     * Calculation: userVRAM=16, osOverhead=3, effectiveVRAM=16-3=13, requiredVRAM=20, headroom=13-20=-7
+     * Verdict: headroom < 0 => RED
+     */
+    test('EDGE-3: Windows + 16GB + 32B = RED', async ({ page }) => {
+      await selectCalculatorOption(page, 'windows');
+      await selectCalculatorOption(page, '16gb');
+      await selectCalculatorOption(page, '32b');
+      await page.waitForTimeout(500);
+      await page.waitForSelector('[data-testid="cta-vultr"]', { state: 'visible' });
+
+      const debugPanel = page.locator('[data-testid="debug-breakdown"]');
+      const panelText = await debugPanel.textContent();
+
+      // Verify verdict is RED (headroom = 13 - 20 = -7 < 0)
+      expect(panelText).toContain('status: red');
+      expect(panelText).toContain('headroom: -7 GB');
+
+      // Verify reconciliation: 16.0 - 3.0 = 13.0; required 20.0; 13.0 < 20.0 => RED
+      expect(panelText).toContain('16.0 - 3.0 = 13.0');
+      expect(panelText).toContain('required 20.0');
+      expect(panelText).toContain('13.0 < 20.0');
+
+      console.log('✅ EDGE-3 PASSED: Windows + 16GB + 32B = RED\n');
+    });
+
+    /**
+     * Edge Case 4: macOS + 16GB + 32B
+     * Calculation: userVRAM=16, osOverhead=2, effectiveVRAM=16-2=14, requiredVRAM=20, headroom=14-20=-6
+     * Verdict: headroom < 0 => RED
+     */
+    test('EDGE-4: macOS + 16GB + 32B = RED', async ({ page }) => {
+      await selectCalculatorOption(page, 'macos');
+      await selectCalculatorOption(page, '16gb');
+      await selectCalculatorOption(page, '32b');
+      await page.waitForTimeout(500);
+      await page.waitForSelector('[data-testid="cta-vultr"]', { state: 'visible' });
+
+      const debugPanel = page.locator('[data-testid="debug-breakdown"]');
+      const panelText = await debugPanel.textContent();
+
+      // Verify verdict is RED (headroom = 14 - 20 = -6 < 0)
+      expect(panelText).toContain('status: red');
+      expect(panelText).toContain('headroom: -6 GB');
+
+      // Verify reconciliation: 16.0 - 2.0 = 14.0; required 20.0; 14.0 < 20.0 => RED
+      expect(panelText).toContain('16.0 - 2.0 = 14.0');
+      expect(panelText).toContain('required 20.0');
+      expect(panelText).toContain('14.0 < 20.0');
+
+      console.log('✅ EDGE-4 PASSED: macOS + 16GB + 32B = RED\n');
+    });
   });
 });

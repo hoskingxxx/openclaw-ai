@@ -3,6 +3,7 @@ import { SoftwareStructuredData, WebSiteStructuredData } from "@/components/SEO/
 import { SiteSchema } from "@/components/SEO/SiteSchema";
 import NextTopLoader from "nextjs-toploader";
 import { UmamiAnalytics } from "@/components/UmamiAnalytics";
+import { MobileTrafficTrap } from "@/components/mobile/MobileTrafficTrap";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -113,11 +114,9 @@ export default function RootLayout({
         <UmamiAnalytics />
       </head>
       <body className="font-sans antialiased">
-        <NextTopLoader
-          color="#FF4500"
-          showSpinner={false}
-          speed={200}
-        />
+        <NextTopLoader color="#FF4500" showSpinner={false} speed={200} />
+        {/* Mobile Traffic Trap - captures mobile users */}
+        <MobileTrafficTrap />
         {children}
       </body>
     </html>
