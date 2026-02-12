@@ -18,15 +18,15 @@ export function SecurityHero() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
         <div className="mb-10 inline-flex items-center px-6 py-2 rounded-full border-2 border-yellow-500 bg-yellow-500/20 font-bold text-yellow-400 font-mono">
           <span className="text-2xl">⚠️</span>
-          <span>SYSTEM SECURITY WARNING</span>
+          <span>HARDWARE LIMIT DETECTED</span>
         </div>
 
         <h1 className="text-6xl font-bold mb-8 text-center text-red-400 font-mono leading-tight">
-          ⚠️ SYSTEM SECURITY WARNING: LOCAL DEPLOYMENT DETECTED
+          Stop Fighting Your Hardware. Run OpenClaw Safely.
         </h1>
 
         <h2 className="text-2xl font-bold mb-6 text-center text-red-400 font-mono">
-          Running autonomous agents locally grants <span className="text-yellow-400">ROOT-LEVEL PRIVILEGES</span> to your host machine.
+          Local deployment = <span className="text-yellow-400">OOM Errors</span> + <span className="text-yellow-400">Root Risks</span>. Cloud Sandbox = Instant Success.
         </h2>
 
         <div className="mb-10 max-w-3xl mx-auto space-y-4">
@@ -34,29 +34,29 @@ export function SecurityHero() {
             <div className="space-y-3 text-base md:text-lg text-gray-300 font-mono">
               <p className="flex items-start">
                 <span className="text-red-400 mr-3">►</span>
-                <span className="text-white">Current builds expose your:</span>
+                <span className="text-white">Local debugging fails because:</span>
               </p>
 
               <div className="ml-6 space-y-2">
                 <p className="flex items-start">
                   <span className="text-red-400 mr-3">•</span>
-                  <span className="text-white">File System:</span> <span className="text-green-400">Full Read/Write access</span>
+                  <span className="text-white">VRAM Limit:</span> <span className="text-green-400">Consumer cards {'<'}24GB cannot run R1</span>
                 </p>
 
                 <p className="flex items-start">
                   <span className="text-red-400 mr-3">•</span>
-                  <span className="text-white">Browser:</span> <span className="text-green-400">Active Session Cookies</span>
+                  <span className="text-white">OOM Errors:</span> <span className="text-green-400">CUDA out of memory is unfixable locally</span>
                 </p>
 
                 <p className="flex items-start">
                   <span className="text-red-400 mr-3">•</span>
-                  <span className="text-white">SSH Keys & API Tokens:</span> <span className="text-green-400">Unrestricted Access</span>
+                  <span className="text-white">Root Risk:</span> <span className="text-green-400">Agents need full system access</span>
                 </p>
               </div>
 
               <div className="mt-6 pt-4 border-t border-red-500/30">
                 <p className="text-xl font-bold text-red-400">
-                  DO NOT COMPROMISE YOUR HOST MACHINE.
+                  STOP FIGHTING YOUR HARDWARE.
                 </p>
               </div>
             </div>
@@ -77,7 +77,7 @@ export function SecurityHero() {
             className="w-full sm:w-auto px-12 py-6 text-xl font-bold text-white rounded-lg border-2 border-green-400 bg-green-600 hover:bg-green-500 shadow-2xl flex items-center justify-center gap-3"
           >
             <span className="font-mono">
-              [ DEPLOY ISOLATED CLOUD SANDBOX ($5/mo) {'>>'} ]
+              [ LAUNCH CLOUD SANDBOX ($5/mo) {'>>'} ]
             </span>
           </a>
         </div>
