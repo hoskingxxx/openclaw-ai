@@ -115,7 +115,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <NextTopLoader color="#FF4500" showSpinner={false} speed={200} />
-        {/* Mobile Traffic Trap - captures mobile users */}
+        {/* Mobile Traffic Trap - simplified hero + sticky bottom bar */}
         <MobileTrafficTrap />
         {children}
       </body>
