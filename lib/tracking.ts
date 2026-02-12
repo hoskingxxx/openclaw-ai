@@ -76,6 +76,10 @@ export type Placement =
   | "page_cta"
   | "mdx_auto"
   | "security_banner"
+  | "blog_widget"
+  | "sticky_footer"
+  | "mobile_bar"
+  | "sticky_header"
 
   // DeepInfra / API fallback
   | "red_card"
@@ -105,7 +109,7 @@ export type CtaPosition = "top" | "mid" | "bottom" | "inline";
 /**
  * User intent - why they're seeing this CTA
  */
-export type Intent = "stuck" | "evaluate" | "escape";
+export type Intent = "stuck" | "evaluate" | "escape" | "start";
 
 /**
  * Context - what problem domain they're in
@@ -652,4 +656,42 @@ export function getPageType(pathname: string): PageType {
 export function getSlug(pathname: string): string | undefined {
   const parts = pathname.split("/").filter(Boolean);
   return parts.length > 0 ? parts[parts.length - 1] : undefined;
+}
+
+// ============================================================================
+// SSOT: Unified Vultr Outbound Tracking
+// ============================================================================
+
+/**
+ * Unified Vultr outbound tracking (SSOT)
+ * Emits new vultr_outbound event + backward-compatible legacy events
+ */
+export function trackVultrOutbound(params: {
+  placement: Placement;
+  slug?: string;
+  path: string;
+  intent: Intent;
+}): void {
+  if (typeof window === "undefined") return;
+
+  // New unified event
+  trackEvent("vultr_outbound", {
+    placement: params.placement,
+    slug: params.slug ?? "",
+    path: params.path,
+    intent: params.intent,
+  });
+
+  // Backward compatibility: emit legacy events for 7 days
+  if (typeof trackRevenueOutbound === "function") {
+    trackRevenueOutbound({
+      dest: "vultr",
+      offer: "cloud_gpu",
+      placement: params.placement,
+      pageType: getPageType(params.path),
+      slug: params.slug,
+      path: params.path,
+      intent: params.intent,
+    });
+  }
 }

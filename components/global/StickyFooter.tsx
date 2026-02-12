@@ -1,7 +1,7 @@
 /**
  * Sticky Footer - "The Bottom Bar" Conversion
  * ==========================================
- * Fixed bottom bar for ALL pages (mobile + desktop).
+ * Fixed bottom bar for mobile only (<768px).
  * High-visibility CTA for frustrated readers.
  */
 
@@ -9,18 +9,36 @@
 
 import { useEffect, useState } from "react"
 import { X } from "lucide-react"
+import { trackVultrOutbound } from "@/lib/tracking"
 
 const LINK_VULTR = "https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=sticky_footer&utm_campaign=conversion_funnel"
 
 export function StickyFooter() {
   const [dismissed, setDismissed] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     setMounted(true)
+    // Check if mobile viewport
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
-  if (!mounted || dismissed) return null
+  const handleVultrClick = () => {
+    trackVultrOutbound({
+      placement: "sticky_footer",
+      slug: "",
+      path: window.location.pathname,
+      intent: "escape",
+    })
+  }
+
+  if (!mounted || !isMobile || dismissed) return null
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[9999] bg-gray-900 border-t border-red-500/30 shadow-2xl">
@@ -28,7 +46,7 @@ export function StickyFooter() {
         <div className="flex items-center justify-between gap-4">
           {/* Warning Message */}
           <div className="flex-1 flex items-center gap-3">
-            <span className="text-2xl animate-pulse hidden sm:block">⚠️</span>
+            <span className="text-2xl hidden sm:block">⚠️</span>
             <div>
               <p className="text-sm md:text-base font-semibold text-white">
                 Still fighting OOM errors? It's a hardware limit, not a software bug.
@@ -45,12 +63,7 @@ export function StickyFooter() {
               href={LINK_VULTR}
               target="_blank"
               rel="noopener noreferrer sponsored"
-              data-umami-event="vultr_outbound"
-              data-umami-partner="vultr"
-              data-umami-placement="sticky_footer"
-              data-umami-offer="cloud_gpu"
-              data-umami-intent="escape"
-              data-umami-context="frustration"
+              onClick={handleVultrClick}
               className="px-4 py-2 md:px-6 md:py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg transition-colors shadow-lg text-sm md:text-base whitespace-nowrap"
             >
               Deploy on Vultr ($5)

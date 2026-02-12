@@ -208,7 +208,7 @@ export default async function BlogPostPage({
       </Suspense>
       <main className="min-h-screen" data-section="guides">
         {/* Impossible Wall Widget - Diagnostic Conversion */}
-        <ImpossibleWallWidget />
+        <ImpossibleWallWidget slug={slug} />
 
         <ContentRail className="pt-2">
           <header className="px-4 sm:px-6 py-8 pb-4">

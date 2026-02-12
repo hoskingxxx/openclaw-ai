@@ -1,16 +1,14 @@
 /**
  * Mobile Traffic Logic - Mobile Detection + Simplified Hero + Sticky Bottom Bar
  * =================================================================
- * 1. Window width check: if (window.innerWidth < 768)
- * 2. Simplify Hero: Show simple message instead of complex text
- * 3. Sticky Bottom Bar: Add fixed bottom bar (z-index: 9999)
- * 4. Bottom Bar CTA: Green button to Vultr
+ * Unified tracking for Vultr links.
  */
 
 "use client"
 
 import { useEffect, useState } from "react"
 import { ExternalLink } from "lucide-react"
+import { trackVultrOutbound } from "@/lib/tracking"
 
 const LINK_VULTR = "https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=mobile_bar&utm_campaign=traffic_trap"
 
@@ -37,6 +35,15 @@ export function MobileTrafficTrap() {
     setMounted(true)
   }, [])
 
+  const handleVultrClick = () => {
+    trackVultrOutbound({
+      placement: "mobile_bar",
+      slug: "",
+      path: window.location.pathname,
+      intent: "escape",
+    })
+  }
+
   // Don't show if not mobile or dismissed
   if (!isMobile || dismissed) return null
 
@@ -61,10 +68,7 @@ export function MobileTrafficTrap() {
 
       {/* Sticky Bottom Bar - Mobile Traffic Funnel */}
       {isMobile && !dismissed && (
-        <div
-          className="fixed bottom-0 left-0 right-0 z-[9999] bg-red-600 text-white shadow-2xl"
-          style={{ display: dismissed ? "none" : "block" }}
-        >
+        <div className="fixed bottom-0 left-0 right-0 z-[9999] bg-red-600 text-white shadow-2xl">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1">
@@ -77,12 +81,7 @@ export function MobileTrafficTrap() {
                 href={LINK_VULTR}
                 target="_blank"
                 rel="noopener noreferrer sponsored"
-                data-umami-event="vultr_outbound"
-                data-umami-partner="vultr"
-                data-umami-placement="mobile_bar"
-                data-umami-offer="cloud_gpu"
-                data-umami-intent="escape"
-                data-umami-context="mobile"
+                onClick={handleVultrClick}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-[#00FF00] hover:bg-[#00CC00] text-white font-bold rounded-lg transition-colors shadow-lg"
               >
                 <span>Start Cloud Instance ($5)</span>
