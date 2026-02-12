@@ -76,7 +76,7 @@ export function ImpossibleWallWidget() {
             href={LINK_VULTR}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            data-umami-event="revenue_outbound"
+            data-umami-event="vultr_outbound"
             data-umami-partner="vultr"
             data-umami-placement="impossible_wall"
             data-umami-offer="cloud_gpu"

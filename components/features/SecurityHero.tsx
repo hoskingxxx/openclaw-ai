@@ -18,7 +18,7 @@ export function SecurityHero() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
         <div className="mb-10 inline-flex items-center px-6 py-2 rounded-full border-2 border-yellow-500 bg-yellow-500/20 font-bold text-yellow-400 font-mono">
           <span className="text-2xl">⚠️</span>
-          <span>HARDWARE LIMIT DETECTED</span>
+          <span>SYSTEM ADVISORY</span>
         </div>
 
         <h1 className="text-6xl font-bold mb-8 text-center text-red-400 font-mono leading-tight">
@@ -68,7 +68,7 @@ export function SecurityHero() {
             href={LINK_VULTR}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            data-umami-event="revenue_outbound"
+            data-umami-event="vultr_outbound"
             data-umami-partner="vultr"
             data-umami-placement="security_gate"
             data-umami-offer="cloud_gpu"

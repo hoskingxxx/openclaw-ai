@@ -66,7 +66,7 @@ export function GlobalStickyHeader() {
           href={LINK_VULTR}
           target="_blank"
           rel="noopener noreferrer sponsored"
-          data-umami-event="revenue_outbound"
+          data-umami-event="vultr_outbound"
           data-umami-partner="vultr"
           data-umami-placement="sticky_header"
           data-umami-offer="cloud_gpu"

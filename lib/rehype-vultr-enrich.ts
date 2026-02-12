@@ -57,8 +57,8 @@ export function rehypeVultrEnrich(options: Options) {
 
       node.properties.className = classes;
 
-      // Umami tracking - revenue outbound schema (non-calculator)
-      node.properties["data-umami-event"] = "revenue_outbound";
+      // Umami tracking - vultr outbound
+      node.properties["data-umami-event"] = "vultr_outbound";
       node.properties["data-umami-partner"] = "vultr";
       node.properties["data-umami-placement"] =
         getQueryParam(href, "utm_content") ?? placementDefault;
