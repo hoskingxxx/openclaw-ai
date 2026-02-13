@@ -452,7 +452,7 @@ export function R1PreflightCheck() {
       </div>
 
       {/* ====================================================================
-          🔴 RED STATE — Exit Mode (Cloud Dominant)
+          🔴 RED STATE - Exit Mode (Cloud Dominant)
           ==================================================================== */}
       {status === "red" && (
         <div className="space-y-4">
@@ -509,8 +509,9 @@ export function R1PreflightCheck() {
 
         </div>
       )}
-      {/* ====================================================================
-        <details className="group">
+
+      {/* ==================================================================== */}
+      <details className="group">
           <summary className="cursor-pointer list-none">
             <div className="p-3 rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/30 transition-colors">
               <h4 className="text-xs font-mono text-text-tertiary flex items-center gap-2">
@@ -581,8 +582,11 @@ export function R1PreflightCheck() {
         </details>
       </div>
 
+      {/* ==================================================================== */}
       {/* ====================================================================
-          DEBUG MODE AUDIT PANEL — Only renders when ?debug=1
+          DEBUG MODE AUDIT PANEL - Only renders when ?debug=1
+          ==================================================================== */}
+      {debugMode && (
         <div className="mt-6 pt-6 border-t border-border">
           <details className="group" open>
             <summary className="cursor-pointer list-none">
@@ -671,7 +675,7 @@ export function R1PreflightCheck() {
           <summary className="cursor-pointer list-none">
             <div className="p-4 rounded-lg border border-border bg-muted/30 hover:bg-muted/50 transition-colors">
               <h4 className="text-sm font-semibold text-text-primary flex items-center gap-2">
-                What this tool does — and what it doesn't
+                What this tool does - and what it doesn't
                 <span className="text-text-tertiary group-open:rotate-90 transition-transform">▶</span>
               </h4>
             </div>
@@ -709,7 +713,7 @@ export function R1PreflightCheck() {
                 onClick={() => handleGumroadClick('green_card')}
                 className="text-sm text-text-secondary hover:text-text-primary underline underline-offset-4 transition-colors"
               >
-                Buy Clarity — $9.90
+                Buy Clarity - $9.90
               </a>
             )}
           </div>
