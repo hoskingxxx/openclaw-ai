@@ -5,7 +5,6 @@ import { ContentRail } from "@/components/features/ContentRail";
 import { ImpossibleWallWidget } from "@/components/blog/ImpossibleWallWidget";
 import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
-import { R1PreflightCheck } from "@/components/tools/vram-calculator";
 import { HashScrollFix } from "@/components/HashScrollFix";
 import { PrimaryCTA } from "@/components/monetization/PrimaryCTA";
 import { ContextCTA } from "@/components/monetization/ContextCTA";
@@ -251,28 +250,6 @@ export default async function BlogPostPage({
               </div>
             </div>
           </header>
-
-          {/* Reality Check Calculator - Array Whitelist */}
-          {(() => {
-            // 工具页面白名单：只在这些页面显示 VRAM 计算器
-            const CALCULATOR_WHITELIST = [
-              "hardware-requirements-reality-check",  // 硬件需求页面
-              "openclaw-error-index",                  // 错误索引（包含硬件相关错误）
-            ] as const;
-
-            const shouldShow = CALCULATOR_WHITELIST.includes(post.slug as any);
-
-            // 调试日志（生产环境可移除）
-            if (typeof window !== "undefined") {
-              console.log("[R1PreflightCheck] Current slug:", post.slug, "Show:", shouldShow);
-            }
-
-            return shouldShow ? (
-              <section className="px-4 sm:px-6 mb-8">
-                <R1PreflightCheck />
-              </section>
-            ) : null;
-          })()}
 
           <section className="px-4 sm:px-6">
             <article

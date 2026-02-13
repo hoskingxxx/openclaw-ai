@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/features/Breadcrumbs"
 import { ContentRail } from "@/components/features/ContentRail"
 import { ContentEdge } from "@/components/features/ContentEdge"
 import Link from "next/link"
-import { R1PreflightCheck } from "@/components/tools/vram-calculator"
+
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -47,19 +47,6 @@ export default function DeepSeekR1RequirementsPage() {
                   <p className="text-sm font-mono text-brand-primary">
                     Free • Physics-based • No signup required
                   </p>
-                </div>
-              </div>
-
-              {/* Calculator Embed - Prominent */}
-              <div className="max-w-4xl mx-auto mb-16">
-                <div className="glass-card p-6 border border-border">
-                  <h2 className="text-2xl font-bold text-text-primary mb-2 text-center">
-                    R1 Pre-flight Check
-                  </h2>
-                  <p className="text-sm text-text-secondary text-center mb-6">
-                    Check your real VRAM headroom (OS + IDE overhead included)
-                  </p>
-                  <R1PreflightCheck />
                 </div>
               </div>
 
