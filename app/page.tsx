@@ -155,21 +155,21 @@ ollama run deepseek-r1:8b`}
           </ContentEdge>
         </ContentRail>
 
-        {/* Final CTA - Survival Kit */}
+        {/* Final CTA - Cloud */}
         <ContentRail>
           <ContentEdge>
             <section className="py-20">
               <div className="glass-card p-6 sm:p-8 text-center max-w-3xl mx-auto">
                 <h2 className="text-xl md:text-2xl font-mono text-text-primary mb-4 break-words">
-                  Stop Guessing. Know Your Limits.
+                  Stop Fighting Physics. Rent GPU.
                 </h2>
                 <p className="text-text-secondary mb-6 break-words">
-                  Get decision boundaries, stop rules, and red lines for DeepSeek R1.
+                  Skip the hardware limits. Spin up an H100, run your job, done.
                 </p>
                 {/* Primary CTA: Cloud */}
                 <PrimaryCTA variant="full" placement="bottom" offer="primary" />
                 <p className="text-xs text-text-tertiary font-mono mt-6 break-words">
-                  One purchase. Forever clarity. No more debugging physics.
+                  $5/hr. No setup. Destroy when done.
                 </p>
               </div>
             </section>

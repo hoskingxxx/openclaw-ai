@@ -3,7 +3,6 @@ import { Footer } from "@/components/features/Footer"
 import { Breadcrumbs } from "@/components/features/Breadcrumbs"
 import { ContentRail } from "@/components/features/ContentRail"
 import { ContentEdge } from "@/components/features/ContentEdge"
-import { ContextCTA } from "@/components/monetization/ContextCTA"
 import Link from "next/link"
 import { R1PreflightCheck } from "@/components/tools/vram-calculator"
 import type { Metadata } from "next"
@@ -87,11 +86,6 @@ export default function PreflightPage() {
                     <p><span className="text-green-400 font-semibold">GREEN (Ready with caveats):</span> Hardware looks good, but bookmark this page for updated boundaries as models grow.</p>
                   </div>
                 </div>
-              </div>
-
-              {/* Context CTA for RED verdict */}
-              <div className="max-w-3xl mx-auto mt-8">
-                <ContextCTA verdict="red" placement="red_card" />
               </div>
 
               {/* Internal Links */}

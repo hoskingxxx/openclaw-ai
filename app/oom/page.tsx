@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/features/Breadcrumbs";
 import { ContentRail } from "@/components/features/ContentRail";
 import { ContentEdge } from "@/components/features/ContentEdge";
 import { Button } from "@/components/ui/Button";
-import { PrimaryCTA } from "@/components/monetization/PrimaryCTA";
+import { ContextCTA } from "@/components/monetization/ContextCTA";
 import Link from "next/link";
 import { FEATURED_POST_PATH } from "@/lib/blog";
 import type { Metadata } from "next";
@@ -126,15 +126,6 @@ export default function OOMPage() {
                     <p className="text-text-tertiary font-mono mb-1">The Math:</p>
                     <p className="text-text-secondary">A used 3090 costs ~$800. That's <strong>1,600 hours</strong> of rental time. Will you actually use it that much?</p>
                   </div>
-                  <a
-                    href="https://www.vultr.com/?ref=9864821-9J"
-                    target="_blank"
-                    rel="noopener noreferrer sponsored"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white font-mono text-sm font-bold rounded-lg transition-colors mt-4"
-                    data-cta="vultr_oom_option_b"
-                  >
-                    Deploy Cloud GPU →
-                  </a>
                 </div>
               </div>
             </div>
@@ -215,23 +206,6 @@ export default function OOMPage() {
                 Tested on: Ubuntu 22.04 / RTX 3090 24GB / 64GB RAM / Feb 1, 2026
               </p>
             </div>
-
-            {/* Cost of Sanity CTA */}
-            <div className="glass-card p-6 border border-blue-500/30">
-              <h3 className="text-lg font-semibold text-text-primary mb-4">Fix (The Cost of Sanity)</h3>
-              <p className="text-sm text-text-secondary mb-4">
-                I tried aggressive quantization. I tried CPU offloading. I closed every Chrome tab.<br />
-                At this point, renting a GPU isn't giving up—it's <strong>basic math</strong>.
-              </p>
-              <div className="bg-terminal-bg rounded p-4 mb-4">
-                <pre className="text-sm text-green-400 font-mono">
-                  <code>$0.80/hr (Cloud) &lt; 4 hours of debugging hardware (Your Rate)</code>
-                </pre>
-              </div>
-              <Button variant="info" size="md" href="/quick-start#cloud" className="font-mono">
-                Stop Debugging & Start Shipping (Path A) →
-              </Button>
-            </div>
           </section>
 
           {/* Crash Log 2: MacBook Air + R1 8B (Slow) */}
@@ -279,22 +253,6 @@ user@macbook ~$ # Response takes 40+ seconds to complete
                 <li>• What broke: 3.2 tokens/sec is too slow for interactive agent workflows</li>
                 <li>• What NOT tested: Larger Mac models (M3 Max, Mac Studio with more RAM)</li>
               </ul>
-            </div>
-
-            {/* Cost of Sanity CTA */}
-            <div className="glass-card p-6 border border-blue-500/30">
-              <h3 className="text-lg font-semibold text-text-primary mb-4">Fix (The Cost of Sanity)</h3>
-              <p className="text-sm text-text-secondary mb-4">
-                Apple Silicon is great for inference, but agent workflows need low latency. Every 40-second response adds up to hours of waiting.
-              </p>
-              <div className="bg-terminal-bg rounded p-4 mb-4">
-                <pre className="text-sm text-green-400 font-mono">
-                  <code>$0.80/hr (Cloud) &lt; Time value of waiting for slow inference</code>
-                </pre>
-              </div>
-              <Button variant="info" size="md" href="/quick-start#cloud" className="font-mono">
-                Stop Debugging & Start Shipping (Path A) →
-              </Button>
             </div>
           </section>
 
@@ -346,22 +304,6 @@ PID    COMMAND        %CPU  %MEM
                 <li>• What NOT tested: Systems with 64GB+ RAM (might work, but why suffer?)</li>
               </ul>
             </div>
-
-            {/* Cost of Sanity CTA */}
-            <div className="glass-card p-6 border border-blue-500/30">
-              <h3 className="text-lg font-semibold text-text-primary mb-4">Fix (The Cost of Sanity)</h3>
-              <p className="text-sm text-text-secondary mb-4">
-                RAM-only inference is a false economy. You'll spend more time waiting for crashes than you will shipping code.
-              </p>
-              <div className="bg-terminal-bg rounded p-4 mb-4">
-                <pre className="text-sm text-green-400 font-mono">
-                  <code>$0.80/hr (Cloud) &lt; Dealing with frozen systems & lost work</code>
-                </pre>
-              </div>
-              <Button variant="info" size="md" href="/quick-start#cloud" className="font-mono">
-                Stop Debugging & Start Shipping (Path A) →
-              </Button>
-            </div>
           </section>
 
           {/* ============================================ */}
@@ -378,29 +320,16 @@ PID    COMMAND        %CPU  %MEM
 you are valuing your time at minimum hourly rates.</code>
                 </pre>
               </div>
-              <p className="text-lg text-text-secondary mb-6">
-                If you are an engineer, your time is worth more.<br />
-                <strong className="text-brand-primary">Stop fighting physics. Rent the compute.</strong>
-              </p>
+              {/* Context CTA for RED verdict */}
+              <div className="mt-8">
+                <ContextCTA verdict="red" placement="red_card" />
+              </div>
 
-              <div className="grid gap-4 md:grid-cols-2 justify-center">
-                <Link
-                  href="/troubleshooting"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-text-primary font-mono text-sm rounded-lg transition-colors"
-                >
+              <p className="text-sm text-text-tertiary mt-6">
+                <Link href="/troubleshooting" className="text-text-tertiary hover:text-text-secondary underline">
                   Still want local? Read Troubleshooting →
                 </Link>
-                <a
-                  href="https://www.vultr.com/?ref=9864821-9J"
-                  target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-primary hover:bg-brand-hover text-white font-mono text-sm font-bold rounded-lg transition-colors"
-                  data-cta="vultr_oom_final"
-                >
-                  Deploy Cloud GPU →
-                </a>
-              </div>
-            </div>
+              </p>            </div>
           </section>
 
           {/* Internal Links Funnel */}
