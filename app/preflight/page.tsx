@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/features/Navigation"
 import { Footer } from "@/components/features/Footer"
+import { Breadcrumbs } from "@/components/features/Breadcrumbs"
 import { ContentRail } from "@/components/features/ContentRail"
 import { ContentEdge } from "@/components/features/ContentEdge"
 import Link from "next/link"
@@ -25,12 +26,24 @@ export default function PreflightPage() {
       <main className="min-h-screen bg-background">
         <ContentRail>
           <ContentEdge>
-            <div className="py-16 px-4">
+            <div className="pt-8 pb-4">
               {/* Breadcrumb */}
-              <div className="mb-8">
-                <Link href="/" className="text-sm text-text-tertiary hover:text-text-primary transition-colors">
-                  ← Back Home
+              <div className="flex items-center gap-2 text-sm text-text-tertiary py-4">
+                <Link href="/" className="hover:text-text-primary transition-colors">
+                  Home
                 </Link>
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l15 12 5 6" />
+                </svg>
+                <Link href="/tools" className="hover:text-text-primary transition-colors">
+                  Tools
+                </Link>
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l15 12 5 6" />
+                </svg>
+                <span className="text-text-primary font-medium">
+                  Pre-flight Check
+                </span>
               </div>
 
               {/* Title Section */}
