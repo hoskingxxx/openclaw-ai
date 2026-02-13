@@ -76,7 +76,7 @@ export function PrimaryCTA({
         target="_blank"
         rel="noopener noreferrer sponsored"
         className={`text-xs text-text-tertiary hover:text-text-secondary transition-colors underline ${className}`}
-        data-cta={ctaId}
+        data-cta="primary"
       >
         {offer === "primary" ? "Get Cloud GPU ($5/mo)" : `Get Survival Kit (${offerConfig.price})`}
       </a>
@@ -98,7 +98,8 @@ export function PrimaryCTA({
           rel="noopener noreferrer sponsored"
           onClick={handleClick}
           className="inline-flex items-center gap-2 px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white font-bold rounded transition-colors text-xs sm:text-sm flex-shrink-0"
-          data-cta={ctaId}
+          data-cta="primary"
+          data-cta-strong="1"
         >
           {offer === "primary" ? "Rent GPU" : "Get Decision Boundaries"}
           <ExternalLink className="w-4 h-4" />
@@ -139,7 +140,8 @@ export function PrimaryCTA({
           rel="noopener noreferrer sponsored"
           onClick={handleClick}
           className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-brand-primary to-brand-hover hover:from-brand-hover hover:to-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
-          data-cta={ctaId}
+          data-cta="primary"
+          data-cta-strong="1"
         >
           {offer === "primary" ? "Deploy on Vultr →" : `Buy Clarity — ${offerConfig.price}`}
           <ExternalLink className="w-4 h-4 ml-1" />

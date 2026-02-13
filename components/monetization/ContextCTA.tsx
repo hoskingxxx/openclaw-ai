@@ -75,7 +75,8 @@ export function ContextCTA({
           rel="noopener noreferrer sponsored"
           onClick={handleClick}
           className="w-full sm:w-auto px-10 py-5 text-xl font-bold text-white rounded-lg border-2 border-brand-primary bg-brand-primary hover:bg-brand-hover font-mono text-center shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
-          data-cta={ctaId}
+          data-cta="context"
+          data-cta-strong="1"
         >
           Launch Cloud Sandbox ({PRIMARY_OFFER.price}) →
         </a>
