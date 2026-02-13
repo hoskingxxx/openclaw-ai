@@ -3,7 +3,8 @@ import { Footer } from "@/components/features/Footer";
 import { ContentRail } from "@/components/features/ContentRail";
 import { ContentEdge } from "@/components/features/ContentEdge";
 import { Button } from "@/components/ui/Button";
-import { ContinueSafely } from "@/components/monetization/ContinueSafely";
+import { PrimaryCTA } from "@/components/monetization/PrimaryCTA";
+import { ContextCTA } from "@/components/monetization/ContextCTA";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -354,9 +355,9 @@ export default function TroubleshootingPage() {
             </p>
           </section>
 
-          {/* Continue Safely - Unified CTA */}
+          {/* Bottom CTA: Primary (Survival Kit) */}
           <div className="mt-16 mb-8">
-            <ContinueSafely />
+            <PrimaryCTA variant="full" placement="bottom" />
           </div>
 
           {/* Bottom CTA for Frustrated Debuggers - Downgraded */}

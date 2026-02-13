@@ -7,7 +7,8 @@ import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
 import { R1PreflightCheck } from "@/components/tools/vram-calculator";
 import { HashScrollFix } from "@/components/HashScrollFix";
-import { ContinueSafely } from "@/components/monetization/ContinueSafely";
+import { PrimaryCTA } from "@/components/monetization/PrimaryCTA";
+import { ContextCTA } from "@/components/monetization/ContextCTA";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -296,9 +297,10 @@ export default async function BlogPostPage({
             </section>
           )}
 
-          {/* Continue Safely - Unified bottom CTA */}
+          {/* Bottom CTA: Primary (Survival Kit) */}
           <section className="px-4 sm:px-6 mb-8">
-            <ContinueSafely />
+            {/* Primary CTA - Always show Survival Kit */}
+            <PrimaryCTA variant="full" placement="bottom" />
           </section>
         </ContentRail>
       </main>

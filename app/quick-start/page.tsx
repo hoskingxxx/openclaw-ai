@@ -5,7 +5,8 @@ import { ContentEdge } from "@/components/features/ContentEdge";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { Button } from "@/components/ui/Button";
 import { Alert, AlertTitle } from "@/components/ui/Alert";
-import { ContinueSafely } from "@/components/monetization/ContinueSafely";
+import { PrimaryCTA } from "@/components/monetization/PrimaryCTA";
+import { ContextCTA } from "@/components/monetization/ContextCTA";
 import Link from "next/link";
 import { FEATURED_POST_PATH } from "@/lib/blog";
 import type { Metadata } from "next";
@@ -406,8 +407,10 @@ openclaw start        ← .env is read from HERE`}
              </Button>
           </div>
 
-          {/* Continue Safely - Unified CTA */}
-          <ContinueSafely />
+          {/* Bottom CTA: Primary (Survival Kit) */}
+          <div className="mt-8">
+            <PrimaryCTA variant="full" placement="bottom" />
+          </div>
 
           </ContentEdge>
         </ContentRail>

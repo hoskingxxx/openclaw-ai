@@ -4,6 +4,7 @@ import { Footer } from "@/components/features/Footer";
 import { Navigation } from "@/components/features/Navigation";
 import { ContentRail } from "@/components/features/ContentRail";
 import { ContentEdge } from "@/components/features/ContentEdge";
+import { PrimaryCTA } from "@/components/monetization/PrimaryCTA";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,8 +18,6 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
-
-const VULTR_LINK = "https://www.vultr.com/?ref=9864821-9J&utm_source=openclaw&utm_medium=homepage&utm_campaign=why_local_fails";
 
 function PromoBanner() {
   return (
@@ -96,16 +95,10 @@ export default function HomePage() {
 
               <div className="mt-10 text-center">
                 <p className="text-text-tertiary text-sm font-mono mb-6">
-                  You can fight physics, or you can rent what you need.
+                  You can fight physics, or you can understand the limits.
                 </p>
-                <a
-                  href={VULTR_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  className="inline-block px-8 py-4 text-lg font-bold text-white rounded-lg border-2 border-green-400 bg-green-600 hover:bg-green-500 font-mono"
-                >
-                  Launch Cloud Sandbox ($5/mo) →
-                </a>
+                {/* Primary CTA: Survival Kit */}
+                <PrimaryCTA variant="full" placement="bottom" />
               </div>
             </section>
           </ContentEdge>
@@ -143,7 +136,7 @@ ollama run deepseek-r1:8b`}
                   </pre>
                 </div>
                 <p className="text-sm text-text-secondary mt-4 break-words">
-                  This downloads the 8B Distilled version. It's dumber, but it runs.
+                  This downloads 8B Distilled version. It's dumber, but it runs.
                 </p>
                 <p className="text-xs text-text-tertiary mt-2 break-words">
                   It runs, but at a cost. See <Link href="/guides/how-to-use-deepseek-with-openclaw" className="text-brand-primary hover:text-brand-hover underline">Optimization Trade-offs →</Link>
@@ -162,27 +155,21 @@ ollama run deepseek-r1:8b`}
           </ContentEdge>
         </ContentRail>
 
-        {/* Final CTA - Cloud Sandbox */}
+        {/* Final CTA - Survival Kit */}
         <ContentRail>
           <ContentEdge>
             <section className="py-20">
               <div className="glass-card p-6 sm:p-8 text-center max-w-3xl mx-auto">
                 <h2 className="text-xl md:text-2xl font-mono text-text-primary mb-4 break-words">
-                  Run OpenClaw safely. Avoid local risk.
+                  Stop Guessing. Know Your Limits.
                 </h2>
                 <p className="text-text-secondary mb-6 break-words">
-                  Skip the OOM loops. Deploy on cloud GPU and get back to building.
+                  Get decision boundaries, stop rules, and red lines for DeepSeek R1.
                 </p>
-                <a
-                  href={VULTR_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  className="inline-block px-10 py-5 text-xl font-bold text-white rounded-lg border-2 border-green-400 bg-green-600 hover:bg-green-500 font-mono"
-                >
-                  Launch Cloud Sandbox ($5/mo) →
-                </a>
+                {/* Primary CTA: Survival Kit */}
+                <PrimaryCTA variant="full" placement="bottom" />
                 <p className="text-xs text-text-tertiary font-mono mt-6 break-words">
-                  Takes 2 minutes to spin up. Saves hours of debugging.
+                  One purchase. Forever clarity. No more debugging physics.
                 </p>
               </div>
             </section>
