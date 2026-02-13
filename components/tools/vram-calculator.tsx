@@ -163,7 +163,6 @@ export function R1PreflightCheck() {
 
   // Refs for CTA impression tracking (Verdict Gate - only primary CTAs)
   const vultrRedCardRef = useRef<HTMLAnchorElement>(null)
-  const gumroadYellowCardRef = useRef<HTMLAnchorElement>(null)
 
   // Mobile detection
   useEffect(() => {
@@ -230,23 +229,6 @@ export function R1PreflightCheck() {
         cta_id: "vultr_red_primary",
         cta_position: "bottom",
         intent: "escape",
-        context: "hardware",
-      })
-    }
-
-    // YELLOW: Gumroad primary CTA impression
-    if (status === "yellow" && gumroadYellowCardRef.current) {
-      trackCtaImpression({
-        dest: "gumroad",
-        offer: "survival_kit",
-        placement: "yellow_card",
-        pageType,
-        slug: postSlug,
-        verdict: "yellow",
-        path: pathname,
-        cta_id: "kit_yellow_primary",
-        cta_position: "bottom",
-        intent: "evaluate",
         context: "hardware",
       })
     }
@@ -580,7 +562,6 @@ export function R1PreflightCheck() {
             </div>
           </div>
         </details>
-      </div>
 
       {/* ==================================================================== */}
       {/* ====================================================================
