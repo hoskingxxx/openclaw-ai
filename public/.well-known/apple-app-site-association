@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [],
+        "components": [
+          {
+            "/": {
+              "defaultURL": "https://openclaw-ai.org/"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": []
+  }
+}
