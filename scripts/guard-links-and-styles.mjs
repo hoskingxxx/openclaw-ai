@@ -51,8 +51,8 @@ const SCAN_DIRS = [
 // Exclude patterns (for UI components, terminal decorations, etc)
 const COLOR_EXCLUDE_PATTERNS = [
   // Terminal decorator dots (red/yellow/green in 404 page, calculator, etc)
-  /w-3 h-3 rounded-full bg-(red|yellow|green)-500"[^<]*\s*\/>/,
-  /w-3 h-3 rounded-full bg-(red|yellow|green)-500\s+class/,
+  /w-3 h-3 rounded-full bg-(red|yellow|green)-500"[^<]*\s*(\/|>|)/,
+  /w-3 h-3 rounded-full bg-(red|yellow|green)-500"\s*class=/,
   // Severity labels and status indicators
   /text-green-400"[^<]*\s*font-mono">/,
   /bg-green-500\/10.*border.*bg-green-500\/20/,
