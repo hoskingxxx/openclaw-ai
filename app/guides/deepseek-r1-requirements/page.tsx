@@ -166,8 +166,8 @@ export default function DeepSeekR1RequirementsPage() {
                       You're on the razor's edge. Browser tabs or IDE plugins will crash you. Close unnecessary applications before running inference.
                     </p>
                   </div>
-                  <div className="glass-card p-4 border-l-4 border-green-500 bg-green-950/10">
-                    <h3 className="font-semibold text-green-400 mb-2">GREEN (Ready with caveats)</h3>
+                  <div className="glass-card p-4 border-l-4 border-brand-primary bg-brand-primary/10">
+                    <h3 className="font-semibold text-brand-primary mb-2">READY (Viable)</h3>
                     <p className="text-sm text-text-secondary">
                       Hardware looks good. Bookmark this page for updated boundaries as models grow. Monitor VRAM usage during long sessions.
                     </p>

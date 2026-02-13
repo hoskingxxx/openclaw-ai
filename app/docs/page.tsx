@@ -33,8 +33,8 @@ export default function DocsPage() {
           </div>
 
           {/* Survivor Warning Banner */}
-          <div className="mb-8 p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
-            <p className="text-sm text-orange-200 font-mono text-center">
+          <div className="mb-8 p-4 bg-brand-primary/10 border border-brand-primary/30 rounded-lg">
+            <p className="text-sm text-brand-primary/80 font-mono text-center">
               <strong>⚠️ Survivor Warning:</strong> This is the part everyone shows you. What they don't show you is what breaks after this.
             </p>
           </div>
@@ -105,33 +105,33 @@ export default function DocsPage() {
               </div>
 
               {/* Path B: Local Hardware */}
-              <div className="glass-card p-8 border-2 border-orange-500/30 hover:border-orange-500/50 transition-colors">
+              <div className="glass-card p-8 border-2 border-brand-primary/30 hover:border-brand-primary/50 transition-colors">
                 <div className="flex items-center gap-3 mb-6">
-                  <span className="bg-orange-500/20 text-orange-400 px-3 py-1 rounded text-xs font-mono font-bold">HARDWARE REQUIRED</span>
+                  <span className="bg-brand-primary/20 text-brand-primary px-3 py-1 rounded text-xs font-mono font-bold">HARDWARE REQUIRED</span>
                   <h3 className="text-xl font-bold text-text-primary">Path B: Local Ollama</h3>
                 </div>
 
                 <div className="space-y-4 text-text-secondary mb-8">
                   <div className="flex items-center gap-2">
-                    <span className="text-orange-400">⏱️</span>
+                    <span className="text-brand-primary">⏱️</span>
                     <span>Setup time: <strong>1-2 hours</strong></span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-orange-400">🖥️</span>
+                    <span className="text-brand-primary">🖥️</span>
                     <span>Hardware: <strong>16GB+ RAM / GPU</strong></span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-orange-400">💰</span>
+                    <span className="text-brand-primary">💰</span>
                     <span>Cost: <strong>Free</strong> (if you have GPU)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-orange-400">🔬</span>
+                    <span className="text-brand-primary">🔬</span>
                     <span>Stability: <strong>Experimental</strong></span>
                   </div>
                 </div>
 
-                <div className="bg-orange-500/10 border border-orange-500/20 rounded p-4 mb-6">
-                  <p className="text-sm text-orange-200">
+                <div className="bg-brand-primary/10 border border-brand-primary/20 rounded p-4 mb-6">
+                  <p className="text-sm text-brand-primary/80">
                     <strong>Pro:</strong> Full privacy. No rate limits.<br />
                     <strong>Con:</strong> You will fight VRAM. You will crash. You will learn.
                   </p>

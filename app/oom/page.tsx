@@ -157,7 +157,7 @@ export default function OOMPage() {
               <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-green-500" />
+                <div className="w-3 h-3 rounded-full bg-brand-primary" />
                 <span className="ml-2 text-xs text-gray-400 font-mono">terminal</span>
               </div>
               <pre className="p-4 overflow-x-auto">
@@ -218,7 +218,7 @@ export default function OOMPage() {
               <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-green-500" />
+                <div className="w-3 h-3 rounded-full bg-brand-primary" />
                 <span className="ml-2 text-xs text-gray-400 font-mono">terminal</span>
               </div>
               <pre className="p-4 overflow-x-auto">
@@ -266,7 +266,7 @@ user@macbook ~$ # Response takes 40+ seconds to complete
               <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-green-500" />
+                <div className="w-3 h-3 rounded-full bg-brand-primary" />
                 <span className="ml-2 text-xs text-gray-400 font-mono">terminal</span>
               </div>
               <pre className="p-4 overflow-x-auto">

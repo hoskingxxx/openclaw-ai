@@ -203,11 +203,11 @@ LLM_MODEL="deepseek-reasoner"`}
           {/* PATH B */}
           <section id="local" className="mb-20 pt-8 border-t border-white/10">
             <div className="flex items-center gap-3 mb-6">
-              <span className="bg-orange-500/20 text-orange-400 px-3 py-1 rounded text-xs font-mono font-bold">HARDWARE REQUIRED</span>
+              <span className="bg-brand-primary/20 text-brand-primary px-3 py-1 rounded text-xs font-mono font-bold">HARDWARE REQUIRED</span>
               <h2 className="text-2xl font-bold text-text-primary">Path B: Local (Ollama)</h2>
             </div>
 
-            <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4 mb-8">
+            <div className="bg-brand-primary/10 border border-brand-primary/20 rounded-lg p-4 mb-8">
               <p className="text-sm text-orange-200">
                 <strong>⚠️ Warning:</strong> If you have less than 16GB RAM, turn back now. Your system will freeze.
               </p>
@@ -322,7 +322,7 @@ LLM_MODEL="deepseek-reasoner"`}
               </div>
             </div>
 
-            <div className="space-y-8 border-l-2 border-orange-500/20 pl-6 ml-2">
+            <div className="space-y-8 border-l-2 border-brand-primary/20 pl-6 ml-2">
               {/* Step 1 */}
               <div>
                 <h3 className="text-lg font-medium text-text-primary mb-2">1. Install Ollama & Pull Model</h3>

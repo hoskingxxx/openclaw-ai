@@ -26,7 +26,7 @@ function PromoBanner() {
       href="/guides/openclaw-security-rce-cve-2026-25253"
       className="block relative overflow-hidden group cursor-pointer"
     >
-      <div className="absolute inset-0 bg-orange-500/20" />
+      <div className="absolute inset-0 bg-brand-primary/20" />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20" />
       <div className="relative">
         <ContentRail>
@@ -126,11 +126,11 @@ export default function HomePage() {
                   <div className="flex items-center gap-2 px-4 py-3 bg-terminal-header border-b border-white/10">
                     <div className="w-3 h-3 rounded-full bg-red-500" />
                     <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                    <div className="w-3 h-3 rounded-full bg-brand-primary" />
                     <span className="ml-2 text-xs text-gray-400 font-mono">terminal</span>
                   </div>
                   <pre className="p-4 overflow-x-auto text-xs sm:text-sm">
-                    <code className="text-green-400 font-mono leading-relaxed break-all">
+                    <code className="text-brand-primary font-mono leading-relaxed break-all">
 {`# The "Poor Man's Fix" (Fits in 8GB VRAM)
 ollama run deepseek-r1:8b`}
                     </code>

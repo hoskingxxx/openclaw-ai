@@ -247,7 +247,7 @@ export default function TroubleshootingPage() {
                       <h3 className="text-xl font-semibold text-text-primary">{fix.title}</h3>
                       <span className={`px-2 py-1 rounded text-xs font-mono ${
                         fix.severity === "critical" ? "bg-red-500/20 text-red-400" :
-                        fix.severity === "high" ? "bg-orange-500/20 text-orange-400" :
+                        fix.severity === "high" ? "bg-brand-primary/20 text-brand-primary" :
                         fix.severity === "medium" ? "bg-yellow-500/20 text-yellow-400" :
                         "bg-text-secondary/20 text-text-secondary"
                       }`}>
