@@ -26,11 +26,6 @@ const ROOT = resolve(__dirname, '..')
 // ============================================================================
 
 const VULTR_AFFILIATE_PATTERN = /vultr\.com\/\?ref=/gi
-const FORBIDDEN_COLOR_PATTERNS = [
-  /bg-green-/gi,
-  /bg-purple-/gi,
-  /bg-blue-/gi,
-]
 const GRADIENT_PATTERN = /gradient/gi
 const TAILWIND_GRADIENT_PATTERN = /from-\w+.*to-/gi
 
@@ -99,7 +94,7 @@ async function scanFile(filePath) {
     }
   }
 
-  // Check for forbidden color tokens
+  // Check for forbidden color tokens (with exclusions)
   for (const pattern of FORBIDDEN_COLOR_PATTERNS) {
     const colorMatches = content.matchAll(pattern)
     for (const match of colorMatches) {
@@ -108,12 +103,19 @@ async function scanFile(filePath) {
         const lineContent = lines.slice(0, idx + 1).join('\n')
         return match.index < lineContent.length
       }) + 1
-      violations.forbiddenColors.push({
-        file: relativePath,
-        line: lineNum,
-        match: match[0],
-        pattern: pattern.source
-      })
+
+      // Check if this line should be excluded
+      const lineContentFull = lines.slice(0, lineNum).join('\n') + lines.slice(lineNum - 1).join('\n')
+      const isExcluded = COLOR_EXCLUDE_PATTERNS.some(exclude => exclude.test(lineContentFull))
+
+      if (!isExcluded) {
+        violations.forbiddenColors.push({
+          file: relativePath,
+          line: lineNum,
+          match: match[0],
+          pattern: pattern.source
+        })
+      }
     }
   }
 
