@@ -29,9 +29,9 @@ import { PRIMARY_OFFER, SECONDARY_OFFER } from "@/lib/offers"
 // GLOBAL AFFILIATE LINKS (HARDCODED)
 // ============================================================================
 
-const LINK_KIT = PRIMARY_OFFER.url  // Survival Kit
+const LINK_KIT = SECONDARY_OFFER.url  // Survival Kit
 const LINK_API = "https://deepinfra.com/"
-const LINK_CLOUD = SECONDARY_OFFER.url  // Vultr Cloud
+const LINK_CLOUD = PRIMARY_OFFER.url  // Vultr Cloud
 
 // ============================================================================
 // TYPES & DATA STRUCTURES (Strict Enum - Do Not Modify)
