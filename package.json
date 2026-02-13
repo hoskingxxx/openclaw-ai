@@ -11,6 +11,8 @@
     "validate": "tsx scripts/validate-build.ts",
     "check:links": "node scripts/check-links.mjs",
     "check:constraints": "node scripts/check-mdx-naked-html.js && node scripts/check-globals-css-scope.js && node scripts/check-mdx-issues.js",
+    "ci:link-audit": "node scripts/ci/link-audit.mjs",
+    "ci:link-audit:prod": "AUDIT_URL=https://openclaw-ai.org node scripts/ci/link-audit.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:preflight": "playwright test tests/preflight-tracking.spec.ts",
@@ -22,7 +24,7 @@
     "test:cta:strict": "node scripts/ci/cta-lint.mjs --strict",
     "guard:static": "node scripts/guard-links-and-styles.mjs",
     "ci:guard": "npm run guard:static && npm run test:cta-guard",
-    "release:gate": "npm run build && npm run test:preflight && npm run test:prod:preflight && npm run test:dedupe && npm run test:cta && npm run ci:guard",
+    "release:gate": "npm run build && npm run test:preflight && npm run test:prod:preflight && npm run test:dedupe && npm run test:cta && npm run ci:guard && npm run ci:link-audit",
     "audit": "tsx scripts/website-audit.ts",
     "audit:prod": "AUDIT_URL=https://openclaw-ai.org tsx scripts/website-audit.ts"
   },
