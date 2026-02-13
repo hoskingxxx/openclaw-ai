@@ -478,9 +478,11 @@ export function R1PreflightCheck() {
             ref={vultrRedCardRef}
             href={LINK_CLOUD}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer sponsored"
             onClick={() => handleVultrClick('red_card')}
             data-testid="cta-vultr"
+            data-cta="context"
+            data-cta-strong="1"
             className="block p-5 rounded-lg border-2 border-purple-500 bg-purple-600 hover:bg-purple-700 transition-all"
           >
             <div className="flex items-start gap-3">
@@ -547,9 +549,11 @@ export function R1PreflightCheck() {
             ref={gumroadYellowCardRef}
             href={LINK_KIT}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer sponsored"
             onClick={() => handleGumroadClick('yellow_card')}
             data-testid="cta-gumroad"
+            data-cta="primary"
+            data-cta-strong="1"
             className="block p-5 rounded-lg border-2 border-amber-500 bg-amber-600 hover:bg-amber-700 transition-all"
           >
             <div className="flex items-start gap-3">

@@ -61,7 +61,7 @@ export default async function Image() {
             width: "100px",
             height: "100px",
             borderRadius: "24px",
-            background: "linear-gradient(135deg, #FF4500 0%, #FF5722 100%)",
+            background: "#FF4500",
             marginBottom: "32px",
             boxShadow: "0 8px 32px rgba(255, 69, 0, 0.3)",
           }}
