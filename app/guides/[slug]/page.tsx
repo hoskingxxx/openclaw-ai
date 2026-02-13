@@ -5,6 +5,7 @@ import { ContentRail } from "@/components/features/ContentRail";
 import { ImpossibleWallWidget } from "@/components/blog/ImpossibleWallWidget";
 import { blogPosts } from "@/lib/blog";
 import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/SEO/StructuredData";
+import { R1PreflightCheck } from "@/components/tools/vram-calculator";
 import { HashScrollFix } from "@/components/HashScrollFix";
 import { PrimaryCTA } from "@/components/monetization/PrimaryCTA";
 import { ContextCTA } from "@/components/monetization/ContextCTA";
@@ -250,6 +251,23 @@ export default async function BlogPostPage({
               </div>
             </div>
           </header>
+
+          {/* VRAM Calculator - Only for hardware-requirements-reality-check */}
+          {post.slug === "hardware-requirements-reality-check" && (
+            <section className="px-4 sm:px-6 mb-8">
+              <div className="max-w-4xl mx-auto">
+                <div className="glass-card p-6 border border-border">
+                  <h2 className="text-2xl font-bold text-text-primary mb-2 text-center">
+                    R1 Pre-flight Check
+                  </h2>
+                  <p className="text-sm text-text-secondary text-center mb-6">
+                    Check your real VRAM headroom (OS + IDE overhead included)
+                  </p>
+                  <R1PreflightCheck />
+                </div>
+              </div>
+            </section>
+          )}
 
           <section className="px-4 sm:px-6">
             <article
