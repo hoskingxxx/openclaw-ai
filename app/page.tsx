@@ -97,8 +97,8 @@ export default function HomePage() {
                 <p className="text-text-tertiary text-sm font-mono mb-6">
                   You can fight physics, or you can understand the limits.
                 </p>
-                {/* Primary CTA: Survival Kit */}
-                <PrimaryCTA variant="full" placement="bottom" />
+                {/* Primary CTA: Cloud */}
+                <PrimaryCTA variant="full" placement="bottom" offer="primary" />
               </div>
             </section>
           </ContentEdge>
@@ -166,8 +166,8 @@ ollama run deepseek-r1:8b`}
                 <p className="text-text-secondary mb-6 break-words">
                   Get decision boundaries, stop rules, and red lines for DeepSeek R1.
                 </p>
-                {/* Primary CTA: Survival Kit */}
-                <PrimaryCTA variant="full" placement="bottom" />
+                {/* Primary CTA: Cloud */}
+                <PrimaryCTA variant="full" placement="bottom" offer="primary" />
                 <p className="text-xs text-text-tertiary font-mono mt-6 break-words">
                   One purchase. Forever clarity. No more debugging physics.
                 </p>
@@ -185,6 +185,22 @@ ollama run deepseek-r1:8b`}
       </div>
 
       <Footer />
+
+      {/* Secondary CTA: Survival Kit (text-only) */}
+      <div className="text-center py-6">
+        <p className="text-xs text-text-tertiary font-mono mb-2">
+          Need decision boundaries and stop rules for DeepSeek R1?
+        </p>
+        <a
+          href="https://hilda666888.gumroad.com/l/ymwwgm"
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+          className="text-xs text-text-secondary hover:text-text-primary transition-colors underline"
+          data-cta="kit_text_footer"
+        >
+          Get Survival Kit ($9.90)
+        </a>
+      </div>
     </>
   );
 }

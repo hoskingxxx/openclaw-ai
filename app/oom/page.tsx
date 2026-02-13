@@ -4,6 +4,7 @@ import { Breadcrumbs } from "@/components/features/Breadcrumbs";
 import { ContentRail } from "@/components/features/ContentRail";
 import { ContentEdge } from "@/components/features/ContentEdge";
 import { Button } from "@/components/ui/Button";
+import { PrimaryCTA } from "@/components/monetization/PrimaryCTA";
 import Link from "next/link";
 import { FEATURED_POST_PATH } from "@/lib/blog";
 import type { Metadata } from "next";
@@ -128,10 +129,11 @@ export default function OOMPage() {
                   <a
                     href="https://www.vultr.com/?ref=9864821-9J"
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer sponsored"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-mono text-sm font-bold rounded-lg transition-colors mt-4"
+                    data-cta="vultr_oom_option_b"
                   >
-                    Deploy on Vultr (Check Pricing) →
+                    Deploy Cloud GPU →
                   </a>
                 </div>
               </div>
@@ -391,10 +393,11 @@ you are valuing your time at minimum hourly rates.</code>
                 <a
                   href="https://www.vultr.com/?ref=9864821-9J"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener noreferrer sponsored"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-mono text-sm font-bold rounded-lg transition-colors"
+                  data-cta="vultr_oom_final"
                 >
-                  Deploy Cloud VPS →
+                  Deploy Cloud GPU →
                 </a>
               </div>
             </div>
