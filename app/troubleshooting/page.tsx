@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
+import { Breadcrumbs } from "@/components/features/Breadcrumbs";
 import { ContentRail } from "@/components/features/ContentRail";
 import { ContentEdge } from "@/components/features/ContentEdge";
 import { Button } from "@/components/ui/Button";
@@ -110,9 +111,9 @@ export default function TroubleshootingPage() {
 
           {/* Breadcrumb */}
           <div className="mb-8">
-            <Link href="/docs" className="text-sm text-text-tertiary hover:text-text-primary transition-colors">
-              ← Back to Start
-            </Link>
+            <Breadcrumbs items={[
+              { label: "Troubleshooting", href: "/troubleshooting" }
+            ]} />
           </div>
 
           {/* Hero */}
