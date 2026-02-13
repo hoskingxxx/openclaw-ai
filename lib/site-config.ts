@@ -23,6 +23,7 @@ export const siteConfig = {
 // ============================================================================
 export const navLinks = [
   { title: "Tools", href: "/tools" },
+  { title: "Pre-flight Check", href: "/preflight" },
   { title: "Start", href: "/docs" },
   { title: "Guides", href: "/guides" },
   { title: "Troubleshooting", href: "/troubleshooting" },
