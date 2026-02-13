@@ -21,18 +21,15 @@ const CONFIG_PATH = path.join(SCRIPT_DIR, 'link-audit.config.json');
 let config;
 try {
   config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
-  if (Object.keys(config).length === 0) {
-    console.log(\`[LinkAudit] Config loaded from \${CONFIG_PATH}\`);
-  }
 } catch (e) {
   try {
     // Fallback
     config = JSON.parse(fs.readFileSync(path.join(SCRIPT_DIR, 'ci/link-audit.config.json'), 'utf8'));
-    console.log(\`[LinkAudit] Fallback loaded from \${path.join(SCRIPT_DIR, 'ci/link-audit.config.json')}\`);
+    console.log(`[LinkAudit] Fallback loaded from ${path.join(SCRIPT_DIR, 'ci/link-audit.config.json')}`);
   } catch (e2) {
-    console.error(\`[LinkAudit] Failed to load config from both paths:\`);
-    console.error(\`  Primary: \${CONFIG_PATH}\`);
-    console.error(\`  fallback: \${path.join(SCRIPT_DIR, 'ci/link-audit.config.json')}\`);
+    console.error(`[LinkAudit] Failed to load config from both paths:`);
+    console.error(`  Primary: ${CONFIG_PATH}`);
+    console.error(`  Fallback: ${path.join(SCRIPT_DIR, 'ci/link-audit.config.json')}`);
     process.exit(1);
   }
 }
@@ -63,19 +60,23 @@ const COLORS = {
 };
 
 function log(message, color = '') {
-  console.log(\`\${color}\${message}\${COLORS.reset}\`);
+  console.log(`${color}${message}${COLORS.reset}`);
 }
 
 function logError(message) {
-  log(\`✗ \${message}\`, COLORS.red);
+  log(`✗ ${message}`, COLORS.red);
 }
 
 function logWarn(message) {
-  log(\`⚠ \${message}\`, COLORS.yellow);
+  log(`⚠ ${message}`, COLORS.yellow);
 }
 
 function logSuccess(message) {
-  log(\`✓ \${message}\`, COLORS.green);
+  log(`✓ ${message}`, COLORS.green);
+}
+
+function logInfo(message) {
+  log(`  ${message}`, COLORS.blue);
 }
 
 function shouldIgnorePath(url) {
@@ -169,8 +170,10 @@ function countCTAs(html, pageUrl) {
   };
 
   // Count all CTA links
-  for (const [domain, key] of Object.entries(CTA_DOMAINS)) {
-    const regex = new RegExp(domain.replace('.', '\\.'), 'gi');
+  for (const [key, domain] of Object.entries(CTA_DOMAINS)) {
+    // Escape all dots in domain for regex
+    const escapedDomain = domain.replace(/\./g, '\\.');
+    const regex = new RegExp(escapedDomain, 'gi');
     const matches = html.match(regex);
     ctaCounts[key] = matches ? matches.length : 0;
   }
@@ -198,9 +201,9 @@ function countCTAs(html, pageUrl) {
  * Main audit function for a single page
  */
 async function auditPage(pageUrl) {
-  const fullUrl = pageUrl.startsWith('http') ? pageUrl : \`\${BASE_URL}\${pageUrl}\`;
+  const fullUrl = pageUrl.startsWith('http') ? pageUrl : `${BASE_URL}${pageUrl}`;
 
-  logInfo(\`Auditing: \${fullUrl}\`);
+  logInfo(`Auditing: ${fullUrl}`);
 
   try {
     const response = await fetch(fullUrl, {
@@ -210,7 +213,7 @@ async function auditPage(pageUrl) {
     });
 
     if (!response.ok) {
-      logError(\`Failed to fetch \${fullUrl}: \${response.status}\`);
+      logError(`Failed to fetch ${fullUrl}: ${response.status}`);
       return {
         url: fullUrl,
         status: response.status,
@@ -239,7 +242,7 @@ async function auditPage(pageUrl) {
       if (isInt) {
         internalLinks.push({
           url: link,
-          fullUrl: link.startsWith('/') ? \`\${BASE_URL}\${link}\` : link
+          fullUrl: link.startsWith('/') ? `${BASE_URL}${link}` : link
         });
       } else {
         externalLinks.push({
@@ -263,7 +266,7 @@ async function auditPage(pageUrl) {
     };
 
   } catch (error) {
-    logError(\`Error auditing \${fullUrl}: \${error.message}\`);
+    logError(`Error auditing ${fullUrl}: ${error.message}`);
     return {
       url: fullUrl,
       status: null,
@@ -283,8 +286,8 @@ async function auditPage(pageUrl) {
  */
 async function main() {
   log('Starting Link & CTA Audit...', COLORS.bold);
-  log(\`Base URL: \${BASE_URL}\`);
-  log(\`Entry points: \${ENTRY_POINTS.join(', '\\n')}\`);
+  log(`Base URL: ${BASE_URL}`);
+  log(`Entry points: ${ENTRY_POINTS.join(', ')}`);
 
   const results = [];
   const stats = {
@@ -347,29 +350,29 @@ async function main() {
   log('AUDIT RESULTS', COLORS.bold);
   console.log('='.repeat(60));
 
-  console.log(\`\\nPages audited: \${stats.totalPages}\`);
-  console.log(\`Passed: \${COLORS.green}\${stats.passedPages}\${COLORS.reset}\`);
-  console.log(\`Failed: \${COLORS.red}\${stats.failedPages}\${COLORS.reset}\`);
+  console.log(`\nPages audited: ${stats.totalPages}`);
+  console.log(`Passed: ${COLORS.green}${stats.passedPages}${COLORS.reset}`);
+  console.log(`Failed: ${COLORS.red}${stats.failedPages}${COLORS.reset}`);
 
-  console.log(\`\\nInternal links found: \${stats.totalInternalLinks}\`);
+  console.log(`\nInternal links found: ${stats.totalInternalLinks}`);
 
   // Print CTA violations
   if (stats.ctaViolations.length > 0) {
-    console.log('\\n' + COLORS.yellow + 'CTA VIOLATIONS:' + COLORS.reset);
+    console.log('\n' + COLORS.yellow + 'CTA VIOLATIONS:' + COLORS.reset);
     for (const violation of stats.ctaViolations) {
-      log(\`  \${violation.url}\`, COLORS.yellow);
-      console.log(\`    Gumroad: \${violation.ctaCounts.gumroad} (limit: \${violation.thresholds.gumroad || 1}\`);
-      console.log(\`    Vultr: \${violation.ctaCounts.vultr} (limit: \${violation.thresholds.vultr || 1}\`);
-      console.log(\`    BuyMeCoffee: \${violation.ctaCounts.buymeacoffee} (limit: \${violation.thresholds.buymeacoffee || 1}\`);
+      log(`  ${violation.url}`, COLORS.yellow);
+      console.log(`    Gumroad: ${violation.ctaCounts.gumroad} (limit: ${violation.thresholds.gumroad || 1})`);
+      console.log(`    Vultr: ${violation.ctaCounts.vultr} (limit: ${violation.thresholds.vultr || 1})`);
+      console.log(`    BuyMeCoffee: ${violation.ctaCounts.buymeacoffee} (limit: ${violation.thresholds.buymeacoffee || 1})`);
     }
   }
 
   // Print broken links (if any)
   if (stats.failedPages > 0) {
-    console.log('\\n' + COLORS.red + 'BROKEN PAGES:' + COLORS.reset);
+    console.log('\n' + COLORS.red + 'BROKEN PAGES:' + COLORS.reset);
     for (const result of results) {
       if (result.broken || result.status === 404) {
-        logError(\`  \${result.url} - \${result.status || 'Connection failed'}`);
+        logError(`  ${result.url} - ${result.status || 'Connection failed'}`);
       }
     }
   }
@@ -384,14 +387,14 @@ async function main() {
     console.log('='.repeat(60));
 
     if (stats.failedPages > 0) {
-      console.log('\\nBroken internal links found. Please fix:');
+      console.log('\nBroken internal links found. Please fix:');
       console.log('1. Create missing pages, OR');
       console.log('2. Update/remove broken links');
-      console.log(\`3. Run: \${COLORS.yellow}npm run ci:link-audit --fix\`);
+      console.log(`3. Run: ${COLORS.yellow}npm run ci:link-audit --fix${COLORS.reset}`);
     }
 
     if (stats.ctaViolations.length > 0) {
-      console.log('\\nCTA overload detected. Please reduce:');
+      console.log('\nCTA overload detected. Please reduce:');
       console.log('- Gumroad links per page (usually keep to 1)');
       console.log('- Vultr links per page (usually keep to 1)');
     }
@@ -400,11 +403,11 @@ async function main() {
   } else {
     log('AUDIT PASSED', COLORS.green);
     console.log('='.repeat(60));
-    console.log(\`\\nNo broken links detected\`);
-    console.log(\`\\n\${COLORS.green}✓ CTA counts within thresholds\`);
-    console.log(\`\\nTotal internal links: \${stats.totalInternalLinks}\`);
-    console.log(\`\\nTotal external links: \${stats.totalExternalLinks}\`);
-    }
+    console.log(`\nNo broken links detected`);
+    console.log(`\n${COLORS.green}✓ CTA counts within thresholds${COLORS.reset}`);
+    console.log(`\nTotal internal links: ${stats.totalInternalLinks}`);
+    console.log(`\nTotal external links: ${stats.totalExternalLinks}`);
+  }
 
   process.exit(0);
 }

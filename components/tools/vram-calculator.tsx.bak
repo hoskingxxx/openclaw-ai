@@ -583,6 +583,8 @@ export function R1PreflightCheck() {
 
       {/* ====================================================================
           DEBUG MODE AUDIT PANEL — Only renders when ?debug=1
+          ==================================================================== */}
+      {debugMode && (
         <div className="mt-6 pt-6 border-t border-border">
           <details className="group" open>
             <summary className="cursor-pointer list-none">

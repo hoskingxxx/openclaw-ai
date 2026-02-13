@@ -43,7 +43,7 @@ export function ConversionButton({ location, copy, variant = "full" }: Conversio
         data-umami-location={location}
       >
         <CoffeeIcon className="w-4 h-4" />
-        <span>Buy me a coffee</span>
+        <span>Support</span>
       </a>
     );
   }

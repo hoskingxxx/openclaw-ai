@@ -43,11 +43,11 @@ export function PrimaryCTA({
   const offerConfig = offer === "primary" ? PRIMARY_OFFER : SECONDARY_OFFER
 
   // Map offer type to tracking offer value
-  const trackingOffer = offer === "primary" ? "cloud_gpu" : "survival_kit"
+  const trackingOffer = offer === "primary" ? "survival_kit" : "cloud_gpu"
 
   // Generate canonical CTA ID
   const ctaId = generateCtaId({
-    offer: offer === "primary" ? "cloud" : "kit",
+    offer: offer === "primary" ? "kit" : "cloud",
     placement,
     verdict,
   })
@@ -78,7 +78,7 @@ export function PrimaryCTA({
         className={`text-xs text-text-tertiary hover:text-text-secondary transition-colors underline ${className}`}
         data-cta="primary"
       >
-        {offer === "primary" ? "Get Cloud GPU ($5/mo)" : `Get Survival Kit (${offerConfig.price})`}
+        {offer === "primary" ? `Get Survival Kit (${offerConfig.price})` : "Get Cloud GPU ($5/mo)"}
       </a>
     )
   }
@@ -89,7 +89,7 @@ export function PrimaryCTA({
       <div ref={elementRef} className={`my-4 border border-border rounded-lg bg-card h-[60px] sm:h-[70px] flex items-center justify-between px-4 gap-3 ${className}`}>
         <div className="flex items-center gap-2">
           <h4 className="text-sm sm:text-base font-bold text-text-primary font-mono flex-1">
-            {offer === "primary" ? "Stop Guessing." : "Stop Debugging."}
+            {offer === "primary" ? "Stop Debugging." : "Stop Guessing."}
           </h4>
         </div>
         <a
@@ -101,7 +101,7 @@ export function PrimaryCTA({
           data-cta="primary"
           data-cta-strong="1"
         >
-          {offer === "primary" ? "Rent GPU" : "Get Decision Boundaries"}
+          {offer === "primary" ? "Get Decision Boundaries" : "Rent GPU"}
           <ExternalLink className="w-4 h-4" />
         </a>
       </div>
@@ -119,7 +119,7 @@ export function PrimaryCTA({
             <Zap className="w-3.5 h-3.5 text-brand-primary dark:text-brand-primary" />
           </div>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-            {offer === "primary" ? "Official Recommendation" : "Battle-Tested"}
+            {offer === "primary" ? "Battle-Tested" : "Official Recommendation"}
             <ExternalLink className="w-4 h-4 text-brand-primary dark:text-brand-primary" />
           </h3>
         </div>
@@ -127,8 +127,8 @@ export function PrimaryCTA({
         {/* Subtitle */}
         <p className="text-gray-700 dark:text-gray-300 mb-5 leading-relaxed">
           {offer === "primary"
-            ? "Stop fighting physics. Rent a clean Linux box with H100 GPU."
-            : "Get decision boundaries, stop rules, and red lines for DeepSeek R1."}
+            ? "Get decision boundaries, stop rules, and red lines for DeepSeek R1."
+            : "Stop fighting physics. Rent a clean Linux box with H100 GPU."}
         </p>
 
         {/* CTA Button */}
@@ -141,7 +141,7 @@ export function PrimaryCTA({
           data-cta="primary"
           data-cta-strong="1"
         >
-          {offer === "primary" ? "Deploy on Vultr →" : `Buy Clarity — ${offerConfig.price}`}
+          {offer === "primary" ? `Buy Clarity — ${offerConfig.price}` : "Deploy on Vultr →"}
           <ExternalLink className="w-4 h-4 ml-1" />
         </a>
 

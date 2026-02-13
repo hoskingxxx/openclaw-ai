@@ -98,8 +98,8 @@ export default function HomePage() {
                 <p className="text-text-tertiary text-sm font-mono mb-6">
                   You can fight physics, or you can understand the limits.
                 </p>
-                {/* Secondary CTA: Survival Kit */}
-                <PrimaryCTA variant="full" placement="bottom" offer="secondary" />
+                {/* Primary CTA: Survival Kit */}
+                <PrimaryCTA variant="full" placement="bottom" offer="primary" />
               </div>
             </section>
           </ContentEdge>
@@ -156,32 +156,7 @@ ollama run deepseek-r1:8b`}
           </ContentEdge>
         </ContentRail>
 
-        {/* Final CTA - Cloud */}
-        <ContentRail>
-          <ContentEdge>
-            <section className="py-20">
-              <div className="glass-card p-6 sm:p-8 text-center max-w-3xl mx-auto">
-                <h2 className="text-xl md:text-2xl font-mono text-text-primary mb-4 break-words">
-                  Stop Fighting Physics. Rent GPU.
-                </h2>
-                <p className="text-text-secondary mb-6 break-words">
-                  Skip the hardware limits. Spin up an H100, run your job, done.
-                </p>
-                <p className="text-xs text-text-tertiary font-mono mb-6 break-words">
-                  $5/hr. No setup. Destroy when done.
-                </p>
-                <a
-                  href={PRIMARY_OFFER.url}
-                  target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  className="text-xs text-brand-primary hover:text-brand-hover underline font-mono"
-                >
-                  Deploy on Vultr →
-                </a>
-              </div>
-            </section>
-          </ContentEdge>
-        </ContentRail>
+        {/* Final CTA - Removed (Vultr should only show for RED verdict) */}
       </main>
 
       {/* Trust Signal */}

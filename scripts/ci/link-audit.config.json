@@ -1,0 +1,45 @@
+{
+  "baseUrl": "https://openclaw-ai.org",
+  "allowedDomains": [
+    "openclaw-ai.org",
+    "hilda666888.gumroad.com",
+    "www.vultr.com",
+    "vultr.com",
+    "buymeacoffee.com",
+    "deepinfra.com"
+  ],
+  "ignorePaths": [
+    "/api/",
+    "/opengraph-image",
+    "/twitter-image",
+    "/_next",
+    "/sitemap.xml"
+  ],
+  "entryPoints": [
+    "/",
+    "/preflight",
+    "/oom",
+    "/troubleshooting",
+    "/guides"
+  ],
+  "ctaThresholds": {
+    "default": {
+      "gumroad": 1,
+      "vultr": 1,
+      "buymeacoffee": 1
+    },
+    "byPath": {
+      "/preflight": {
+        "gumroad": 1,
+        "vultr": 1,
+        "buymeacoffee": 1
+      },
+      "/oom": {
+        "gumroad": 1,
+        "vultr": 1,
+        "buymeacoffee": 1
+      }
+    }
+  },
+  "externalTimeout": 5000
+}

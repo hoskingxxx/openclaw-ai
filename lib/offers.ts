@@ -35,33 +35,33 @@ export interface OfferConfig {
 }
 
 // ============================================================================
-// PRIMARY OFFER - Vultr Cloud Sandbox
+// PRIMARY OFFER - Survival Kit (Gumroad)
 // 全站主要收入路径 - 展示位置：首页、文章页、/preflight RED verdict
 // ============================================================================
 export const PRIMARY_OFFER: OfferConfig = {
-  id: "cloud_sandbox",
-  name: "Vultr Cloud Sandbox",
-  type: "primary",
-  dest_type: "vultr",
-  url: "https://www.vultr.com/?ref=9864821-9J",
-  dest_id: "vultr_cloud_gpu",
-  price: "$5/mo",
-  enabled: true,
-}
-
-// ============================================================================
-// SECONDARY OFFER - Survival Kit (Gumroad) - 降级为次要
-// 仅作为文本链接出现在 Footer 或页面底部低视觉权重区域
-// 不再作为 PrimaryCTA 组件使用
-// ============================================================================
-export const SECONDARY_OFFER: OfferConfig = {
   id: "survival_kit",
   name: "Survival Kit",
-  type: "secondary",
+  type: "primary",
   dest_type: "gumroad",
   url: "https://hilda666888.gumroad.com/l/ymwwgm",
   dest_id: "gumroad_ymwwgm",
   price: "$9.90",
+  enabled: true,
+}
+
+// ============================================================================
+// SECONDARY OFFER - Vultr Cloud Sandbox - 降级为次要
+// 仅作为文本链接出现在 Footer 或页面底部低视觉权重区域
+// 不再作为 PrimaryCTA 组件使用
+// ============================================================================
+export const SECONDARY_OFFER: OfferConfig = {
+  id: "cloud_sandbox",
+  name: "Vultr Cloud Sandbox",
+  type: "secondary",
+  dest_type: "vultr",
+  url: "https://www.vultr.com/?ref=9864821-9J",
+  dest_id: "vultr_cloud_gpu",
+  price: "$5/mo",
   enabled: true,
 }
 
@@ -99,8 +99,8 @@ export const SUPPORT_OFFER: OfferConfig = {
 // OFFER LOOKUP (for dynamic imports)
 // ============================================================================
 export const OFFERS: Record<string, OfferConfig> = {
-  cloud_sandbox: PRIMARY_OFFER,
-  survival_kit: SECONDARY_OFFER,
+  survival_kit: PRIMARY_OFFER,
+  cloud_sandbox: SECONDARY_OFFER,
   coffee: SUPPORT_OFFER,
 } as const;
 
@@ -117,20 +117,20 @@ export function generateCtaId(params: {
 }): string {
   const { offer, placement, verdict } = params
 
-  // Primary offer (Cloud)
+  // Primary offer (Survival Kit)
+  if (offer === "kit") {
+    if (verdict === "red") return `kit_red_primary`
+    if (verdict === "yellow") return `kit_yellow_primary`
+    if (verdict === "green") return `kit_green_primary`
+    return `kit_${placement}`
+  }
+
+  // Secondary offer (Cloud/Vultr)
   if (offer === "cloud") {
-    if (verdict === "red") return `vultr_red_primary`
+    if (verdict === "red") return `vultr_red_secondary`
     if (verdict === "yellow") return `vultr_yellow_secondary`
     if (verdict === "green") return `vultr_green_secondary`
     return `cloud_${placement}`
-  }
-
-  // Secondary offer (Survival Kit - now text-only)
-  if (offer === "kit") {
-    if (verdict === "red") return `kit_red_secondary`
-    if (verdict === "yellow") return `kit_yellow_primary`
-    if (verdict === "green") return `kit_green_secondary`
-    return `kit_text_${placement}`
   }
 
   // Support offer (Coffee)
@@ -140,7 +140,7 @@ export function generateCtaId(params: {
 // ============================================================================
 // EXPORT ALL OFFERS (for SSOT usage)
 // ============================================================================
-export const ALL_OFFERS = [PRIMARY_OFFER, CONTEXT_OFFER, SUPPORT_OFFER] as const;
+export const ALL_OFFERS = [PRIMARY_OFFER, SECONDARY_OFFER, CONTEXT_OFFER, SUPPORT_OFFER] as const;
 
 // ============================================================================
 // HELPER: Get offer by type
