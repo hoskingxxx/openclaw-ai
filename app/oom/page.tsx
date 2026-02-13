@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
+import { Breadcrumbs } from "@/components/features/Breadcrumbs";
 import { ContentRail } from "@/components/features/ContentRail";
 import { ContentEdge } from "@/components/features/ContentEdge";
 import { Button } from "@/components/ui/Button";
@@ -27,10 +28,10 @@ export default function OOMPage() {
           <div className="py-16">
             {/* Breadcrumb */}
             <div className="mb-8">
-            <Link href="/" className="text-sm text-text-tertiary hover:text-text-primary transition-colors">
-              ← Back Home
-            </Link>
-          </div>
+              <Breadcrumbs items={[
+                { label: "Hardware Reality", href: "/oom" }
+              ]} />
+            </div>
 
           {/* Standard Disclaimer */}
           <div className="mb-8 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded">

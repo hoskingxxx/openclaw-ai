@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/features/Navigation"
 import { Footer } from "@/components/features/Footer"
+import { Breadcrumbs } from "@/components/features/Breadcrumbs"
 import { ContentRail } from "@/components/features/ContentRail"
 import { ContentEdge } from "@/components/features/ContentEdge"
 import Link from "next/link"
@@ -28,9 +29,10 @@ export default function DeepSeekR1RequirementsPage() {
             <article className="py-16 px-4">
               {/* Breadcrumb */}
               <div className="mb-8">
-                <Link href="/" className="text-sm text-text-tertiary hover:text-text-primary transition-colors">
-                  ← Back Home
-                </Link>
+                <Breadcrumbs items={[
+                  { label: "Guides", href: "/guides" },
+                  { label: "Hardware Requirements", href: "/guides/deepseek-r1-requirements" }
+                ]} />
               </div>
 
               {/* Header */}

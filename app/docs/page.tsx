@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/features/Navigation";
 import { Footer } from "@/components/features/Footer";
+import { Breadcrumbs } from "@/components/features/Breadcrumbs";
 import { ContentRail } from "@/components/features/ContentRail";
 import { ContentEdge } from "@/components/features/ContentEdge";
 import { Button } from "@/components/ui/Button";
@@ -23,6 +24,13 @@ export default function DocsPage() {
       <main className="min-h-screen bg-background-primary">
         <ContentRail>
           <ContentEdge>
+
+          {/* Breadcrumb */}
+          <div className="mb-8">
+            <Breadcrumbs items={[
+              { label: "Docs", href: "/docs" }
+            ]} />
+          </div>
 
           {/* Survivor Warning Banner */}
           <div className="mb-8 p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
