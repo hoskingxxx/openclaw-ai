@@ -61,13 +61,12 @@ export function SecurityHero() {
             <p className="text-xl font-bold text-red-400">
               RUN OPENCLAW SAFELY.
             </p>
-            </div>
-            <div className="mb-10 max-w-3xl mx-auto space-y-4">
-        </div>
+          </div>
+        </ContentEdge>
       </ContentRail>
 
       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-        <PrimaryCTA variant="full" placement="hero" offer="primary" />
+        <PrimaryCTA variant="full" placement="top" offer="primary" />
       </div>
 
       <div className="text-center">
@@ -78,7 +77,6 @@ export function SecurityHero() {
           I accept the risk. Continue to local guides →
         </Link>
       </div>
-      <div className="text-center">
     </section>
   )
 }
