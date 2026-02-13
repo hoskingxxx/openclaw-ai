@@ -57,7 +57,12 @@ export default function HomePage() {
           <ContentEdge>
             <section className="py-12">
               <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
-              {/* Action A: Diagnosis */}
+              </div>
+            </section>
+          </ContentEdge>
+        </ContentRail>
+
+        {/* Action A: Diagnosis */}
         {/* The Fix You Probably Needed */}
         <ContentRail>
           <ContentEdge>
