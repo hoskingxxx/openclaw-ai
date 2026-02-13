@@ -14,7 +14,7 @@
 import { useRef } from "react"
 import { Cloud, ExternalLink } from "lucide-react"
 import { useRevenueOutbound, useCtaImpression } from "@/lib/use-tracking"
-import { PRIMARY_OFFER, SECONDARY_OFFER, generateCtaId, type CtaPlacement, type OfferType } from "@/lib/offers"
+import { CONTEXT_OFFER, generateCtaId, type CtaPlacement, type OfferType } from "@/lib/offers"
 
 type Verdict = "red" | "yellow" | "green"
 
@@ -70,7 +70,7 @@ export function ContextCTA({
       <div className="flex flex-col items-center gap-6">
         {/* Primary CTA: Cloud Sandbox */}
         <a
-          href={SECONDARY_OFFER.url}
+          href={CONTEXT_OFFER.url}
           target="_blank"
           rel="noopener noreferrer sponsored"
           onClick={handleClick}
@@ -78,7 +78,7 @@ export function ContextCTA({
           data-cta="context"
           data-cta-strong="1"
         >
-          Launch Cloud Sandbox ({SECONDARY_OFFER.price}) →
+          Launch Cloud Sandbox ({CONTEXT_OFFER.price}) →
         </a>
       </div>
     </div>
