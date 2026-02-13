@@ -20,6 +20,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
       >
         <HomeIcon className="w-4 h-4" />
         <span className="hidden sm:inline">Home</span>
+        <span className="mx-1">{'>'}</span>
       </Link>
 
       {items.map((item, index) => (

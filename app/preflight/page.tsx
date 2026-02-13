@@ -3,6 +3,7 @@ import { Footer } from "@/components/features/Footer"
 import { Breadcrumbs } from "@/components/features/Breadcrumbs"
 import { ContentRail } from "@/components/features/ContentRail"
 import { ContentEdge } from "@/components/features/ContentEdge"
+import { ChevronRightIcon, HomeIcon } from "@/components/icons"
 import Link from "next/link"
 import { R1PreflightCheck } from "@/components/tools/vram-calculator"
 import type { Metadata } from "next"
@@ -29,18 +30,15 @@ export default function PreflightPage() {
             <div className="pt-8 pb-4">
               {/* Breadcrumb */}
               <div className="flex items-center gap-2 text-sm text-text-tertiary py-4">
-                <Link href="/" className="hover:text-text-primary transition-colors">
-                  Home
+                <Link href="/" className="flex items-center gap-1 hover:text-text-primary transition-colors p-2 -m-2 rounded-lg hover:bg-white/5" aria-label="Go to home">
+                  <HomeIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">Home</span>
                 </Link>
-                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18l15 12 5 6" />
-                </svg>
-                <Link href="/tools" className="hover:text-text-primary transition-colors">
+                <ChevronRightIcon className="w-4 h-4 flex-shrink-0" />
+                <Link href="/tools" className="hover:text-text-primary transition-colors p-1 -m-1 rounded hover:bg-white/5">
                   Tools
                 </Link>
-                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18l15 12 5 6" />
-                </svg>
+                <ChevronRightIcon className="w-4 h-4 flex-shrink-0" />
                 <span className="text-text-primary font-medium">
                   Pre-flight Check
                 </span>
