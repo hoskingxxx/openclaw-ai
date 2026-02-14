@@ -141,7 +141,7 @@ export function PrimaryCTA({
           data-cta="primary"
           data-cta-strong="1"
         >
-          {offer === "primary" ? `Buy Clarity — ${offerConfig.price}` : "Deploy on Vultr →"}
+          {offer === "primary" ? `Deploy on Vultr — ${offerConfig.price}` : `Get Decision Boundaries — ${offerConfig.price}`}
           <ExternalLink className="w-4 h-4 ml-1" />
         </a>
 
